@@ -51,7 +51,7 @@ h1 {
 .week-display {
   text-align: center;
   margin-bottom: 18px;
-  padding: 10px;
+  padding: 11px;
 
   background: #003b6f;
   color: white;
@@ -60,6 +60,13 @@ h1 {
 
   font-size: 18px;
   font-weight: bold;
+}
+
+.week-dates {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: normal;
+  opacity: 0.92;
 }
 
 label {
@@ -283,7 +290,7 @@ button:disabled {
 }
 
 
-/* Highlight current week */
+/* Current week is highlighted */
 
 .current-week-header {
   background: #d71920 !important;
@@ -445,7 +452,12 @@ button:disabled {
 
   .week-display {
     font-size: 15px;
-    padding: 8px;
+    padding: 9px;
+  }
+
+  .week-dates {
+    font-size: 12px;
+    margin-top: 4px;
   }
 
 
@@ -565,7 +577,17 @@ button:disabled {
     id="weekDisplay"
     class="week-display"
   >
-    Loading current week...
+
+    <div id="weekTitle">
+      Loading current week...
+    </div>
+
+    <div
+      id="weekDates"
+      class="week-dates"
+    >
+    </div>
+
   </div>
 
 
@@ -772,7 +794,7 @@ button:disabled {
 
 
 /* =========================================
-   API
+   GOOGLE APPS SCRIPT API
    ========================================= */
 
 const API_URL =
@@ -781,26 +803,16 @@ const API_URL =
 
 
 /* =========================================
-   AUTOMATIC NFL SURVIVOR WEEK
+   AUTOMATIC SURVIVOR WEEK SCHEDULE
    =========================================
 
-   The Survivor week changes every Tuesday
-   at 12:00 AM CENTRAL TIME.
+   The website switches to the next week
+   every Tuesday based on CENTRAL TIME.
 
-   Week 1:
-   September 9 - September 14
+   Nothing is locked.
 
-   Week 2:
-   September 15 - September 21
-
-   Week 3:
-   September 22 - September 28
-
-   etc.
-
-   Picks NEVER lock during the active week.
-   Players can change their pick until the
-   website moves to the next week Tuesday.
+   Players can change the current week's
+   pick for the entire date range.
 
    ========================================= */
 
@@ -847,13 +859,9 @@ const WEEK_START_DATES = [
 
 
 
-/*
-   Get today's date specifically
-   in America/Chicago.
-
-   This prevents someone's phone
-   timezone from changing the week.
-*/
+/* =========================================
+   GET CENTRAL-TIME DATE
+   ========================================= */
 
 function getCentralDateString() {
 
@@ -905,9 +913,9 @@ function getCentralDateString() {
 
 
 
-/*
-   Determine the active week.
-*/
+/* =========================================
+   DETERMINE CURRENT WEEK
+   ========================================= */
 
 function getCurrentWeek() {
 
@@ -917,7 +925,7 @@ function getCurrentWeek() {
 
   /*
      Before Week 1 starts,
-     show Week 1.
+     display Week 1.
   */
 
   let activeWeek = 1;
@@ -940,10 +948,6 @@ function getCurrentWeek() {
   }
 
 
-  /*
-     Never go beyond Week 18.
-  */
-
   return Math.min(
     activeWeek,
     18
@@ -958,12 +962,157 @@ const CURRENT_WEEK =
 
 
 /* =========================================
+   DATE RANGE FUNCTIONS
+   ========================================= */
+
+
+/*
+   Parse YYYY-MM-DD without allowing
+   browser timezone conversion.
+*/
+
+function parseScheduleDate(
+  dateString
+) {
+
+  const parts =
+    dateString.split("-");
+
+
+  return new Date(
+    Number(parts[0]),
+    Number(parts[1]) - 1,
+    Number(parts[2])
+  );
+
+}
+
+
+
+/*
+   Get the visible date range for
+   the current Survivor week.
+*/
+
+function getCurrentWeekRange() {
+
+  const currentWeekInfo =
+    WEEK_START_DATES.find(
+      item =>
+        item.week ===
+        CURRENT_WEEK
+    );
+
+
+  if (!currentWeekInfo) {
+
+    return "";
+
+  }
+
+
+  const startDate =
+    parseScheduleDate(
+      currentWeekInfo.date
+    );
+
+
+  const nextWeekInfo =
+    WEEK_START_DATES.find(
+      item =>
+        item.week ===
+        CURRENT_WEEK + 1
+    );
+
+
+  let endDate;
+
+
+  if (nextWeekInfo) {
+
+    endDate =
+      parseScheduleDate(
+        nextWeekInfo.date
+      );
+
+
+    /*
+       Current week ends one day
+       before next week's start.
+    */
+
+    endDate.setDate(
+      endDate.getDate() - 1
+    );
+
+  }
+
+  else {
+
+    /*
+       Final Survivor week.
+    */
+
+    endDate =
+      new Date(
+        2027,
+        0,
+        10
+      );
+
+  }
+
+
+  const startMonth =
+    startDate.toLocaleDateString(
+      "en-US",
+      {
+        month: "long"
+      }
+    );
+
+
+  const endMonth =
+    endDate.toLocaleDateString(
+      "en-US",
+      {
+        month: "long"
+      }
+    );
+
+
+  /*
+     Example:
+     September 15 – September 21
+  */
+
+  return (
+    startMonth +
+    " " +
+    startDate.getDate() +
+    " – " +
+    endMonth +
+    " " +
+    endDate.getDate()
+  );
+
+}
+
+
+
+/* =========================================
    SHOW CURRENT WEEK
    ========================================= */
 
-const weekDisplay =
+const weekTitle =
   document.getElementById(
-    "weekDisplay"
+    "weekTitle"
+  );
+
+
+const weekDates =
+  document.getElementById(
+    "weekDates"
   );
 
 
@@ -973,9 +1122,13 @@ const teamLabel =
   );
 
 
-weekDisplay.textContent =
+weekTitle.textContent =
   "🏈 Current Survivor Week: Week " +
   CURRENT_WEEK;
+
+
+weekDates.textContent =
+  getCurrentWeekRange();
 
 
 teamLabel.textContent =
@@ -1170,45 +1323,54 @@ const playerSelect =
     "player"
   );
 
+
 const teamSelect =
   document.getElementById(
     "team"
   );
+
 
 const submitButton =
   document.getElementById(
     "submitButton"
   );
 
+
 const refreshButton =
   document.getElementById(
     "refreshButton"
   );
+
 
 const statusBox =
   document.getElementById(
     "status"
   );
 
+
 const currentPickBox =
   document.getElementById(
     "currentPick"
   );
+
 
 const submitFrame =
   document.getElementById(
     "submitFrame"
   );
 
+
 const tableHeader =
   document.getElementById(
     "tableHeader"
   );
 
+
 const tableBody =
   document.getElementById(
     "tableBody"
   );
+
 
 const lastUpdated =
   document.getElementById(
@@ -1256,9 +1418,14 @@ function jsonp(
           return;
         }
 
+
         finished = true;
 
-        clearTimeout(timer);
+
+        clearTimeout(
+          timer
+        );
+
 
         delete window[
           callbackName
@@ -1294,6 +1461,7 @@ function jsonp(
         function() {
 
           cleanup();
+
 
           reject(
             new Error(
@@ -1349,6 +1517,7 @@ function jsonp(
           () => {
 
             cleanup();
+
 
             reject(
               new Error(
@@ -1410,6 +1579,7 @@ async function loadPlayers() {
         option.value =
           player;
 
+
         option.textContent =
           player;
 
@@ -1425,7 +1595,9 @@ async function loadPlayers() {
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     playerSelect.innerHTML =
@@ -1444,7 +1616,7 @@ async function loadPlayers() {
 
 
 /* =========================================
-   LOAD PLAYER DATA
+   LOAD PLAYER PICKS
    ========================================= */
 
 async function loadPlayerData(
@@ -1493,7 +1665,9 @@ async function loadPlayerData(
       );
 
 
-    if (!data.success) {
+    if (
+      !data.success
+    ) {
 
       throw new Error(
         data.error
@@ -1518,12 +1692,11 @@ async function loadPlayerData(
 
 
     /*
-       Every team used in OTHER weeks
-       is removed from the dropdown.
+       Teams used in previous/other
+       weeks cannot be selected again.
 
-       The current week's existing team
-       remains available so the player
-       can keep or change it.
+       The current week's team remains
+       selectable so it can be changed.
     */
 
     const usedTeams =
@@ -1547,7 +1720,9 @@ async function loadPlayerData(
       );
 
 
-    if (currentPick) {
+    if (
+      currentPick
+    ) {
 
       currentPickBox.textContent =
         "Current Week " +
@@ -1640,7 +1815,9 @@ async function loadPlayerData(
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     showStatus(
@@ -1682,7 +1859,7 @@ async function loadTable() {
 
 
     /* -----------------------------
-       HEADERS
+       TABLE HEADERS
        ----------------------------- */
 
     tableHeader.innerHTML =
@@ -1703,8 +1880,7 @@ async function loadTable() {
 
 
         /*
-           Highlight the currently
-           active Survivor week.
+           Highlight current week.
         */
 
         if (
@@ -1745,7 +1921,9 @@ async function loadTable() {
           );
 
 
-        /* PLAYER NAME */
+        /*
+           Player name
+        */
 
         const playerCell =
           document.createElement(
@@ -1766,7 +1944,9 @@ async function loadTable() {
         );
 
 
-        /* WEEK PICKS */
+        /*
+           Week picks
+        */
 
         data.headers.forEach(
           week => {
@@ -1855,7 +2035,7 @@ async function loadTable() {
             }
 
 
-            /* TEAM NAME */
+            /* TEAM NAME BAR */
 
             const teamBar =
               document.createElement(
@@ -1912,7 +2092,9 @@ async function loadTable() {
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     tableBody.innerHTML =
@@ -1929,7 +2111,7 @@ async function loadTable() {
 
 
 /* =========================================
-   SUBMIT PICK
+   SUBMIT / CHANGE PICK
    ========================================= */
 
 async function submitPick() {
@@ -1979,6 +2161,10 @@ async function submitPick() {
 
   try {
 
+    /*
+       Check existing pick first.
+    */
+
     const beforeData =
       await jsonp(
         "getPlayerData",
@@ -2009,6 +2195,10 @@ async function submitPick() {
       ] || "";
 
 
+    /*
+       Submit pick through Apps Script.
+    */
+
     const submitURL =
       API_URL +
       "?action=submitPick" +
@@ -2034,6 +2224,11 @@ async function submitPick() {
       1500
     );
 
+
+    /*
+       Verify that Google Sheets
+       received the pick.
+    */
 
     let confirmed =
       false;
@@ -2078,7 +2273,9 @@ async function submitPick() {
     }
 
 
-    if (!confirmed) {
+    if (
+      !confirmed
+    ) {
 
       throw new Error(
         "The pick could not be confirmed."
@@ -2094,7 +2291,14 @@ async function submitPick() {
       team;
 
 
-    if (previousTeam) {
+    /*
+       Confirmation message.
+    */
+
+    if (
+      previousTeam &&
+      previousTeam !== team
+    ) {
 
       showStatus(
         "Week " +
@@ -2104,6 +2308,20 @@ async function submitPick() {
         " to " +
         team +
         ".",
+        "success"
+      );
+
+    }
+
+    else if (
+      previousTeam === team
+    ) {
+
+      showStatus(
+        team +
+        " is already your Week " +
+        CURRENT_WEEK +
+        " pick.",
         "success"
       );
 
@@ -2124,14 +2342,14 @@ async function submitPick() {
 
 
     /*
-       Immediately refresh the board.
+       Refresh board immediately.
     */
 
     await loadTable();
 
 
     /*
-       Reload player dropdown information.
+       Reload player's available teams.
     */
 
     await loadPlayerData(
@@ -2142,7 +2360,9 @@ async function submitPick() {
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     showStatus(
@@ -2181,6 +2401,7 @@ function wait(ms) {
 }
 
 
+
 function showStatus(
   message,
   type
@@ -2199,6 +2420,7 @@ function showStatus(
     "block";
 
 }
+
 
 
 function hideStatus() {
@@ -2229,16 +2451,19 @@ playerSelect.addEventListener(
 );
 
 
+
 teamSelect.addEventListener(
   "change",
   hideStatus
 );
 
 
+
 submitButton.addEventListener(
   "click",
   submitPick
 );
+
 
 
 refreshButton.addEventListener(
@@ -2269,7 +2494,7 @@ refreshButton.addEventListener(
 
 
 /* =========================================
-   START
+   START WEBSITE
    ========================================= */
 
 loadPlayers();
