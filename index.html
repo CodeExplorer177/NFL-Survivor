@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 
 <meta
@@ -48,6 +47,20 @@ h1 {
 /* =========================================
    FORM
    ========================================= */
+
+.week-display {
+  text-align: center;
+  margin-bottom: 18px;
+  padding: 10px;
+
+  background: #003b6f;
+  color: white;
+
+  border-radius: 8px;
+
+  font-size: 18px;
+  font-weight: bold;
+}
 
 label {
   display: block;
@@ -177,7 +190,7 @@ button:disabled {
 
 
 /* =========================================
-   REFRESH AREA
+   BOARD CONTROLS
    ========================================= */
 
 .board-controls {
@@ -270,6 +283,13 @@ button:disabled {
 }
 
 
+/* Highlight current week */
+
+.current-week-header {
+  background: #d71920 !important;
+}
+
+
 /* =========================================
    PLAYER NAME
    ========================================= */
@@ -299,7 +319,7 @@ button:disabled {
 
 
 /* =========================================
-   PICK
+   PICKS
    ========================================= */
 
 .pick-cell {
@@ -312,11 +332,6 @@ button:disabled {
 
   vertical-align: top;
 }
-
-
-/* =========================================
-   TEAM LOGO
-   ========================================= */
 
 .logo-area {
   height: 48px;
@@ -346,11 +361,6 @@ button:disabled {
   object-fit: contain;
 }
 
-
-/* =========================================
-   TEAM NAME BAR
-   ========================================= */
-
 .team-bar {
   height: 20px;
 
@@ -374,11 +384,6 @@ button:disabled {
 
   text-overflow: ellipsis;
 }
-
-
-/* =========================================
-   EMPTY PICKS
-   ========================================= */
 
 .empty-pick {
   width: 74px;
@@ -438,8 +443,13 @@ button:disabled {
     font-size: 22px;
   }
 
+  .week-display {
+    font-size: 15px;
+    padding: 8px;
+  }
 
-  /* HEADER */
+
+  /* NFL HEADER */
 
   .nfl-logo-box {
     width: 70px;
@@ -531,7 +541,6 @@ button:disabled {
 }
 
 </style>
-
 </head>
 
 
@@ -551,9 +560,19 @@ button:disabled {
 
 <div class="card">
 
+
+  <div
+    id="weekDisplay"
+    class="week-display"
+  >
+    Loading current week...
+  </div>
+
+
   <label for="player">
     Select Your Name
   </label>
+
 
   <select id="player">
 
@@ -567,8 +586,11 @@ button:disabled {
   <br><br>
 
 
-  <label for="team">
-    Select Your Week 2 Team
+  <label
+    for="team"
+    id="teamLabel"
+  >
+    Select Your Team
   </label>
 
 
@@ -603,6 +625,7 @@ button:disabled {
     class="status">
   </div>
 
+
 </div>
 
 
@@ -613,8 +636,6 @@ button:disabled {
 
 <div class="card">
 
-
-  <!-- HEADER WITH NFL LOGO -->
 
   <div class="board-header">
 
@@ -634,9 +655,7 @@ button:disabled {
 
 
       <div class="pool-title">
-
         2026 NFL Survivor Pool
-
       </div>
 
 
@@ -668,8 +687,6 @@ button:disabled {
 
 
 
-  <!-- REFRESH -->
-
   <div class="board-controls">
 
     <button
@@ -682,8 +699,6 @@ button:disabled {
   </div>
 
 
-
-  <!-- TABLE -->
 
   <div class="table-wrapper">
 
@@ -757,14 +772,216 @@ button:disabled {
 
 
 /* =========================================
-   SETTINGS
+   API
    ========================================= */
-
-const CURRENT_WEEK = 2;
-
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
+
+
+
+/* =========================================
+   AUTOMATIC NFL SURVIVOR WEEK
+   =========================================
+
+   The Survivor week changes every Tuesday
+   at 12:00 AM CENTRAL TIME.
+
+   Week 1:
+   September 9 - September 14
+
+   Week 2:
+   September 15 - September 21
+
+   Week 3:
+   September 22 - September 28
+
+   etc.
+
+   Picks NEVER lock during the active week.
+   Players can change their pick until the
+   website moves to the next week Tuesday.
+
+   ========================================= */
+
+
+const WEEK_START_DATES = [
+
+  { week: 1,  date: "2026-09-09" },
+
+  { week: 2,  date: "2026-09-15" },
+
+  { week: 3,  date: "2026-09-22" },
+
+  { week: 4,  date: "2026-09-29" },
+
+  { week: 5,  date: "2026-10-06" },
+
+  { week: 6,  date: "2026-10-13" },
+
+  { week: 7,  date: "2026-10-20" },
+
+  { week: 8,  date: "2026-10-27" },
+
+  { week: 9,  date: "2026-11-03" },
+
+  { week: 10, date: "2026-11-10" },
+
+  { week: 11, date: "2026-11-17" },
+
+  { week: 12, date: "2026-11-24" },
+
+  { week: 13, date: "2026-12-01" },
+
+  { week: 14, date: "2026-12-08" },
+
+  { week: 15, date: "2026-12-15" },
+
+  { week: 16, date: "2026-12-22" },
+
+  { week: 17, date: "2026-12-29" },
+
+  { week: 18, date: "2027-01-05" }
+
+];
+
+
+
+/*
+   Get today's date specifically
+   in America/Chicago.
+
+   This prevents someone's phone
+   timezone from changing the week.
+*/
+
+function getCentralDateString() {
+
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone: "America/Chicago",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }
+    );
+
+
+  const parts =
+    formatter.formatToParts(
+      new Date()
+    );
+
+
+  const year =
+    parts.find(
+      p => p.type === "year"
+    ).value;
+
+
+  const month =
+    parts.find(
+      p => p.type === "month"
+    ).value;
+
+
+  const day =
+    parts.find(
+      p => p.type === "day"
+    ).value;
+
+
+  return (
+    year +
+    "-" +
+    month +
+    "-" +
+    day
+  );
+
+}
+
+
+
+/*
+   Determine the active week.
+*/
+
+function getCurrentWeek() {
+
+  const today =
+    getCentralDateString();
+
+
+  /*
+     Before Week 1 starts,
+     show Week 1.
+  */
+
+  let activeWeek = 1;
+
+
+  for (
+    const item of
+    WEEK_START_DATES
+  ) {
+
+    if (
+      today >= item.date
+    ) {
+
+      activeWeek =
+        item.week;
+
+    }
+
+  }
+
+
+  /*
+     Never go beyond Week 18.
+  */
+
+  return Math.min(
+    activeWeek,
+    18
+  );
+
+}
+
+
+const CURRENT_WEEK =
+  getCurrentWeek();
+
+
+
+/* =========================================
+   SHOW CURRENT WEEK
+   ========================================= */
+
+const weekDisplay =
+  document.getElementById(
+    "weekDisplay"
+  );
+
+
+const teamLabel =
+  document.getElementById(
+    "teamLabel"
+  );
+
+
+weekDisplay.textContent =
+  "🏈 Current Survivor Week: Week " +
+  CURRENT_WEEK;
+
+
+teamLabel.textContent =
+  "Select Your Week " +
+  CURRENT_WEEK +
+  " Team";
 
 
 
@@ -949,34 +1166,54 @@ const TEAMS =
    ========================================= */
 
 const playerSelect =
-  document.getElementById("player");
+  document.getElementById(
+    "player"
+  );
 
 const teamSelect =
-  document.getElementById("team");
+  document.getElementById(
+    "team"
+  );
 
 const submitButton =
-  document.getElementById("submitButton");
+  document.getElementById(
+    "submitButton"
+  );
 
 const refreshButton =
-  document.getElementById("refreshButton");
+  document.getElementById(
+    "refreshButton"
+  );
 
 const statusBox =
-  document.getElementById("status");
+  document.getElementById(
+    "status"
+  );
 
 const currentPickBox =
-  document.getElementById("currentPick");
+  document.getElementById(
+    "currentPick"
+  );
 
 const submitFrame =
-  document.getElementById("submitFrame");
+  document.getElementById(
+    "submitFrame"
+  );
 
 const tableHeader =
-  document.getElementById("tableHeader");
+  document.getElementById(
+    "tableHeader"
+  );
 
 const tableBody =
-  document.getElementById("tableBody");
+  document.getElementById(
+    "tableBody"
+  );
 
 const lastUpdated =
-  document.getElementById("lastUpdated");
+  document.getElementById(
+    "lastUpdated"
+  );
 
 
 
@@ -1173,7 +1410,6 @@ async function loadPlayers() {
         option.value =
           player;
 
-
         option.textContent =
           player;
 
@@ -1281,6 +1517,15 @@ async function loadPlayerData(
       ] || "";
 
 
+    /*
+       Every team used in OTHER weeks
+       is removed from the dropdown.
+
+       The current week's existing team
+       remains available so the player
+       can keep or change it.
+    */
+
     const usedTeams =
       new Set(
 
@@ -1290,8 +1535,7 @@ async function loadPlayerData(
 
         .filter(
           ([week, team]) =>
-            week !==
-              weekName &&
+            week !== weekName &&
             team
         )
 
@@ -1331,7 +1575,9 @@ async function loadPlayerData(
       team => {
 
         if (
-          usedTeams.has(team)
+          usedTeams.has(
+            team
+          )
         ) {
 
           return;
@@ -1409,7 +1655,7 @@ async function loadPlayerData(
 
 
 /* =========================================
-   LOAD SURVIVOR TABLE
+   LOAD SURVIVOR BOARD
    ========================================= */
 
 async function loadTable() {
@@ -1435,7 +1681,9 @@ async function loadTable() {
     }
 
 
-    /* HEADERS */
+    /* -----------------------------
+       HEADERS
+       ----------------------------- */
 
     tableHeader.innerHTML =
       '<th class="player-header">Player Name</th>';
@@ -1454,6 +1702,24 @@ async function loadTable() {
           header;
 
 
+        /*
+           Highlight the currently
+           active Survivor week.
+        */
+
+        if (
+          header ===
+          "Week " +
+          CURRENT_WEEK
+        ) {
+
+          th.classList.add(
+            "current-week-header"
+          );
+
+        }
+
+
         tableHeader.appendChild(
           th
         );
@@ -1462,7 +1728,9 @@ async function loadTable() {
     );
 
 
-    /* PLAYERS */
+    /* -----------------------------
+       PLAYER ROWS
+       ----------------------------- */
 
     tableBody.innerHTML =
       "";
@@ -1547,7 +1815,7 @@ async function loadTable() {
               "pick-cell";
 
 
-            /* LOGO AREA */
+            /* TEAM LOGO */
 
             const logoArea =
               document.createElement(
@@ -1587,7 +1855,7 @@ async function loadTable() {
             }
 
 
-            /* TEAM BAR */
+            /* TEAM NAME */
 
             const teamBar =
               document.createElement(
@@ -1720,7 +1988,9 @@ async function submitPick() {
       );
 
 
-    if (!beforeData.success) {
+    if (
+      !beforeData.success
+    ) {
 
       throw new Error(
         beforeData.error
@@ -1827,7 +2097,9 @@ async function submitPick() {
     if (previousTeam) {
 
       showStatus(
-        "Pick changed from " +
+        "Week " +
+        CURRENT_WEEK +
+        " pick changed from " +
         previousTeam +
         " to " +
         team +
@@ -1852,15 +2124,14 @@ async function submitPick() {
 
 
     /*
-      Update survivor board
-      immediately.
+       Immediately refresh the board.
     */
 
     await loadTable();
 
 
     /*
-      Refresh dropdown data.
+       Reload player dropdown information.
     */
 
     await loadPlayerData(
