@@ -1,1027 +1,408 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+const SHEET_NAME = "Team Picks";
 
-  <title>2026 NFL Survivor</title>
+const HEADER_ROW = 6;
+const FIRST_PLAYER_ROW = 7;
+const NUMBER_OF_WEEKS = 18;
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
 
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      color: #222;
-    }
+// ==================================================
+// MAIN GET REQUEST
+// ==================================================
 
-    .container {
-      max-width: 1000px;
-      margin: auto;
-    }
+function doGet(e) {
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+  const action = e.parameter.action;
+  const callback = e.parameter.callback;
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    select,
-    button {
-      width: 100%;
-      padding: 13px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    select {
-      background: white;
-    }
-
-    button {
-      margin-top: 15px;
-      background: #222;
-      color: white;
-      cursor: pointer;
-      border: none;
-      font-weight: bold;
-    }
-
-    button:disabled {
-      background: #888;
-      cursor: not-allowed;
-    }
-
-    .status {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .success {
-      background: #dff5df;
-      color: #176b17;
-    }
-
-    .error {
-      background: #f8dddd;
-      color: #8a1c1c;
-    }
-
-    .current-pick {
-      margin-top: 15px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    /*
-      ==========================================
-      GOOGLE SHEET
-      ==========================================
-    */
-
-    .sheet-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      background: white;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-    }
-
-    .sheet-zoom {
-      width: 1600px;
-      transform: none;
-      transform-origin: top left;
-    }
-
-    .sheet-zoom iframe {
-      display: block;
-      width: 1600px;
-      height: 900px;
-      border: none;
-    }
-
-
-    /*
-      ==========================================
-      MOBILE
-      ==========================================
-    */
-
-    @media (max-width: 600px) {
-
-      body {
-        padding: 10px;
-      }
-
-      .container {
-        width: 100%;
-      }
-
-      .card {
-        padding: 15px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
-
-      .sheet-wrapper {
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-      }
-
-      .sheet-zoom {
-        width: 1600px;
-      }
-
-      .sheet-zoom iframe {
-        width: 1600px;
-        height: 900px;
-      }
-
-    }
-
-  </style>
-</head>
-
-
-<body>
-
-<div class="container">
-
-  <h1>🏈 2026 NFL Survivor</h1>
-
-
-  <!-- ==========================================
-       PICK FORM
-       ========================================== -->
-
-  <div class="card">
-
-    <label for="player">
-      Select Your Name
-    </label>
-
-    <select id="player">
-
-      <option value="">
-        Loading players...
-      </option>
-
-    </select>
-
-
-    <br><br>
-
-
-    <label for="team">
-      Select Your Week 2 Team
-    </label>
-
-    <select
-      id="team"
-      disabled
-    >
-
-      <option value="">
-        Select a player first
-      </option>
-
-    </select>
-
-
-    <div
-      id="currentPick"
-      class="current-pick">
-    </div>
-
-
-    <button
-      id="submitButton"
-      disabled
-    >
-      Submit Pick
-    </button>
-
-
-    <div
-      id="status"
-      class="status">
-    </div>
-
-  </div>
-
-
-
-  <!-- ==========================================
-       SURVIVOR SHEET
-       ========================================== -->
-
-  <div class="card">
-
-    <h2>Current Survivor Picks</h2>
-
-
-    <div class="sheet-wrapper">
-
-      <div class="sheet-zoom">
-
-        <iframe
-          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS9wInRS8cYLjP5YEjlfKs9H6EI2eE5ZmqqVYCSvZu6RY3xboNaCSqBBD5CMysFeUi2iVGwPQ5K2Bvu/pubhtml?widget=true&headers=false">
-        </iframe>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-
-<!-- ==========================================
-     HIDDEN SUBMISSION FRAME
-     ========================================== -->
-
-<iframe
-  id="submitFrame"
-  style="display:none;">
-</iframe>
-
-
-
-<script>
-
-
-/* ==========================================
-   SETTINGS
-   ========================================== */
-
-const CURRENT_WEEK = 2;
-
-
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
-
-
-/* ==========================================
-   NFL TEAMS
-   ========================================== */
-
-const TEAMS = [
-
-  "49ers",
-  "Bears",
-  "Bengals",
-  "Bills",
-  "Broncos",
-  "Browns",
-  "Buccaneers",
-  "Cardinals",
-  "Chargers",
-  "Chiefs",
-  "Colts",
-  "Commanders",
-  "Cowboys",
-  "Dolphins",
-  "Eagles",
-  "Falcons",
-  "Giants",
-  "Jaguars",
-  "Jets",
-  "Lions",
-  "Packers",
-  "Panthers",
-  "Patriots",
-  "Raiders",
-  "Rams",
-  "Ravens",
-  "Saints",
-  "Seahawks",
-  "Steelers",
-  "Texans",
-  "Titans",
-  "Vikings"
-
-];
-
-
-
-/* ==========================================
-   PAGE ELEMENTS
-   ========================================== */
-
-const playerSelect =
-  document.getElementById("player");
-
-const teamSelect =
-  document.getElementById("team");
-
-const submitButton =
-  document.getElementById("submitButton");
-
-const statusBox =
-  document.getElementById("status");
-
-const currentPickBox =
-  document.getElementById("currentPick");
-
-const submitFrame =
-  document.getElementById("submitFrame");
-
-
-
-/* ==========================================
-   JSONP HELPER
-   ========================================== */
-
-function jsonp(
-  action,
-  params = {},
-  timeout = 10000
-) {
-
-  return new Promise(
-    (resolve, reject) => {
-
-      const callbackName =
-        "jsonpCallback_" +
-        Date.now() +
-        "_" +
-        Math.floor(
-          Math.random() * 100000
-        );
-
-
-      const script =
-        document.createElement("script");
-
-
-      let finished = false;
-
-
-      function cleanup() {
-
-        if (finished) {
-          return;
-        }
-
-        finished = true;
-
-        clearTimeout(timer);
-
-        delete window[callbackName];
-
-
-        if (script.parentNode) {
-
-          script.parentNode.removeChild(
-            script
-          );
-
-        }
-
-      }
-
-
-      window[callbackName] =
-        function(data) {
-
-          cleanup();
-
-          resolve(data);
-
-        };
-
-
-      script.onerror =
-        function() {
-
-          cleanup();
-
-          reject(
-            new Error(
-              "Could not connect to the NFL Survivor server."
-            )
-          );
-
-        };
-
-
-      let url =
-        API_URL +
-        "?action=" +
-        encodeURIComponent(action) +
-        "&callback=" +
-        encodeURIComponent(callbackName) +
-        "&_=" +
-        Date.now();
-
-
-      for (
-        const key in params
-      ) {
-
-        url +=
-          "&" +
-          encodeURIComponent(key) +
-          "=" +
-          encodeURIComponent(
-            params[key]
-          );
-
-      }
-
-
-      document.body.appendChild(
-        script
-      );
-
-
-      script.src = url;
-
-
-      const timer =
-        setTimeout(
-          () => {
-
-            cleanup();
-
-            reject(
-              new Error(
-                "The server took too long to respond."
-              )
-            );
-
-          },
-          timeout
-        );
-
-    }
-  );
-
-}
-
-
-
-/* ==========================================
-   LOAD PLAYERS
-   ========================================== */
-
-async function loadPlayers() {
+  let result;
 
   try {
 
-    playerSelect.innerHTML =
-      '<option value="">Loading players...</option>';
+    if (action === "getPlayers") {
 
+      result = getPlayers();
 
-    const data =
-      await jsonp(
-        "getPlayers"
-      );
+    }
 
+    else if (action === "getPlayerData") {
 
-    if (
-      !data ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data && data.error
-          ? data.error
-          : "Unable to load players."
+      result = getPlayerData(
+        e.parameter.player
       );
 
     }
 
+    else if (action === "getAllData") {
 
-    playerSelect.innerHTML =
-      '<option value="">Select your name</option>';
-
-
-    data.players.forEach(
-      player => {
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          player;
-
-        option.textContent =
-          player;
-
-
-        playerSelect.appendChild(
-          option
-        );
-
-      }
-    );
-
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-
-    playerSelect.innerHTML =
-      '<option value="">Error loading players</option>';
-
-
-    showStatus(
-      "Could not load the player list. Please refresh the page.",
-      "error"
-    );
-
-  }
-
-}
-
-
-
-/* ==========================================
-   LOAD PLAYER DATA
-   ========================================== */
-
-async function loadPlayerData(
-  player
-) {
-
-  if (!player) {
-
-    teamSelect.disabled =
-      true;
-
-
-    teamSelect.innerHTML =
-      '<option value="">Select a player first</option>';
-
-
-    submitButton.disabled =
-      true;
-
-
-    currentPickBox.textContent =
-      "";
-
-
-    return;
-
-  }
-
-
-  try {
-
-    teamSelect.disabled =
-      true;
-
-
-    teamSelect.innerHTML =
-      '<option value="">Loading teams...</option>';
-
-
-    submitButton.disabled =
-      true;
-
-
-    const data =
-      await jsonp(
-        "getPlayerData",
-        {
-          player: player
-        }
-      );
-
-
-    if (
-      !data ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data && data.error
-          ? data.error
-          : "Unable to load player data."
-      );
+      result = getAllData();
 
     }
 
+    else if (action === "submitPick") {
 
-    const picks =
-      data.picks || {};
-
-
-    const currentWeekName =
-      "Week " +
-      CURRENT_WEEK;
-
-
-    const currentPick =
-      picks[currentWeekName] ||
-      "";
-
-
-    const usedTeams =
-      new Set(
-
-        Object.entries(picks)
-
-          .filter(
-            ([week, team]) =>
-              week !== currentWeekName &&
-              team
-          )
-
-          .map(
-            ([week, team]) =>
-              team
-          )
-
+      result = submitPick(
+        e.parameter.player,
+        e.parameter.week,
+        e.parameter.team
       );
-
-
-    if (currentPick) {
-
-      currentPickBox.textContent =
-        "Current Week " +
-        CURRENT_WEEK +
-        " Pick: " +
-        currentPick;
 
     }
 
     else {
 
-      currentPickBox.textContent =
-        "No Week " +
-        CURRENT_WEEK +
-        " pick submitted yet.";
+      result = {
+        success: false,
+        error: "Invalid action."
+      };
 
     }
-
-
-    teamSelect.innerHTML =
-      '<option value="">Select a team</option>';
-
-
-    TEAMS.forEach(
-      team => {
-
-        if (
-          usedTeams.has(team)
-        ) {
-
-          return;
-
-        }
-
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          team;
-
-
-        option.textContent =
-          team;
-
-
-        if (
-          team === currentPick
-        ) {
-
-          option.textContent =
-            team +
-            " (Current Pick)";
-
-
-          option.selected =
-            true;
-
-        }
-
-
-        teamSelect.appendChild(
-          option
-        );
-
-      }
-    );
-
-
-    teamSelect.disabled =
-      false;
-
-
-    submitButton.disabled =
-      false;
-
-
-    submitButton.textContent =
-      currentPick
-        ? "Change My Pick"
-        : "Submit Pick";
-
 
   }
 
   catch (error) {
 
-    console.error(error);
-
-
-    teamSelect.innerHTML =
-      '<option value="">Error loading teams</option>';
-
-
-    showStatus(
-      "Could not load this player's data. Please try again.",
-      "error"
-    );
+    result = {
+      success: false,
+      error: error.toString()
+    };
 
   }
+
+
+  const json =
+    JSON.stringify(result);
+
+
+  // ==================================================
+  // JSONP RESPONSE
+  // ==================================================
+
+  if (callback) {
+
+    return ContentService
+      .createTextOutput(
+        callback + "(" + json + ");"
+      )
+      .setMimeType(
+        ContentService.MimeType.JAVASCRIPT
+      );
+
+  }
+
+
+  // ==================================================
+  // NORMAL JSON RESPONSE
+  // ==================================================
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
 
 }
 
 
 
-/* ==========================================
-   SUBMIT PICK
-   ========================================== */
+// ==================================================
+// SUBMIT PICK
+// ==================================================
 
-async function submitPick() {
-
-  const player =
-    playerSelect.value;
-
-
-  const team =
-    teamSelect.value;
-
-
-  if (!player) {
-
-    showStatus(
-      "Please select your name.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!team) {
-
-    showStatus(
-      "Please select a team.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  submitButton.disabled =
-    true;
-
-
-  submitButton.textContent =
-    "Saving...";
-
-
-  hideStatus();
-
+function submitPick(player, week, team) {
 
   try {
 
-    /*
-      Get current player data first.
-    */
+    // ------------------------------------------
+    // Validate inputs
+    // ------------------------------------------
 
-    const beforeData =
-      await jsonp(
-        "getPlayerData",
-        {
-          player: player
-        }
-      );
+    if (!player) {
 
-
-    if (
-      !beforeData.success
-    ) {
-
-      throw new Error(
-        beforeData.error ||
-        "Unable to verify player."
-      );
+      return {
+        success: false,
+        error: "Player is required."
+      };
 
     }
 
 
-    const previousTeam =
-      (beforeData.picks || {})[
-        "Week " +
-        CURRENT_WEEK
-      ] || "";
+    if (!team) {
+
+      return {
+        success: false,
+        error: "Team is required."
+      };
+
+    }
 
 
-    /*
-      Build submission URL.
-    */
-
-    const submitURL =
-      API_URL +
-      "?action=submitPick" +
-      "&player=" +
-      encodeURIComponent(player) +
-      "&week=" +
-      encodeURIComponent(CURRENT_WEEK) +
-      "&team=" +
-      encodeURIComponent(team) +
-      "&_=" +
-      Date.now();
+    week = Number(week);
 
 
-    /*
-      Send through hidden iframe.
-    */
+    if (
+      week < 1 ||
+      week > NUMBER_OF_WEEKS
+    ) {
 
-    submitFrame.src =
-      submitURL;
+      return {
+        success: false,
+        error: "Invalid NFL week."
+      };
 
-
-    /*
-      Give Apps Script time to
-      process the write.
-    */
-
-    await wait(1800);
+    }
 
 
-    /*
-      Verify the write.
-    */
+    // ------------------------------------------
+    // Get sheet
+    // ------------------------------------------
 
-    let confirmed =
-      false;
+    const sheet =
+      SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName(SHEET_NAME);
+
+
+    if (!sheet) {
+
+      return {
+        success: false,
+        error:
+          "Sheet not found: " +
+          SHEET_NAME
+      };
+
+    }
+
+
+    // ------------------------------------------
+    // Get week headers
+    // ------------------------------------------
+
+    const headers =
+      sheet
+        .getRange(
+          HEADER_ROW,
+          2,
+          1,
+          NUMBER_OF_WEEKS
+        )
+        .getValues()[0];
+
+
+    const weekHeader =
+      "Week " + week;
+
+
+    const weekIndex =
+      headers.findIndex(
+        header =>
+          String(header).trim() ===
+          weekHeader
+      );
+
+
+    if (weekIndex === -1) {
+
+      return {
+        success: false,
+        error:
+          "Week column not found: " +
+          weekHeader
+      };
+
+    }
+
+
+    const weekColumn =
+      2 + weekIndex;
+
+
+    // ------------------------------------------
+    // Find player
+    // ------------------------------------------
+
+    const lastRow =
+      sheet.getLastRow();
+
+
+    const playerValues =
+      sheet
+        .getRange(
+          FIRST_PLAYER_ROW,
+          1,
+          lastRow - FIRST_PLAYER_ROW + 1,
+          1
+        )
+        .getValues();
+
+
+    let playerRow = -1;
 
 
     for (
-      let attempt = 0;
-      attempt < 5;
-      attempt++
+      let i = 0;
+      i < playerValues.length;
+      i++
     ) {
 
-      const checkData =
-        await jsonp(
-          "getPlayerData",
-          {
-            player: player
-          }
-        );
+      const name =
+        String(
+          playerValues[i][0]
+        ).trim();
 
 
       if (
-        checkData.success &&
-        checkData.picks &&
-        checkData.picks[
-          "Week " +
-          CURRENT_WEEK
-        ] === team
+        name &&
+        name.toLowerCase() ===
+          String(player)
+            .trim()
+            .toLowerCase()
       ) {
 
-        confirmed =
-          true;
+        playerRow =
+          FIRST_PLAYER_ROW + i;
 
         break;
 
       }
 
+    }
 
-      await wait(1000);
+
+    if (playerRow === -1) {
+
+      return {
+        success: false,
+        error: "Player not found."
+      };
 
     }
 
 
-    if (!confirmed) {
+    // ------------------------------------------
+    // Actual picks are one row below player
+    // ------------------------------------------
 
-      throw new Error(
-        "The pick was not confirmed by the spreadsheet. Please try again."
-      );
+    const pickRow =
+      playerRow + 1;
+
+
+    // ------------------------------------------
+    // Get existing picks
+    // ------------------------------------------
+
+    const playerPicks =
+      sheet
+        .getRange(
+          pickRow,
+          2,
+          1,
+          NUMBER_OF_WEEKS
+        )
+        .getValues()[0];
+
+
+    // ------------------------------------------
+    // Existing pick for current week
+    // ------------------------------------------
+
+    const oldPick =
+      String(
+        playerPicks[weekIndex] || ""
+      ).trim();
+
+
+    // ------------------------------------------
+    // Check if team was already used
+    // ------------------------------------------
+
+    for (
+      let i = 0;
+      i < playerPicks.length;
+      i++
+    ) {
+
+      if (i === weekIndex) {
+        continue;
+      }
+
+
+      const previousPick =
+        String(
+          playerPicks[i] || ""
+        ).trim();
+
+
+      if (
+        previousPick &&
+        previousPick.toLowerCase() ===
+          String(team)
+            .trim()
+            .toLowerCase()
+      ) {
+
+        return {
+          success: false,
+          error:
+            "You have already used the " +
+            team +
+            "."
+        };
+
+      }
 
     }
 
 
-    /*
-      Update page.
-    */
+    // ------------------------------------------
+    // Write pick
+    // ------------------------------------------
 
-    currentPickBox.textContent =
-      "Current Week " +
-      CURRENT_WEEK +
-      " Pick: " +
-      team;
-
-
-    submitButton.textContent =
-      "Change My Pick";
+    sheet
+      .getRange(
+        pickRow,
+        weekColumn
+      )
+      .setValue(team);
 
 
-    if (previousTeam) {
-
-      showStatus(
-        "Pick changed from " +
-        previousTeam +
-        " to " +
-        team +
-        ".",
-        "success"
-      );
-
-    }
-
-    else {
-
-      showStatus(
-        "Your Week " +
-        CURRENT_WEEK +
-        " pick is " +
-        team +
-        ".",
-        "success"
-      );
-
-    }
+    SpreadsheetApp.flush();
 
 
-    /*
-      Reload page so the published
-      Google Sheet refreshes.
-    */
+    // ------------------------------------------
+    // Return success
+    // ------------------------------------------
 
-    await wait(2500);
+    return {
 
-    window.location.reload();
+      success: true,
 
+      player: player,
+
+      week: week,
+
+      team: team,
+
+      previousTeam:
+        oldPick || null,
+
+      overwritten:
+        oldPick !== ""
+
+    };
 
   }
 
   catch (error) {
 
-    console.error(error);
+    return {
 
+      success: false,
 
-    showStatus(
-      error.message ||
-      "Something went wrong. Please try again.",
-      "error"
-    );
+      error:
+        error.toString()
 
-
-    submitButton.disabled =
-      false;
-
-
-    submitButton.textContent =
-      "Submit Pick";
+    };
 
   }
 
@@ -1029,94 +410,459 @@ async function submitPick() {
 
 
 
-/* ==========================================
-   HELPERS
-   ========================================== */
+// ==================================================
+// GET PLAYERS
+// ==================================================
 
-function wait(ms) {
+function getPlayers() {
 
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
-  );
+  try {
 
-}
+    const sheet =
+      SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName(SHEET_NAME);
 
 
-function showStatus(
-  message,
-  type
-) {
+    if (!sheet) {
 
-  statusBox.textContent =
-    message;
+      return {
+        success: false,
+        error:
+          "Sheet not found: " +
+          SHEET_NAME
+      };
 
-
-  statusBox.className =
-    "status " +
-    type;
+    }
 
 
-  statusBox.style.display =
-    "block";
-
-}
+    const lastRow =
+      sheet.getLastRow();
 
 
-function hideStatus() {
+    const values =
+      sheet
+        .getRange(
+          FIRST_PLAYER_ROW,
+          1,
+          lastRow - FIRST_PLAYER_ROW + 1,
+          1
+        )
+        .getValues();
 
-  statusBox.style.display =
-    "none";
 
-}
+    const players = [];
 
 
+    for (
+      let i = 0;
+      i < values.length;
+      i++
+    ) {
 
-/* ==========================================
-   EVENTS
-   ========================================== */
+      const name =
+        String(
+          values[i][0]
+        ).trim();
 
-playerSelect.addEventListener(
-  "change",
-  () => {
 
-    hideStatus();
+      if (name) {
 
-    loadPlayerData(
-      playerSelect.value
-    );
+        players.push(name);
+
+      }
+
+    }
+
+
+    return {
+
+      success: true,
+
+      players: players
+
+    };
 
   }
-);
 
+  catch (error) {
 
-teamSelect.addEventListener(
-  "change",
-  () => {
+    return {
 
-    hideStatus();
+      success: false,
+
+      error:
+        error.toString()
+
+    };
 
   }
-);
 
-
-submitButton.addEventListener(
-  "click",
-  submitPick
-);
+}
 
 
 
-/* ==========================================
-   START
-   ========================================== */
+// ==================================================
+// GET PLAYER DATA
+// ==================================================
 
-loadPlayers();
+function getPlayerData(player) {
 
-</script>
+  try {
 
-</body>
-</html>
+    const sheet =
+      SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName(SHEET_NAME);
+
+
+    if (!sheet) {
+
+      return {
+
+        success: false,
+
+        error:
+          "Sheet not found: " +
+          SHEET_NAME
+
+      };
+
+    }
+
+
+    const headers =
+      sheet
+        .getRange(
+          HEADER_ROW,
+          2,
+          1,
+          NUMBER_OF_WEEKS
+        )
+        .getValues()[0];
+
+
+    const lastRow =
+      sheet.getLastRow();
+
+
+    const players =
+      sheet
+        .getRange(
+          FIRST_PLAYER_ROW,
+          1,
+          lastRow - FIRST_PLAYER_ROW + 1,
+          1
+        )
+        .getValues();
+
+
+    for (
+      let i = 0;
+      i < players.length;
+      i++
+    ) {
+
+      const name =
+        String(
+          players[i][0]
+        ).trim();
+
+
+      if (
+        name &&
+        name.toLowerCase() ===
+          String(player)
+            .trim()
+            .toLowerCase()
+      ) {
+
+        const playerRow =
+          FIRST_PLAYER_ROW + i;
+
+
+        const pickRow =
+          playerRow + 1;
+
+
+        const picks =
+          sheet
+            .getRange(
+              pickRow,
+              2,
+              1,
+              NUMBER_OF_WEEKS
+            )
+            .getValues()[0];
+
+
+        const result = {};
+
+
+        for (
+          let j = 0;
+          j < NUMBER_OF_WEEKS;
+          j++
+        ) {
+
+          const pick =
+            String(
+              picks[j] || ""
+            ).trim();
+
+
+          if (pick) {
+
+            result[
+              String(
+                headers[j]
+              ).trim()
+            ] = pick;
+
+          }
+
+        }
+
+
+        return {
+
+          success: true,
+
+          player: name,
+
+          picks: result
+
+        };
+
+      }
+
+    }
+
+
+    return {
+
+      success: false,
+
+      error:
+        "Player not found."
+
+    };
+
+  }
+
+  catch (error) {
+
+    return {
+
+      success: false,
+
+      error:
+        error.toString()
+
+    };
+
+  }
+
+}
+
+
+
+// ==================================================
+// GET ALL SURVIVOR DATA
+//
+// This reads the LIVE Google Sheet directly.
+// It does NOT use the published Google Sheet.
+// ==================================================
+
+function getAllData() {
+
+  try {
+
+    const sheet =
+      SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName(SHEET_NAME);
+
+
+    if (!sheet) {
+
+      return {
+
+        success: false,
+
+        error:
+          "Sheet not found: " +
+          SHEET_NAME
+
+      };
+
+    }
+
+
+    // ------------------------------------------
+    // Get headers
+    // ------------------------------------------
+
+    const headers =
+      sheet
+        .getRange(
+          HEADER_ROW,
+          2,
+          1,
+          NUMBER_OF_WEEKS
+        )
+        .getValues()[0]
+        .map(
+          header =>
+            String(header).trim()
+        );
+
+
+    // ------------------------------------------
+    // Get player names
+    // ------------------------------------------
+
+    const lastRow =
+      sheet.getLastRow();
+
+
+    const numberOfRows =
+      lastRow -
+      FIRST_PLAYER_ROW +
+      1;
+
+
+    const names =
+      sheet
+        .getRange(
+          FIRST_PLAYER_ROW,
+          1,
+          numberOfRows,
+          1
+        )
+        .getValues();
+
+
+    // ------------------------------------------
+    // Get all week data
+    // ------------------------------------------
+
+    const allValues =
+      sheet
+        .getRange(
+          FIRST_PLAYER_ROW,
+          2,
+          numberOfRows,
+          NUMBER_OF_WEEKS
+        )
+        .getValues();
+
+
+    const players = [];
+
+
+    // ------------------------------------------
+    // Each player's actual picks are one row
+    // below their name row.
+    // ------------------------------------------
+
+    for (
+      let i = 0;
+      i < names.length;
+      i++
+    ) {
+
+      const playerName =
+        String(
+          names[i][0]
+        ).trim();
+
+
+      if (!playerName) {
+        continue;
+      }
+
+
+      const pickRowIndex =
+        i + 1;
+
+
+      if (
+        pickRowIndex >=
+        allValues.length
+      ) {
+
+        continue;
+
+      }
+
+
+      const row =
+        allValues[
+          pickRowIndex
+        ];
+
+
+      const picks = {};
+
+
+      for (
+        let week = 0;
+        week < NUMBER_OF_WEEKS;
+        week++
+      ) {
+
+        const team =
+          String(
+            row[week] || ""
+          ).trim();
+
+
+        picks[
+          headers[week]
+        ] = team;
+
+      }
+
+
+      players.push({
+
+        name:
+          playerName,
+
+        picks:
+          picks
+
+      });
+
+    }
+
+
+    return {
+
+      success: true,
+
+      headers:
+        headers,
+
+      players:
+        players
+
+    };
+
+  }
+
+  catch (error) {
+
+    return {
+
+      success: false,
+
+      error:
+        error.toString()
+
+    };
+
+  }
+
+}
