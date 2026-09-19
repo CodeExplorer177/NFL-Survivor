@@ -86,12 +86,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.refresh-button {
-  width: auto;
-  padding: 10px 18px;
-  margin: 0 0 15px 0;
-}
-
 .status {
   margin-top: 15px;
   padding: 12px;
@@ -117,30 +111,90 @@ button:disabled {
 
 
 /* =========================================
-   POOL TITLE
+   SURVIVOR BOARD HEADER
    ========================================= */
+
+.board-header {
+  display: flex;
+  width: 100%;
+  border: 1px solid #aaa;
+  border-bottom: none;
+  background: white;
+}
+
+.nfl-logo-box {
+  width: 110px;
+  min-width: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
+
+  background: white;
+
+  border-right: 1px solid #aaa;
+}
+
+.nfl-logo {
+  display: block;
+  width: 75px;
+  height: auto;
+  object-fit: contain;
+}
+
+.board-info {
+  flex: 1;
+  min-width: 0;
+}
 
 .pool-title {
   background: #003b6f;
   color: white;
-  font-size: 27px;
+
+  font-family: Georgia, serif;
+  font-size: 28px;
   font-weight: 900;
-  padding: 8px 15px;
+
+  padding: 5px 12px;
+
   text-shadow: 1px 1px 1px #000;
 }
 
 .pool-rules {
-  padding: 8px 15px 10px;
-  font-size: 13px;
+  padding: 4px 10px 6px;
+
+  font-size: 12px;
   font-weight: bold;
+
   color: red;
-  line-height: 1.7;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+
+  line-height: 1.65;
+
+  background: white;
 }
 
-.pool-rules div::before {
-  color: red;
+
+/* =========================================
+   REFRESH AREA
+   ========================================= */
+
+.board-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin: 12px 0 8px;
+}
+
+.refresh-button {
+  width: auto;
+  margin: 0;
+
+  padding: 9px 16px;
+
+  font-size: 13px;
 }
 
 
@@ -150,29 +204,37 @@ button:disabled {
 
 .table-wrapper {
   width: 100%;
+
   overflow-x: auto;
   overflow-y: hidden;
+
   -webkit-overflow-scrolling: touch;
-  border: 1px solid #aaa;
+
+  border: 1px solid #777;
+
   background: white;
 }
 
 
 /* =========================================
-   SURVIVOR TABLE
+   TABLE
    ========================================= */
 
 .survivor-table {
   border-collapse: collapse;
+
   table-layout: fixed;
-  min-width: 1450px;
+
   width: 1450px;
+  min-width: 1450px;
 }
 
 .survivor-table th,
 .survivor-table td {
   border: 1px solid #222;
+
   padding: 0;
+
   text-align: center;
 }
 
@@ -183,10 +245,14 @@ button:disabled {
 
 .survivor-table th {
   height: 30px;
+
   background: #003b6f;
+
   color: white;
+
   font-size: 13px;
   font-weight: 900;
+
   white-space: nowrap;
 }
 
@@ -195,7 +261,9 @@ button:disabled {
   min-width: 105px;
 
   position: sticky;
+
   left: 0;
+
   z-index: 10;
 
   background: #003b6f !important;
@@ -203,7 +271,7 @@ button:disabled {
 
 
 /* =========================================
-   PLAYER
+   PLAYER NAME
    ========================================= */
 
 .player-cell {
@@ -215,11 +283,15 @@ button:disabled {
   color: #d10b00;
 
   font-family: Georgia, serif;
+
   font-size: 18px;
+
   font-weight: 900;
 
   position: sticky;
+
   left: 0;
+
   z-index: 5;
 
   vertical-align: middle;
@@ -227,27 +299,32 @@ button:disabled {
 
 
 /* =========================================
-   PICK CELL
+   PICK
    ========================================= */
 
 .pick-cell {
   width: 74px;
   min-width: 74px;
+
   height: 68px;
+
   background: white;
+
   vertical-align: top;
 }
 
 
 /* =========================================
-   LOGO AREA
+   TEAM LOGO
    ========================================= */
 
 .logo-area {
   height: 48px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   background: white;
@@ -259,9 +336,11 @@ button:disabled {
   display: block;
 
   max-width: 65px;
+
   max-height: 45px;
 
   width: auto;
+
   height: auto;
 
   object-fit: contain;
@@ -276,12 +355,15 @@ button:disabled {
   height: 20px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   padding: 1px 3px;
 
   font-size: 10px;
+
   font-weight: 900;
 
   color: white;
@@ -289,18 +371,21 @@ button:disabled {
   white-space: nowrap;
 
   overflow: hidden;
+
   text-overflow: ellipsis;
 }
 
 
 /* =========================================
-   EMPTY WEEK
+   EMPTY PICKS
    ========================================= */
 
 .empty-pick {
   width: 74px;
   min-width: 74px;
+
   height: 68px;
+
   background: white;
 }
 
@@ -311,15 +396,21 @@ button:disabled {
 
 .table-loading {
   height: 100px;
+
   font-size: 15px;
+
   color: #666;
+
   background: white;
 }
 
 .last-updated {
   text-align: right;
+
   margin-top: 8px;
+
   font-size: 12px;
+
   color: #777;
 }
 
@@ -339,7 +430,7 @@ button:disabled {
   }
 
   .card {
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
   }
 
@@ -347,39 +438,58 @@ button:disabled {
     font-size: 22px;
   }
 
+
+  /* HEADER */
+
+  .nfl-logo-box {
+    width: 70px;
+    min-width: 70px;
+
+    padding: 5px;
+  }
+
+  .nfl-logo {
+    width: 52px;
+  }
+
   .pool-title {
-    font-size: 18px;
-    padding: 6px 8px;
+    font-size: 17px;
+
+    padding: 4px 7px;
   }
 
   .pool-rules {
-    font-size: 9px;
-    line-height: 1.5;
-    padding: 5px 8px;
+    font-size: 8px;
+
+    line-height: 1.45;
+
+    padding: 3px 6px 4px;
   }
 
-  /*
-     Smaller table on phones.
-     More weeks fit on the screen.
-  */
+
+  /* TABLE */
 
   .survivor-table {
-    min-width: 1000px;
     width: 1000px;
+
+    min-width: 1000px;
   }
 
   .survivor-table th {
     height: 23px;
+
     font-size: 9px;
   }
 
   .player-header {
     width: 70px;
+
     min-width: 70px;
   }
 
   .player-cell {
     width: 70px;
+
     min-width: 70px;
 
     font-size: 12px;
@@ -388,7 +498,9 @@ button:disabled {
   .pick-cell,
   .empty-pick {
     width: 51px;
+
     min-width: 51px;
+
     height: 50px;
   }
 
@@ -398,18 +510,22 @@ button:disabled {
 
   .team-logo {
     max-width: 45px;
+
     max-height: 33px;
   }
 
   .team-bar {
     height: 14px;
+
     font-size: 7px;
+
     padding: 0 1px;
   }
 
   .refresh-button {
-    font-size: 13px;
-    padding: 8px 12px;
+    font-size: 12px;
+
+    padding: 7px 11px;
   }
 
 }
@@ -424,7 +540,9 @@ button:disabled {
 <div class="container">
 
 
-<h1>🏈 2026 NFL Survivor</h1>
+<h1>
+  🏈 2026 NFL Survivor
+</h1>
 
 
 <!-- =========================================
@@ -438,9 +556,11 @@ button:disabled {
   </label>
 
   <select id="player">
+
     <option value="">
       Loading players...
     </option>
+
   </select>
 
 
@@ -450,6 +570,7 @@ button:disabled {
   <label for="team">
     Select Your Week 2 Team
   </label>
+
 
   <select
     id="team"
@@ -492,46 +613,86 @@ button:disabled {
 
 <div class="card">
 
-  <div class="pool-title">
-    2026 NFL Survivor Pool
+
+  <!-- HEADER WITH NFL LOGO -->
+
+  <div class="board-header">
+
+
+    <div class="nfl-logo-box">
+
+      <img
+        class="nfl-logo"
+        src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png"
+        alt="NFL"
+      >
+
+    </div>
+
+
+    <div class="board-info">
+
+
+      <div class="pool-title">
+
+        2026 NFL Survivor Pool
+
+      </div>
+
+
+      <div class="pool-rules">
+
+        <div>
+          1. Enter your name, then choose one team for each week from the dropdown.
+        </div>
+
+        <div>
+          2. Each NFL team may be selected only once during the entire season.
+        </div>
+
+        <div>
+          3. Your pick must win. A loss or tie eliminates you from the pool.
+        </div>
+
+        <div>
+          4. The last remaining player wins; if multiple players survive Week 18, they share the prize.
+        </div>
+
+      </div>
+
+
+    </div>
+
+
   </div>
 
 
-  <div class="pool-rules">
 
-    <div>
-      1. Enter your name, then choose one team for each week from the dropdown.
-    </div>
+  <!-- REFRESH -->
 
-    <div>
-      2. Each NFL team may be selected only once during the entire season.
-    </div>
+  <div class="board-controls">
 
-    <div>
-      3. Your pick must win. A loss or tie eliminates you from the pool.
-    </div>
-
-    <div>
-      4. The last remaining player wins; if multiple players survive Week 18, they share the prize.
-    </div>
+    <button
+      id="refreshButton"
+      class="refresh-button"
+    >
+      🔄 Refresh Picks
+    </button>
 
   </div>
 
 
-  <button
-    id="refreshButton"
-    class="refresh-button"
-  >
-    🔄 Refresh Picks
-  </button>
 
+  <!-- TABLE -->
 
   <div class="table-wrapper">
+
 
     <table
       id="survivorTable"
       class="survivor-table"
     >
+
 
       <thead>
 
@@ -561,7 +722,9 @@ button:disabled {
 
       </tbody>
 
+
     </table>
+
 
   </div>
 
@@ -571,14 +734,17 @@ button:disabled {
     class="last-updated">
   </div>
 
-</div>
-
 
 </div>
 
 
+</div>
 
-<!-- Hidden iframe for submission -->
+
+
+<!-- =========================================
+     HIDDEN SUBMISSION IFRAME
+     ========================================= -->
 
 <iframe
   id="submitFrame"
@@ -837,7 +1003,9 @@ function jsonp(
 
 
       const script =
-        document.createElement("script");
+        document.createElement(
+          "script"
+        );
 
 
       let finished = false;
@@ -855,10 +1023,14 @@ function jsonp(
 
         clearTimeout(timer);
 
-        delete window[callbackName];
+        delete window[
+          callbackName
+        ];
 
 
-        if (script.parentNode) {
+        if (
+          script.parentNode
+        ) {
 
           script.parentNode.removeChild(
             script
@@ -869,7 +1041,9 @@ function jsonp(
       }
 
 
-      window[callbackName] =
+      window[
+        callbackName
+      ] =
         function(data) {
 
           cleanup();
@@ -896,18 +1070,26 @@ function jsonp(
       let url =
         API_URL +
         "?action=" +
-        encodeURIComponent(action) +
+        encodeURIComponent(
+          action
+        ) +
         "&callback=" +
-        encodeURIComponent(callbackName) +
+        encodeURIComponent(
+          callbackName
+        ) +
         "&_=" +
         Date.now();
 
 
-      for (const key in params) {
+      for (
+        const key in params
+      ) {
 
         url +=
           "&" +
-          encodeURIComponent(key) +
+          encodeURIComponent(
+            key
+          ) +
           "=" +
           encodeURIComponent(
             params[key]
@@ -916,7 +1098,9 @@ function jsonp(
       }
 
 
-      script.src = url;
+      script.src =
+        url;
+
 
       document.body.appendChild(
         script
@@ -989,6 +1173,7 @@ async function loadPlayers() {
         option.value =
           player;
 
+
         option.textContent =
           player;
 
@@ -1023,7 +1208,7 @@ async function loadPlayers() {
 
 
 /* =========================================
-   LOAD PLAYER
+   LOAD PLAYER DATA
    ========================================= */
 
 async function loadPlayerData(
@@ -1091,17 +1276,22 @@ async function loadPlayerData(
 
 
     const currentPick =
-      picks[weekName] || "";
+      picks[
+        weekName
+      ] || "";
 
 
     const usedTeams =
       new Set(
 
-        Object.entries(picks)
+        Object.entries(
+          picks
+        )
 
         .filter(
           ([week, team]) =>
-            week !== weekName &&
+            week !==
+              weekName &&
             team
         )
 
@@ -1164,7 +1354,8 @@ async function loadPlayerData(
 
 
         if (
-          team === currentPick
+          team ===
+          currentPick
         ) {
 
           option.selected =
@@ -1218,7 +1409,7 @@ async function loadPlayerData(
 
 
 /* =========================================
-   LOAD SURVIVOR BOARD
+   LOAD SURVIVOR TABLE
    ========================================= */
 
 async function loadTable() {
@@ -1244,9 +1435,7 @@ async function loadTable() {
     }
 
 
-    /* -----------------------------
-       HEADERS
-       ----------------------------- */
+    /* HEADERS */
 
     tableHeader.innerHTML =
       '<th class="player-header">Player Name</th>';
@@ -1273,9 +1462,7 @@ async function loadTable() {
     );
 
 
-    /* -----------------------------
-       PLAYER ROWS
-       ----------------------------- */
+    /* PLAYERS */
 
     tableBody.innerHTML =
       "";
@@ -1290,7 +1477,7 @@ async function loadTable() {
           );
 
 
-        /* Player */
+        /* PLAYER NAME */
 
         const playerCell =
           document.createElement(
@@ -1311,7 +1498,7 @@ async function loadTable() {
         );
 
 
-        /* Picks */
+        /* WEEK PICKS */
 
         data.headers.forEach(
           week => {
@@ -1360,7 +1547,7 @@ async function loadTable() {
               "pick-cell";
 
 
-            /* Logo area */
+            /* LOGO AREA */
 
             const logoArea =
               document.createElement(
@@ -1400,7 +1587,7 @@ async function loadTable() {
             }
 
 
-            /* Team bar */
+            /* TEAM BAR */
 
             const teamBar =
               document.createElement(
@@ -1544,7 +1731,8 @@ async function submitPick() {
 
     const previousTeam =
       (
-        beforeData.picks || {}
+        beforeData.picks ||
+        {}
       )[
         "Week " +
         CURRENT_WEEK
@@ -1555,11 +1743,15 @@ async function submitPick() {
       API_URL +
       "?action=submitPick" +
       "&player=" +
-      encodeURIComponent(player) +
+      encodeURIComponent(
+        player
+      ) +
       "&week=" +
       CURRENT_WEEK +
       "&team=" +
-      encodeURIComponent(team) +
+      encodeURIComponent(
+        team
+      ) +
       "&_=" +
       Date.now();
 
@@ -1568,7 +1760,9 @@ async function submitPick() {
       submitURL;
 
 
-    await wait(1500);
+    await wait(
+      1500
+    );
 
 
     let confirmed =
@@ -1607,7 +1801,9 @@ async function submitPick() {
       }
 
 
-      await wait(750);
+      await wait(
+        750
+      );
 
     }
 
@@ -1656,17 +1852,15 @@ async function submitPick() {
 
 
     /*
-      Refresh the board directly.
-      No page reload and no Google
-      published-sheet delay.
+      Update survivor board
+      immediately.
     */
 
     await loadTable();
 
 
     /*
-      Reload player data so the
-      dropdown stays correct.
+      Refresh dropdown data.
     */
 
     await loadPlayerData(
