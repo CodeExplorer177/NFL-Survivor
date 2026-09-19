@@ -3,593 +3,587 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>2026 NFL Survivor Pool</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+select,
+button {
+  width: 100%;
+  padding: 13px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+select {
+  background: white;
+}
+
+button {
+  margin-top: 15px;
+  background: #003b6f;
+  color: white;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #002b52;
+}
+
+button:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+
+.refresh-button {
+  width: auto;
+  padding: 10px 18px;
+  margin: 0 0 15px 0;
+}
+
+.status {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  display: none;
+}
+
+.success {
+  background: #dff5df;
+  color: #176b17;
+}
+
+.error {
+  background: #f8dddd;
+  color: #8a1c1c;
+}
+
+.current-pick {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+/* =========================================
+   POOL TITLE
+   ========================================= */
+
+.pool-title {
+  background: #003b6f;
+  color: white;
+  font-size: 27px;
+  font-weight: 900;
+  padding: 8px 15px;
+  text-shadow: 1px 1px 1px #000;
+}
+
+.pool-rules {
+  padding: 8px 15px 10px;
+  font-size: 13px;
+  font-weight: bold;
+  color: red;
+  line-height: 1.7;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.pool-rules div::before {
+  color: red;
+}
+
+
+/* =========================================
+   TABLE WRAPPER
+   ========================================= */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #aaa;
+  background: white;
+}
+
+
+/* =========================================
+   SURVIVOR TABLE
+   ========================================= */
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+.survivor-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 1450px;
+  width: 1450px;
+}
 
-  <title>2026 NFL Survivor</title>
+.survivor-table th,
+.survivor-table td {
+  border: 1px solid #222;
+  padding: 0;
+  text-align: center;
+}
 
 
-  <style>
+/* =========================================
+   WEEK HEADER
+   ========================================= */
 
-    * {
-      box-sizing: border-box;
-    }
+.survivor-table th {
+  height: 30px;
+  background: #003b6f;
+  color: white;
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
 
+.player-header {
+  width: 105px;
+  min-width: 105px;
 
-    body {
+  position: sticky;
+  left: 0;
+  z-index: 10;
 
-      margin: 0;
+  background: #003b6f !important;
+}
 
-      padding: 20px;
 
-      font-family:
-        Arial,
-        sans-serif;
+/* =========================================
+   PLAYER
+   ========================================= */
 
-      background: #f4f4f4;
+.player-cell {
+  width: 105px;
+  min-width: 105px;
 
-      color: #222;
+  background: white;
 
-    }
+  color: #d10b00;
 
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 900;
 
-    .container {
+  position: sticky;
+  left: 0;
+  z-index: 5;
 
-      max-width: 1000px;
+  vertical-align: middle;
+}
 
-      margin: auto;
 
-    }
+/* =========================================
+   PICK CELL
+   ========================================= */
 
+.pick-cell {
+  width: 74px;
+  min-width: 74px;
+  height: 68px;
+  background: white;
+  vertical-align: top;
+}
 
-    h1 {
 
-      text-align: center;
+/* =========================================
+   LOGO AREA
+   ========================================= */
 
-      margin-bottom: 20px;
+.logo-area {
+  height: 48px;
 
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  background: white;
 
-    .card {
+  overflow: hidden;
+}
 
-      background: white;
+.team-logo {
+  display: block;
 
-      padding: 20px;
+  max-width: 65px;
+  max-height: 45px;
 
-      border-radius: 12px;
+  width: auto;
+  height: auto;
 
-      box-shadow:
-        0 2px 8px rgba(0,0,0,0.12);
+  object-fit: contain;
+}
 
-      margin-bottom: 20px;
 
-    }
+/* =========================================
+   TEAM NAME BAR
+   ========================================= */
 
+.team-bar {
+  height: 20px;
 
-    label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      display: block;
+  padding: 1px 3px;
 
-      font-weight: bold;
+  font-size: 10px;
+  font-weight: 900;
 
-      margin-bottom: 8px;
+  color: white;
 
-    }
+  white-space: nowrap;
 
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-    select,
-    button {
 
-      width: 100%;
+/* =========================================
+   EMPTY WEEK
+   ========================================= */
 
-      padding: 13px;
+.empty-pick {
+  width: 74px;
+  min-width: 74px;
+  height: 68px;
+  background: white;
+}
 
-      font-size: 16px;
 
-      border-radius: 8px;
+/* =========================================
+   LOADING
+   ========================================= */
 
-      border: 1px solid #ccc;
+.table-loading {
+  height: 100px;
+  font-size: 15px;
+  color: #666;
+  background: white;
+}
 
-    }
+.last-updated {
+  text-align: right;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #777;
+}
 
 
-    select {
+/* =========================================
+   MOBILE
+   ========================================= */
 
-      background: white;
+@media (max-width: 600px) {
 
-    }
+  body {
+    padding: 7px;
+  }
 
+  .container {
+    width: 100%;
+  }
 
-    button {
+  .card {
+    padding: 12px;
+    border-radius: 8px;
+  }
 
-      margin-top: 15px;
+  h1 {
+    font-size: 22px;
+  }
 
-      background: #222;
+  .pool-title {
+    font-size: 18px;
+    padding: 6px 8px;
+  }
 
-      color: white;
+  .pool-rules {
+    font-size: 9px;
+    line-height: 1.5;
+    padding: 5px 8px;
+  }
 
-      cursor: pointer;
+  /*
+     Smaller table on phones.
+     More weeks fit on the screen.
+  */
 
-      border: none;
+  .survivor-table {
+    min-width: 1000px;
+    width: 1000px;
+  }
 
-      font-weight: bold;
+  .survivor-table th {
+    height: 23px;
+    font-size: 9px;
+  }
 
-    }
+  .player-header {
+    width: 70px;
+    min-width: 70px;
+  }
 
+  .player-cell {
+    width: 70px;
+    min-width: 70px;
 
-    button:disabled {
+    font-size: 12px;
+  }
 
-      background: #888;
+  .pick-cell,
+  .empty-pick {
+    width: 51px;
+    min-width: 51px;
+    height: 50px;
+  }
 
-      cursor: not-allowed;
+  .logo-area {
+    height: 36px;
+  }
 
-    }
+  .team-logo {
+    max-width: 45px;
+    max-height: 33px;
+  }
 
+  .team-bar {
+    height: 14px;
+    font-size: 7px;
+    padding: 0 1px;
+  }
 
-    .refresh-button {
+  .refresh-button {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 
-      margin-top: 0;
+}
 
-      margin-bottom: 15px;
-
-      background: #555;
-
-    }
-
-
-    .status {
-
-      margin-top: 15px;
-
-      padding: 12px;
-
-      border-radius: 8px;
-
-      display: none;
-
-    }
-
-
-    .success {
-
-      background: #dff5df;
-
-      color: #176b17;
-
-    }
-
-
-    .error {
-
-      background: #f8dddd;
-
-      color: #8a1c1c;
-
-    }
-
-
-    .current-pick {
-
-      margin-top: 15px;
-
-      font-size: 16px;
-
-      font-weight: bold;
-
-    }
-
-
-
-    /* =========================================
-       LIVE SURVIVOR TABLE
-       ========================================= */
-
-    .table-wrapper {
-
-      width: 100%;
-
-      overflow-x: auto;
-
-      overflow-y: hidden;
-
-      -webkit-overflow-scrolling: touch;
-
-      border: 1px solid #ddd;
-
-      border-radius: 8px;
-
-      background: white;
-
-    }
-
-
-    .survivor-table {
-
-      border-collapse: collapse;
-
-      width: 100%;
-
-      min-width: 1050px;
-
-      font-size: 14px;
-
-    }
-
-
-    .survivor-table th {
-
-      background: #222;
-
-      color: white;
-
-      font-weight: bold;
-
-      text-align: center;
-
-      padding: 10px 8px;
-
-      white-space: nowrap;
-
-      position: sticky;
-
-      top: 0;
-
-      z-index: 2;
-
-    }
-
-
-    .survivor-table td {
-
-      padding: 9px 8px;
-
-      border-bottom: 1px solid #ddd;
-
-      border-right: 1px solid #eee;
-
-      text-align: center;
-
-      white-space: nowrap;
-
-    }
-
-
-    .survivor-table td.player-name {
-
-      text-align: left;
-
-      font-weight: bold;
-
-      position: sticky;
-
-      left: 0;
-
-      background: white;
-
-      z-index: 1;
-
-    }
-
-
-    .survivor-table th.player-header {
-
-      position: sticky;
-
-      left: 0;
-
-      z-index: 3;
-
-    }
-
-
-    .survivor-table tr:nth-child(even) td {
-
-      background: #f8f8f8;
-
-    }
-
-
-    .survivor-table tr:nth-child(even)
-    td.player-name {
-
-      background: #f8f8f8;
-
-    }
-
-
-    .empty-pick {
-
-      color: #aaa;
-
-    }
-
-
-    .table-loading {
-
-      padding: 25px;
-
-      text-align: center;
-
-      color: #666;
-
-    }
-
-
-    .table-last-updated {
-
-      margin-top: 10px;
-
-      font-size: 13px;
-
-      color: #777;
-
-      text-align: right;
-
-    }
-
-
-
-    /* =========================================
-       MOBILE
-       ========================================= */
-
-    @media (max-width: 600px) {
-
-      body {
-
-        padding: 10px;
-
-      }
-
-
-      .container {
-
-        width: 100%;
-
-      }
-
-
-      .card {
-
-        padding: 15px;
-
-      }
-
-
-      h1 {
-
-        font-size: 24px;
-
-      }
-
-
-      .survivor-table {
-
-        /*
-          Smaller table on phones.
-          This is the "zoomed out" effect.
-        */
-
-        min-width: 900px;
-
-        font-size: 10px;
-
-      }
-
-
-      .survivor-table th {
-
-        padding: 6px 5px;
-
-        font-size: 10px;
-
-      }
-
-
-      .survivor-table td {
-
-        padding: 6px 5px;
-
-      }
-
-
-      .survivor-table td.player-name {
-
-        min-width: 75px;
-
-        max-width: 75px;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-
-      }
-
-
-      .table-wrapper {
-
-        overflow-x: auto;
-
-        overflow-y: hidden;
-
-      }
-
-    }
-
-  </style>
+</style>
 
 </head>
 
 
-
 <body>
-
 
 <div class="container">
 
 
-  <!-- =========================================
-       HEADER
-       ========================================= -->
-
-  <h1>
-    🏈 2026 NFL Survivor
-  </h1>
+<h1>🏈 2026 NFL Survivor</h1>
 
 
+<!-- =========================================
+     PICK FORM
+     ========================================= -->
 
-  <!-- =========================================
-       PICK FORM
-       ========================================= -->
+<div class="card">
 
-  <div class="card">
+  <label for="player">
+    Select Your Name
+  </label>
 
-
-    <label for="player">
-      Select Your Name
-    </label>
-
-
-    <select id="player">
-
-      <option value="">
-        Loading players...
-      </option>
-
-    </select>
+  <select id="player">
+    <option value="">
+      Loading players...
+    </option>
+  </select>
 
 
-    <br>
-    <br>
+  <br><br>
 
 
-    <label for="team">
-      Select Your Week 2 Team
-    </label>
+  <label for="team">
+    Select Your Week 2 Team
+  </label>
+
+  <select
+    id="team"
+    disabled
+  >
+
+    <option value="">
+      Select a player first
+    </option>
+
+  </select>
 
 
-    <select
-      id="team"
-      disabled
-    >
-
-      <option value="">
-        Select a player first
-      </option>
-
-    </select>
-
-
-    <div
-      id="currentPick"
-      class="current-pick">
-    </div>
-
-
-    <button
-      id="submitButton"
-      disabled
-    >
-      Submit Pick
-    </button>
-
-
-    <div
-      id="status"
-      class="status">
-    </div>
-
-
+  <div
+    id="currentPick"
+    class="current-pick">
   </div>
 
 
-
-  <!-- =========================================
-       LIVE SURVIVOR TABLE
-       ========================================= -->
-
-  <div class="card">
-
-
-    <h2>
-      Current Survivor Picks
-    </h2>
+  <button
+    id="submitButton"
+    disabled
+  >
+    Submit Pick
+  </button>
 
 
-    <button
-      id="refreshButton"
-      class="refresh-button"
-    >
-      🔄 Refresh Picks
-    </button>
-
-
-    <div class="table-wrapper">
-
-      <table
-        id="survivorTable"
-        class="survivor-table"
-      >
-
-        <thead>
-
-          <tr id="tableHeader">
-
-            <th>
-              Player
-            </th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody id="tableBody">
-
-          <tr>
-
-            <td
-              colspan="19"
-              class="table-loading"
-            >
-              Loading survivor picks...
-            </td>
-
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-
-    <div
-      id="lastUpdated"
-      class="table-last-updated">
-    </div>
-
-
+  <div
+    id="status"
+    class="status">
   </div>
-
 
 </div>
 
 
 
 <!-- =========================================
-     HIDDEN SUBMISSION FRAME
+     SURVIVOR BOARD
      ========================================= -->
+
+<div class="card">
+
+  <div class="pool-title">
+    2026 NFL Survivor Pool
+  </div>
+
+
+  <div class="pool-rules">
+
+    <div>
+      1. Enter your name, then choose one team for each week from the dropdown.
+    </div>
+
+    <div>
+      2. Each NFL team may be selected only once during the entire season.
+    </div>
+
+    <div>
+      3. Your pick must win. A loss or tie eliminates you from the pool.
+    </div>
+
+    <div>
+      4. The last remaining player wins; if multiple players survive Week 18, they share the prize.
+    </div>
+
+  </div>
+
+
+  <button
+    id="refreshButton"
+    class="refresh-button"
+  >
+    🔄 Refresh Picks
+  </button>
+
+
+  <div class="table-wrapper">
+
+    <table
+      id="survivorTable"
+      class="survivor-table"
+    >
+
+      <thead>
+
+        <tr id="tableHeader">
+
+          <th class="player-header">
+            Player Name
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="tableBody">
+
+        <tr>
+
+          <td
+            colspan="19"
+            class="table-loading"
+          >
+            Loading survivor picks...
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <div
+    id="lastUpdated"
+    class="last-updated">
+  </div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- Hidden iframe for submission -->
 
 <iframe
   id="submitFrame"
-  style="display:none;"
-></iframe>
+  style="display:none;">
+</iframe>
 
 
 
@@ -609,110 +603,214 @@ const API_URL =
 
 
 /* =========================================
-   NFL TEAMS
+   NFL TEAM INFORMATION
    ========================================= */
 
-const TEAMS = [
+const TEAM_INFO = {
 
-  "49ers",
-  "Bears",
-  "Bengals",
-  "Bills",
-  "Broncos",
-  "Browns",
-  "Buccaneers",
-  "Cardinals",
-  "Chargers",
-  "Chiefs",
-  "Colts",
-  "Commanders",
-  "Cowboys",
-  "Dolphins",
-  "Eagles",
-  "Falcons",
-  "Giants",
-  "Jaguars",
-  "Jets",
-  "Lions",
-  "Packers",
-  "Panthers",
-  "Patriots",
-  "Raiders",
-  "Rams",
-  "Ravens",
-  "Saints",
-  "Seahawks",
-  "Steelers",
-  "Texans",
-  "Titans",
-  "Vikings"
+  "49ers": {
+    color: "#AA0000",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"
+  },
 
-];
+  "Bears": {
+    color: "#C83803",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png"
+  },
+
+  "Bengals": {
+    color: "#FB4F14",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png"
+  },
+
+  "Bills": {
+    color: "#00338D",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
+  },
+
+  "Broncos": {
+    color: "#FB4F14",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/den.png"
+  },
+
+  "Browns": {
+    color: "#311D00",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png"
+  },
+
+  "Buccaneers": {
+    color: "#D50A0A",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png"
+  },
+
+  "Cardinals": {
+    color: "#97233F",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png"
+  },
+
+  "Chargers": {
+    color: "#0080C6",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png"
+  },
+
+  "Chiefs": {
+    color: "#E31837",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
+  },
+
+  "Colts": {
+    color: "#002C5F",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png"
+  },
+
+  "Commanders": {
+    color: "#5A1414",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
+  },
+
+  "Cowboys": {
+    color: "#003594",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png"
+  },
+
+  "Dolphins": {
+    color: "#008E97",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png"
+  },
+
+  "Eagles": {
+    color: "#004C54",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"
+  },
+
+  "Falcons": {
+    color: "#A71930",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png"
+  },
+
+  "Giants": {
+    color: "#0B2265",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png"
+  },
+
+  "Jaguars": {
+    color: "#006778",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"
+  },
+
+  "Jets": {
+    color: "#125740",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png"
+  },
+
+  "Lions": {
+    color: "#0076B6",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/det.png"
+  },
+
+  "Packers": {
+    color: "#203731",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png"
+  },
+
+  "Panthers": {
+    color: "#0085CA",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/car.png"
+  },
+
+  "Patriots": {
+    color: "#002244",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"
+  },
+
+  "Raiders": {
+    color: "#000000",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png"
+  },
+
+  "Rams": {
+    color: "#003594",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png"
+  },
+
+  "Ravens": {
+    color: "#241773",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"
+  },
+
+  "Saints": {
+    color: "#9F8958",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/no.png"
+  },
+
+  "Seahawks": {
+    color: "#002244",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png"
+  },
+
+  "Steelers": {
+    color: "#101820",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png"
+  },
+
+  "Texans": {
+    color: "#03202F",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png"
+  },
+
+  "Titans": {
+    color: "#0C2340",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png"
+  },
+
+  "Vikings": {
+    color: "#4F2683",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/min.png"
+  }
+
+};
+
+
+const TEAMS =
+  Object.keys(
+    TEAM_INFO
+  );
 
 
 
 /* =========================================
-   PAGE ELEMENTS
+   ELEMENTS
    ========================================= */
 
 const playerSelect =
-  document.getElementById(
-    "player"
-  );
-
+  document.getElementById("player");
 
 const teamSelect =
-  document.getElementById(
-    "team"
-  );
-
+  document.getElementById("team");
 
 const submitButton =
-  document.getElementById(
-    "submitButton"
-  );
-
+  document.getElementById("submitButton");
 
 const refreshButton =
-  document.getElementById(
-    "refreshButton"
-  );
-
+  document.getElementById("refreshButton");
 
 const statusBox =
-  document.getElementById(
-    "status"
-  );
-
+  document.getElementById("status");
 
 const currentPickBox =
-  document.getElementById(
-    "currentPick"
-  );
-
+  document.getElementById("currentPick");
 
 const submitFrame =
-  document.getElementById(
-    "submitFrame"
-  );
-
+  document.getElementById("submitFrame");
 
 const tableHeader =
-  document.getElementById(
-    "tableHeader"
-  );
-
+  document.getElementById("tableHeader");
 
 const tableBody =
-  document.getElementById(
-    "tableBody"
-  );
-
+  document.getElementById("tableBody");
 
 const lastUpdated =
-  document.getElementById(
-    "lastUpdated"
-  );
+  document.getElementById("lastUpdated");
 
 
 
@@ -739,13 +837,10 @@ function jsonp(
 
 
       const script =
-        document.createElement(
-          "script"
-        );
+        document.createElement("script");
 
 
       let finished = false;
-
 
       let timer;
 
@@ -756,21 +851,14 @@ function jsonp(
           return;
         }
 
-
         finished = true;
-
 
         clearTimeout(timer);
 
-
-        delete window[
-          callbackName
-        ];
+        delete window[callbackName];
 
 
-        if (
-          script.parentNode
-        ) {
+        if (script.parentNode) {
 
           script.parentNode.removeChild(
             script
@@ -781,9 +869,7 @@ function jsonp(
       }
 
 
-      window[
-        callbackName
-      ] =
+      window[callbackName] =
         function(data) {
 
           cleanup();
@@ -810,26 +896,18 @@ function jsonp(
       let url =
         API_URL +
         "?action=" +
-        encodeURIComponent(
-          action
-        ) +
+        encodeURIComponent(action) +
         "&callback=" +
-        encodeURIComponent(
-          callbackName
-        ) +
+        encodeURIComponent(callbackName) +
         "&_=" +
         Date.now();
 
 
-      for (
-        const key in params
-      ) {
+      for (const key in params) {
 
         url +=
           "&" +
-          encodeURIComponent(
-            key
-          ) +
+          encodeURIComponent(key) +
           "=" +
           encodeURIComponent(
             params[key]
@@ -838,13 +916,11 @@ function jsonp(
       }
 
 
+      script.src = url;
+
       document.body.appendChild(
         script
       );
-
-
-      script.src =
-        url;
 
 
       timer =
@@ -878,10 +954,6 @@ async function loadPlayers() {
 
   try {
 
-    playerSelect.innerHTML =
-      '<option value="">Loading players...</option>';
-
-
     const data =
       await jsonp(
         "getPlayers"
@@ -894,9 +966,8 @@ async function loadPlayers() {
     ) {
 
       throw new Error(
-        data && data.error
-          ? data.error
-          : "Unable to load players."
+        data?.error ||
+        "Unable to load players."
       );
 
     }
@@ -917,7 +988,6 @@ async function loadPlayers() {
 
         option.value =
           player;
-
 
         option.textContent =
           player;
@@ -942,7 +1012,7 @@ async function loadPlayers() {
 
 
     showStatus(
-      "Could not load the player list. Please refresh the page.",
+      "Could not load the player list.",
       "error"
     );
 
@@ -953,7 +1023,7 @@ async function loadPlayers() {
 
 
 /* =========================================
-   LOAD PLAYER DATA
+   LOAD PLAYER
    ========================================= */
 
 async function loadPlayerData(
@@ -993,10 +1063,6 @@ async function loadPlayerData(
       '<option value="">Loading teams...</option>';
 
 
-    submitButton.disabled =
-      true;
-
-
     const data =
       await jsonp(
         "getPlayerData",
@@ -1006,15 +1072,10 @@ async function loadPlayerData(
       );
 
 
-    if (
-      !data ||
-      !data.success
-    ) {
+    if (!data.success) {
 
       throw new Error(
-        data && data.error
-          ? data.error
-          : "Unable to load player data."
+        data.error
       );
 
     }
@@ -1024,28 +1085,23 @@ async function loadPlayerData(
       data.picks || {};
 
 
-    const currentWeekName =
+    const weekName =
       "Week " +
       CURRENT_WEEK;
 
 
     const currentPick =
-      picks[
-        currentWeekName
-      ] || "";
+      picks[weekName] || "";
 
 
     const usedTeams =
       new Set(
 
-        Object.entries(
-          picks
-        )
+        Object.entries(picks)
 
         .filter(
           ([week, team]) =>
-            week !==
-              currentWeekName &&
+            week !== weekName &&
             team
         )
 
@@ -1111,13 +1167,13 @@ async function loadPlayerData(
           team === currentPick
         ) {
 
+          option.selected =
+            true;
+
+
           option.textContent =
             team +
             " (Current Pick)";
-
-
-          option.selected =
-            true;
 
         }
 
@@ -1150,12 +1206,8 @@ async function loadPlayerData(
     console.error(error);
 
 
-    teamSelect.innerHTML =
-      '<option value="">Error loading teams</option>';
-
-
     showStatus(
-      "Could not load this player's data. Please try again.",
+      "Could not load player data.",
       "error"
     );
 
@@ -1166,25 +1218,12 @@ async function loadPlayerData(
 
 
 /* =========================================
-   LOAD LIVE TABLE
+   LOAD SURVIVOR BOARD
    ========================================= */
 
 async function loadTable() {
 
   try {
-
-    tableBody.innerHTML =
-
-      '<tr>' +
-
-      '<td colspan="19" class="table-loading">' +
-
-      'Loading survivor picks...' +
-
-      '</td>' +
-
-      '</tr>';
-
 
     const data =
       await jsonp(
@@ -1198,22 +1237,19 @@ async function loadTable() {
     ) {
 
       throw new Error(
-        data && data.error
-          ? data.error
-          : "Unable to load survivor data."
+        data?.error ||
+        "Unable to load survivor data."
       );
 
     }
 
 
-    /*
-      Build header.
-    */
+    /* -----------------------------
+       HEADERS
+       ----------------------------- */
 
     tableHeader.innerHTML =
-      "<th class='player-header'>" +
-      "Player" +
-      "</th>";
+      '<th class="player-header">Player Name</th>';
 
 
     data.headers.forEach(
@@ -1237,89 +1273,167 @@ async function loadTable() {
     );
 
 
-    /*
-      Clear table.
-    */
+    /* -----------------------------
+       PLAYER ROWS
+       ----------------------------- */
 
     tableBody.innerHTML =
       "";
 
 
-    /*
-      Build player rows.
-    */
-
     data.players.forEach(
       player => {
 
-        const tr =
+        const row =
           document.createElement(
             "tr"
           );
 
 
-        /*
-          Player name.
-        */
+        /* Player */
 
-        const nameCell =
+        const playerCell =
           document.createElement(
             "td"
           );
 
 
-        nameCell.className =
-          "player-name";
+        playerCell.className =
+          "player-cell";
 
 
-        nameCell.textContent =
+        playerCell.textContent =
           player.name;
 
 
-        tr.appendChild(
-          nameCell
+        row.appendChild(
+          playerCell
         );
 
 
-        /*
-          Weekly picks.
-        */
+        /* Picks */
 
         data.headers.forEach(
           week => {
 
-            const td =
-              document.createElement(
-                "td"
-              );
-
-
-            const pick =
+            const team =
               player.picks[
                 week
               ] || "";
 
 
-            if (pick) {
+            if (!team) {
 
-              td.textContent =
-                pick;
+              const empty =
+                document.createElement(
+                  "td"
+                );
 
-            }
 
-            else {
-
-              td.textContent =
-                "—";
-
-              td.className =
+              empty.className =
                 "empty-pick";
 
+
+              row.appendChild(
+                empty
+              );
+
+
+              return;
+
             }
 
 
-            tr.appendChild(
-              td
+            const info =
+              TEAM_INFO[
+                team
+              ];
+
+
+            const cell =
+              document.createElement(
+                "td"
+              );
+
+
+            cell.className =
+              "pick-cell";
+
+
+            /* Logo area */
+
+            const logoArea =
+              document.createElement(
+                "div"
+              );
+
+
+            logoArea.className =
+              "logo-area";
+
+
+            if (info) {
+
+              const image =
+                document.createElement(
+                  "img"
+                );
+
+
+              image.className =
+                "team-logo";
+
+
+              image.src =
+                info.logo;
+
+
+              image.alt =
+                team +
+                " logo";
+
+
+              logoArea.appendChild(
+                image
+              );
+
+            }
+
+
+            /* Team bar */
+
+            const teamBar =
+              document.createElement(
+                "div"
+              );
+
+
+            teamBar.className =
+              "team-bar";
+
+
+            teamBar.textContent =
+              team;
+
+
+            teamBar.style.backgroundColor =
+              info
+                ? info.color
+                : "#333";
+
+
+            cell.appendChild(
+              logoArea
+            );
+
+
+            cell.appendChild(
+              teamBar
+            );
+
+
+            row.appendChild(
+              cell
             );
 
           }
@@ -1327,25 +1441,17 @@ async function loadTable() {
 
 
         tableBody.appendChild(
-          tr
+          row
         );
 
       }
     );
 
 
-    /*
-      Last updated time.
-    */
-
-    const now =
-      new Date();
-
-
     lastUpdated.textContent =
       "Last updated: " +
-      now.toLocaleTimeString();
-
+      new Date()
+        .toLocaleTimeString();
 
   }
 
@@ -1355,16 +1461,10 @@ async function loadTable() {
 
 
     tableBody.innerHTML =
-
       '<tr>' +
-
       '<td colspan="19" class="table-loading">' +
-
-      'Could not load survivor picks. ' +
-      'Please try again.' +
-
+      'Could not load survivor picks.' +
       '</td>' +
-
       '</tr>';
 
   }
@@ -1424,10 +1524,6 @@ async function submitPick() {
 
   try {
 
-    /*
-      Get current data first.
-    */
-
     const beforeData =
       await jsonp(
         "getPlayerData",
@@ -1437,13 +1533,10 @@ async function submitPick() {
       );
 
 
-    if (
-      !beforeData.success
-    ) {
+    if (!beforeData.success) {
 
       throw new Error(
-        beforeData.error ||
-        "Unable to verify player."
+        beforeData.error
       );
 
     }
@@ -1458,48 +1551,25 @@ async function submitPick() {
       ] || "";
 
 
-    /*
-      Build submission URL.
-    */
-
     const submitURL =
       API_URL +
       "?action=submitPick" +
       "&player=" +
-      encodeURIComponent(
-        player
-      ) +
+      encodeURIComponent(player) +
       "&week=" +
-      encodeURIComponent(
-        CURRENT_WEEK
-      ) +
+      CURRENT_WEEK +
       "&team=" +
-      encodeURIComponent(
-        team
-      ) +
+      encodeURIComponent(team) +
       "&_=" +
       Date.now();
 
-
-    /*
-      Send through hidden iframe.
-    */
 
     submitFrame.src =
       submitURL;
 
 
-    /*
-      Wait for Apps Script
-      to process the write.
-    */
+    await wait(1500);
 
-    await wait(1800);
-
-
-    /*
-      Verify the new pick.
-    */
 
     let confirmed =
       false;
@@ -1507,11 +1577,11 @@ async function submitPick() {
 
     for (
       let attempt = 0;
-      attempt < 5;
+      attempt < 6;
       attempt++
     ) {
 
-      const checkData =
+      const check =
         await jsonp(
           "getPlayerData",
           {
@@ -1521,9 +1591,9 @@ async function submitPick() {
 
 
       if (
-        checkData.success &&
-        checkData.picks &&
-        checkData.picks[
+        check.success &&
+        check.picks &&
+        check.picks[
           "Week " +
           CURRENT_WEEK
         ] === team
@@ -1537,7 +1607,7 @@ async function submitPick() {
       }
 
 
-      await wait(1000);
+      await wait(750);
 
     }
 
@@ -1545,25 +1615,17 @@ async function submitPick() {
     if (!confirmed) {
 
       throw new Error(
-        "The pick was not confirmed by the spreadsheet. Please try again."
+        "The pick could not be confirmed."
       );
 
     }
 
-
-    /*
-      Update current pick.
-    */
 
     currentPickBox.textContent =
       "Current Week " +
       CURRENT_WEEK +
       " Pick: " +
       team;
-
-
-    submitButton.textContent =
-      "Change My Pick";
 
 
     if (previousTeam) {
@@ -1594,13 +1656,22 @@ async function submitPick() {
 
 
     /*
-      IMPORTANT:
-      Reload the live table immediately.
-      No Google Sheet cache involved.
+      Refresh the board directly.
+      No page reload and no Google
+      published-sheet delay.
     */
 
     await loadTable();
 
+
+    /*
+      Reload player data so the
+      dropdown stays correct.
+    */
+
+    await loadPlayerData(
+      player
+    );
 
   }
 
@@ -1611,17 +1682,16 @@ async function submitPick() {
 
     showStatus(
       error.message ||
-      "Something went wrong. Please try again.",
+      "Something went wrong.",
       "error"
     );
 
+  }
+
+  finally {
 
     submitButton.disabled =
       false;
-
-
-    submitButton.textContent =
-      "Submit Pick";
 
   }
 
@@ -1696,11 +1766,7 @@ playerSelect.addEventListener(
 
 teamSelect.addEventListener(
   "change",
-  () => {
-
-    hideStatus();
-
-  }
+  hideStatus
 );
 
 
@@ -1747,7 +1813,6 @@ loadTable();
 
 
 </script>
-
 
 </body>
 
