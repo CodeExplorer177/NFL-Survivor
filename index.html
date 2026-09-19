@@ -93,29 +93,50 @@
       font-weight: bold;
     }
 
+    /*
+      ==========================================
+      GOOGLE SHEET
+      ==========================================
+    */
+
     .sheet-wrapper {
       width: 100%;
-      height: 700px;
-      overflow: auto;
-      border-radius: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
       background: white;
+      border-radius: 8px;
+      border: 1px solid #ddd;
     }
 
     .sheet-zoom {
-      width: 150%;
-      transform: scale(0.67);
+      width: 1600px;
+      transform: none;
       transform-origin: top left;
     }
 
     .sheet-zoom iframe {
-      width: 100%;
-      height: 1050px;
+      display: block;
+      width: 1600px;
+      height: 900px;
       border: none;
     }
 
+
+    /*
+      ==========================================
+      MOBILE
+      ==========================================
+    */
+
     @media (max-width: 600px) {
+
       body {
         padding: 10px;
+      }
+
+      .container {
+        width: 100%;
       }
 
       .card {
@@ -127,20 +148,25 @@
       }
 
       .sheet-wrapper {
-        height: 650px;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
       }
 
       .sheet-zoom {
-        width: 160%;
-        transform: scale(0.625);
+        width: 1600px;
       }
 
       .sheet-zoom iframe {
-        height: 1050px;
+        width: 1600px;
+        height: 900px;
       }
+
     }
+
   </style>
 </head>
+
 
 <body>
 
@@ -148,36 +174,76 @@
 
   <h1>🏈 2026 NFL Survivor</h1>
 
+
+  <!-- ==========================================
+       PICK FORM
+       ========================================== -->
+
   <div class="card">
 
-    <label for="player">Select Your Name</label>
+    <label for="player">
+      Select Your Name
+    </label>
 
     <select id="player">
-      <option value="">Loading players...</option>
+
+      <option value="">
+        Loading players...
+      </option>
+
     </select>
+
 
     <br><br>
 
-    <label for="team">Select Your Week 2 Team</label>
 
-    <select id="team" disabled>
-      <option value="">Select a player first</option>
+    <label for="team">
+      Select Your Week 2 Team
+    </label>
+
+    <select
+      id="team"
+      disabled
+    >
+
+      <option value="">
+        Select a player first
+      </option>
+
     </select>
 
-    <div id="currentPick" class="current-pick"></div>
 
-    <button id="submitButton" disabled>
+    <div
+      id="currentPick"
+      class="current-pick">
+    </div>
+
+
+    <button
+      id="submitButton"
+      disabled
+    >
       Submit Pick
     </button>
 
-    <div id="status" class="status"></div>
+
+    <div
+      id="status"
+      class="status">
+    </div>
 
   </div>
 
 
+
+  <!-- ==========================================
+       SURVIVOR SHEET
+       ========================================== -->
+
   <div class="card">
 
     <h2>Current Survivor Picks</h2>
+
 
     <div class="sheet-wrapper">
 
@@ -196,22 +262,38 @@
 </div>
 
 
-<!-- Hidden iframe used to submit the GET request -->
+
+<!-- ==========================================
+     HIDDEN SUBMISSION FRAME
+     ========================================== -->
+
 <iframe
   id="submitFrame"
   style="display:none;">
 </iframe>
 
 
+
 <script>
 
+
+/* ==========================================
+   SETTINGS
+   ========================================== */
+
 const CURRENT_WEEK = 2;
+
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
 
 
+/* ==========================================
+   NFL TEAMS
+   ========================================== */
+
 const TEAMS = [
+
   "49ers",
   "Bears",
   "Bengals",
@@ -244,107 +326,171 @@ const TEAMS = [
   "Texans",
   "Titans",
   "Vikings"
+
 ];
 
 
-const playerSelect = document.getElementById("player");
-const teamSelect = document.getElementById("team");
-const submitButton = document.getElementById("submitButton");
-const statusBox = document.getElementById("status");
-const currentPickBox = document.getElementById("currentPick");
-const submitFrame = document.getElementById("submitFrame");
+
+/* ==========================================
+   PAGE ELEMENTS
+   ========================================== */
+
+const playerSelect =
+  document.getElementById("player");
+
+const teamSelect =
+  document.getElementById("team");
+
+const submitButton =
+  document.getElementById("submitButton");
+
+const statusBox =
+  document.getElementById("status");
+
+const currentPickBox =
+  document.getElementById("currentPick");
+
+const submitFrame =
+  document.getElementById("submitFrame");
 
 
 
-/* ---------------------------------------
+/* ==========================================
    JSONP HELPER
---------------------------------------- */
+   ========================================== */
 
-function jsonp(action, params = {}, timeout = 10000) {
+function jsonp(
+  action,
+  params = {},
+  timeout = 10000
+) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise(
+    (resolve, reject) => {
 
-    const callbackName =
-      "jsonpCallback_" + Date.now() + "_" +
-      Math.floor(Math.random() * 100000);
+      const callbackName =
+        "jsonpCallback_" +
+        Date.now() +
+        "_" +
+        Math.floor(
+          Math.random() * 100000
+        );
 
-    const script = document.createElement("script");
 
-    let finished = false;
+      const script =
+        document.createElement("script");
 
-    function cleanup() {
 
-      if (finished) return;
+      let finished = false;
 
-      finished = true;
 
-      clearTimeout(timer);
+      function cleanup() {
 
-      delete window[callbackName];
+        if (finished) {
+          return;
+        }
 
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+        finished = true;
+
+        clearTimeout(timer);
+
+        delete window[callbackName];
+
+
+        if (script.parentNode) {
+
+          script.parentNode.removeChild(
+            script
+          );
+
+        }
+
       }
+
+
+      window[callbackName] =
+        function(data) {
+
+          cleanup();
+
+          resolve(data);
+
+        };
+
+
+      script.onerror =
+        function() {
+
+          cleanup();
+
+          reject(
+            new Error(
+              "Could not connect to the NFL Survivor server."
+            )
+          );
+
+        };
+
+
+      let url =
+        API_URL +
+        "?action=" +
+        encodeURIComponent(action) +
+        "&callback=" +
+        encodeURIComponent(callbackName) +
+        "&_=" +
+        Date.now();
+
+
+      for (
+        const key in params
+      ) {
+
+        url +=
+          "&" +
+          encodeURIComponent(key) +
+          "=" +
+          encodeURIComponent(
+            params[key]
+          );
+
+      }
+
+
+      document.body.appendChild(
+        script
+      );
+
+
+      script.src = url;
+
+
+      const timer =
+        setTimeout(
+          () => {
+
+            cleanup();
+
+            reject(
+              new Error(
+                "The server took too long to respond."
+              )
+            );
+
+          },
+          timeout
+        );
+
     }
-
-    window[callbackName] = function(data) {
-
-      cleanup();
-
-      resolve(data);
-
-    };
-
-
-    script.onerror = function() {
-
-      cleanup();
-
-      reject(new Error("Could not connect to the NFL Survivor server."));
-
-    };
-
-
-    let url =
-      API_URL +
-      "?action=" + encodeURIComponent(action) +
-      "&callback=" + encodeURIComponent(callbackName) +
-      "&_=" + Date.now();
-
-
-    for (const key in params) {
-
-      url +=
-        "&" +
-        encodeURIComponent(key) +
-        "=" +
-        encodeURIComponent(params[key]);
-
-    }
-
-
-    document.body.appendChild(script);
-
-    script.src = url;
-
-
-    const timer = setTimeout(() => {
-
-      cleanup();
-
-      reject(new Error("The server took too long to respond."));
-
-    }, timeout);
-
-  });
+  );
 
 }
 
 
 
-/* ---------------------------------------
+/* ==========================================
    LOAD PLAYERS
---------------------------------------- */
+   ========================================== */
 
 async function loadPlayers() {
 
@@ -353,14 +499,24 @@ async function loadPlayers() {
     playerSelect.innerHTML =
       '<option value="">Loading players...</option>';
 
-    const data = await jsonp("getPlayers");
 
-    if (!data || !data.success) {
+    const data =
+      await jsonp(
+        "getPlayers"
+      );
+
+
+    if (
+      !data ||
+      !data.success
+    ) {
+
       throw new Error(
         data && data.error
           ? data.error
           : "Unable to load players."
       );
+
     }
 
 
@@ -368,25 +524,40 @@ async function loadPlayers() {
       '<option value="">Select your name</option>';
 
 
-    data.players.forEach(player => {
+    data.players.forEach(
+      player => {
 
-      const option =
-        document.createElement("option");
-
-      option.value = player;
-      option.textContent = player;
-
-      playerSelect.appendChild(option);
-
-    });
+        const option =
+          document.createElement(
+            "option"
+          );
 
 
-  } catch (error) {
+        option.value =
+          player;
+
+        option.textContent =
+          player;
+
+
+        playerSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+  }
+
+  catch (error) {
 
     console.error(error);
 
+
     playerSelect.innerHTML =
       '<option value="">Error loading players</option>';
+
 
     showStatus(
       "Could not load the player list. Please refresh the page.",
@@ -399,22 +570,31 @@ async function loadPlayers() {
 
 
 
-/* ---------------------------------------
+/* ==========================================
    LOAD PLAYER DATA
---------------------------------------- */
+   ========================================== */
 
-async function loadPlayerData(player) {
+async function loadPlayerData(
+  player
+) {
 
   if (!player) {
 
-    teamSelect.disabled = true;
+    teamSelect.disabled =
+      true;
+
 
     teamSelect.innerHTML =
       '<option value="">Select a player first</option>';
 
-    submitButton.disabled = true;
 
-    currentPickBox.textContent = "";
+    submitButton.disabled =
+      true;
+
+
+    currentPickBox.textContent =
+      "";
+
 
     return;
 
@@ -423,21 +603,31 @@ async function loadPlayerData(player) {
 
   try {
 
-    teamSelect.disabled = true;
+    teamSelect.disabled =
+      true;
+
 
     teamSelect.innerHTML =
       '<option value="">Loading teams...</option>';
 
-    submitButton.disabled = true;
+
+    submitButton.disabled =
+      true;
+
 
     const data =
       await jsonp(
         "getPlayerData",
-        { player: player }
+        {
+          player: player
+        }
       );
 
 
-    if (!data || !data.success) {
+    if (
+      !data ||
+      !data.success
+    ) {
 
       throw new Error(
         data && data.error
@@ -448,23 +638,36 @@ async function loadPlayerData(player) {
     }
 
 
-    const picks = data.picks || {};
+    const picks =
+      data.picks || {};
+
 
     const currentWeekName =
-      "Week " + CURRENT_WEEK;
+      "Week " +
+      CURRENT_WEEK;
+
 
     const currentPick =
-      picks[currentWeekName] || "";
+      picks[currentWeekName] ||
+      "";
 
 
     const usedTeams =
       new Set(
+
         Object.entries(picks)
-          .filter(([week, team]) =>
-            week !== currentWeekName &&
-            team
+
+          .filter(
+            ([week, team]) =>
+              week !== currentWeekName &&
+              team
           )
-          .map(([week, team]) => team)
+
+          .map(
+            ([week, team]) =>
+              team
+          )
+
       );
 
 
@@ -476,7 +679,9 @@ async function loadPlayerData(player) {
         " Pick: " +
         currentPick;
 
-    } else {
+    }
+
+    else {
 
       currentPickBox.textContent =
         "No Week " +
@@ -490,39 +695,62 @@ async function loadPlayerData(player) {
       '<option value="">Select a team</option>';
 
 
-    TEAMS.forEach(team => {
+    TEAMS.forEach(
+      team => {
 
-      if (usedTeams.has(team)) {
-        return;
-      }
+        if (
+          usedTeams.has(team)
+        ) {
 
+          return;
 
-      const option =
-        document.createElement("option");
-
-      option.value = team;
-
-      option.textContent = team;
+        }
 
 
-      if (team === currentPick) {
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          team;
+
 
         option.textContent =
-          team + " (Current Pick)";
+          team;
 
-        option.selected = true;
+
+        if (
+          team === currentPick
+        ) {
+
+          option.textContent =
+            team +
+            " (Current Pick)";
+
+
+          option.selected =
+            true;
+
+        }
+
+
+        teamSelect.appendChild(
+          option
+        );
 
       }
+    );
 
 
-      teamSelect.appendChild(option);
+    teamSelect.disabled =
+      false;
 
-    });
 
+    submitButton.disabled =
+      false;
 
-    teamSelect.disabled = false;
-
-    submitButton.disabled = false;
 
     submitButton.textContent =
       currentPick
@@ -530,12 +758,16 @@ async function loadPlayerData(player) {
         : "Submit Pick";
 
 
-  } catch (error) {
+  }
+
+  catch (error) {
 
     console.error(error);
 
+
     teamSelect.innerHTML =
       '<option value="">Error loading teams</option>';
+
 
     showStatus(
       "Could not load this player's data. Please try again.",
@@ -548,15 +780,18 @@ async function loadPlayerData(player) {
 
 
 
-/* ---------------------------------------
+/* ==========================================
    SUBMIT PICK
---------------------------------------- */
+   ========================================== */
 
 async function submitPick() {
 
-  const player = playerSelect.value;
+  const player =
+    playerSelect.value;
 
-  const team = teamSelect.value;
+
+  const team =
+    teamSelect.value;
 
 
   if (!player) {
@@ -583,9 +818,13 @@ async function submitPick() {
   }
 
 
-  submitButton.disabled = true;
+  submitButton.disabled =
+    true;
 
-  submitButton.textContent = "Saving...";
+
+  submitButton.textContent =
+    "Saving...";
+
 
   hideStatus();
 
@@ -593,34 +832,39 @@ async function submitPick() {
   try {
 
     /*
-      Get the current data first.
-      This gives us the old pick so we can
-      verify the change afterward.
+      Get current player data first.
     */
 
     const beforeData =
       await jsonp(
         "getPlayerData",
-        { player: player }
+        {
+          player: player
+        }
       );
 
 
-    if (!beforeData.success) {
+    if (
+      !beforeData.success
+    ) {
+
       throw new Error(
-        beforeData.error || "Unable to verify player."
+        beforeData.error ||
+        "Unable to verify player."
       );
+
     }
 
 
     const previousTeam =
       (beforeData.picks || {})[
-        "Week " + CURRENT_WEEK
+        "Week " +
+        CURRENT_WEEK
       ] || "";
 
 
     /*
-      Build the exact GET URL that we already
-      confirmed successfully writes to the sheet.
+      Build submission URL.
     */
 
     const submitURL =
@@ -637,33 +881,41 @@ async function submitPick() {
 
 
     /*
-      Send the request through the hidden iframe.
+      Send through hidden iframe.
     */
 
-    submitFrame.src = submitURL;
+    submitFrame.src =
+      submitURL;
 
 
     /*
-      Give Apps Script time to process the write.
+      Give Apps Script time to
+      process the write.
     */
 
     await wait(1800);
 
 
     /*
-      Verify the spreadsheet now contains
-      the selected team.
+      Verify the write.
     */
 
-    let confirmed = false;
+    let confirmed =
+      false;
 
 
-    for (let attempt = 0; attempt < 5; attempt++) {
+    for (
+      let attempt = 0;
+      attempt < 5;
+      attempt++
+    ) {
 
       const checkData =
         await jsonp(
           "getPlayerData",
-          { player: player }
+          {
+            player: player
+          }
         );
 
 
@@ -671,11 +923,14 @@ async function submitPick() {
         checkData.success &&
         checkData.picks &&
         checkData.picks[
-          "Week " + CURRENT_WEEK
+          "Week " +
+          CURRENT_WEEK
         ] === team
       ) {
 
-        confirmed = true;
+        confirmed =
+          true;
+
         break;
 
       }
@@ -696,7 +951,7 @@ async function submitPick() {
 
 
     /*
-      Update the form immediately.
+      Update page.
     */
 
     currentPickBox.textContent =
@@ -721,7 +976,9 @@ async function submitPick() {
         "success"
       );
 
-    } else {
+    }
+
+    else {
 
       showStatus(
         "Your Week " +
@@ -736,8 +993,8 @@ async function submitPick() {
 
 
     /*
-      Reload the entire page so the published
-      Google Sheet refreshes too.
+      Reload page so the published
+      Google Sheet refreshes.
     */
 
     await wait(2500);
@@ -745,9 +1002,12 @@ async function submitPick() {
     window.location.reload();
 
 
-  } catch (error) {
+  }
+
+  catch (error) {
 
     console.error(error);
+
 
     showStatus(
       error.message ||
@@ -755,7 +1015,10 @@ async function submitPick() {
       "error"
     );
 
-    submitButton.disabled = false;
+
+    submitButton.disabled =
+      false;
+
 
     submitButton.textContent =
       "Submit Pick";
@@ -766,42 +1029,55 @@ async function submitPick() {
 
 
 
-/* ---------------------------------------
+/* ==========================================
    HELPERS
---------------------------------------- */
+   ========================================== */
 
 function wait(ms) {
 
-  return new Promise(resolve =>
-    setTimeout(resolve, ms)
+  return new Promise(
+    resolve =>
+      setTimeout(
+        resolve,
+        ms
+      )
   );
 
 }
 
 
-function showStatus(message, type) {
+function showStatus(
+  message,
+  type
+) {
 
-  statusBox.textContent = message;
+  statusBox.textContent =
+    message;
+
 
   statusBox.className =
-    "status " + type;
+    "status " +
+    type;
 
-  statusBox.style.display = "block";
+
+  statusBox.style.display =
+    "block";
 
 }
 
 
 function hideStatus() {
 
-  statusBox.style.display = "none";
+  statusBox.style.display =
+    "none";
 
 }
 
 
 
-/* ---------------------------------------
+/* ==========================================
    EVENTS
---------------------------------------- */
+   ========================================== */
 
 playerSelect.addEventListener(
   "change",
@@ -834,9 +1110,9 @@ submitButton.addEventListener(
 
 
 
-/* ---------------------------------------
+/* ==========================================
    START
---------------------------------------- */
+   ========================================== */
 
 loadPlayers();
 
