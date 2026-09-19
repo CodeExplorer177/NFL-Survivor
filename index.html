@@ -67,7 +67,14 @@ content="width=device-width, initial-scale=1.0"
       margin-bottom: 18px;
 
       box-shadow:
-        0 2px 8px rgba(0,0,0,0.08);
+        0 2px 8px rgba(0, 0, 0, 0.08);
+
+    }
+
+
+    h2 {
+
+      margin-top: 0;
 
     }
 
@@ -208,6 +215,8 @@ content="width=device-width, initial-scale=1.0"
 
       margin-top: 8px;
 
+      line-height: 1.4;
+
     }
 
 
@@ -236,16 +245,14 @@ content="width=device-width, initial-scale=1.0"
 
       width: 150%;
 
-      transform:
-        scale(0.67);
+      transform: scale(0.67);
 
-      transform-origin:
-        top left;
+      transform-origin: top left;
 
     }
 
 
-    iframe {
+    #sheetFrame {
 
       width: 100%;
 
@@ -296,16 +303,14 @@ content="width=device-width, initial-scale=1.0"
 
         width: 160%;
 
-        transform:
-          scale(0.625);
+        transform: scale(0.625);
 
-        transform-origin:
-          top left;
+        transform-origin: top left;
 
       }
 
 
-      iframe {
+      #sheetFrame {
 
         height: 1050px;
 
@@ -330,25 +335,21 @@ content="width=device-width, initial-scale=1.0"
   </h1>
 
   <!-- ==========================================
-       PICK CARD
+       PICK FORM
        ========================================== -->
 
   <div class="card">
 
 ```
 <label for="player">
-
   Select Your Name
-
 </label>
 
 
 <select id="player">
 
   <option value="">
-
     Loading players...
-
   </option>
 
 </select>
@@ -367,7 +368,6 @@ content="width=device-width, initial-scale=1.0"
     id="currentPick"
     class="current-pick"
   >
-
   </div>
 
 
@@ -375,18 +375,14 @@ content="width=device-width, initial-scale=1.0"
   <!-- TEAM -->
 
   <label for="team">
-
     Select Your Team
-
   </label>
 
 
   <select id="team">
 
     <option value="">
-
       Select a team
-
     </option>
 
   </select>
@@ -397,7 +393,13 @@ content="width=device-width, initial-scale=1.0"
     You cannot reuse a team you have
     already picked in another week.
 
+    <br><br>
+
+    You can change your current week's
+    pick before the week begins.
+
   </div>
+
 
 
   <!-- SUBMIT -->
@@ -406,9 +408,7 @@ content="width=device-width, initial-scale=1.0"
     id="submitButton"
     disabled
   >
-
     Submit Pick
-
   </button>
 
 
@@ -422,7 +422,6 @@ content="width=device-width, initial-scale=1.0"
   id="status"
   class="status"
 >
-
 </div>
 ```
 
@@ -462,6 +461,15 @@ content="width=device-width, initial-scale=1.0"
   </div>
 
 </div>
+
+<!-- ==========================================
+     HIDDEN SUBMISSION FRAME
+     ========================================== -->
+
+<iframe
+  id="submitFrame"
+  style="display:none;"
+></iframe>
 
 <script>
 
@@ -554,6 +562,10 @@ const status =
 
 const sheetFrame =
   document.getElementById("sheetFrame");
+
+
+const submitFrame =
+  document.getElementById("submitFrame");
 
 
 
@@ -673,7 +685,6 @@ async function loadPlayerData(player) {
 
     return;
 
-
   }
 
 
@@ -766,629 +777,4 @@ async function loadPlayerData(player) {
 
     // ------------------------------------------
     // DISPLAY CURRENT PICK
-    // ------------------------------------------
-
-
-    if (existingCurrentPick) {
-
-
-      currentPick.textContent =
-
-        "Current Week " +
-
-        CURRENT_WEEK +
-
-        " Pick: " +
-
-        existingCurrentPick;
-
-
-    }
-
-    else {
-
-
-      currentPick.textContent =
-
-        "No pick submitted for Week " +
-
-        CURRENT_WEEK +
-
-        " yet.";
-
-
-    }
-
-
-
-    // ------------------------------------------
-    // BUILD TEAM LIST
-    // ------------------------------------------
-
-
-    teamSelect.innerHTML =
-
-      '<option value="">Select a team</option>';
-
-
-    teams.forEach(
-
-      team => {
-
-
-        const option =
-          document.createElement("option");
-
-
-        option.value =
-          team;
-
-
-
-        // Current week's team is allowed
-
-        if (
-          team ===
-          existingCurrentPick
-        ) {
-
-
-          option.textContent =
-
-            team +
-
-            " (Current Pick)";
-
-
-        }
-
-
-
-        // Team was used during another week
-
-        else if (
-
-          usedTeams.has(team)
-
-        ) {
-
-
-          return;
-
-
-        }
-
-
-
-        else {
-
-
-          option.textContent =
-            team;
-
-
-        }
-
-
-        teamSelect.appendChild(
-          option
-        );
-
-
-      }
-
-    );
-
-
-
-    // ------------------------------------------
-    // SELECT CURRENT PICK
-    // ------------------------------------------
-
-
-    if (existingCurrentPick) {
-
-
-      teamSelect.value =
-        existingCurrentPick;
-
-
-      submitButton.textContent =
-        "Change My Pick";
-
-
-    }
-
-    else {
-
-
-      teamSelect.value =
-        "";
-
-
-      submitButton.textContent =
-        "Submit Pick";
-
-
-    }
-
-
-    submitButton.disabled =
-      !teamSelect.value;
-
-
-    playerInfo.style.display =
-      "block";
-
-
-  }
-
-  catch (error) {
-
-
-    showStatus(
-
-      "Unable to load your picks: " +
-
-      error.message,
-
-      "error"
-
-    );
-
-
-  }
-
-}
-
-
-
-// ==================================================
-// SUBMIT PICK
-// ==================================================
-
-
-async function submitPick() {
-
-
-  const player =
-    playerSelect.value;
-
-
-  const team =
-    teamSelect.value;
-
-
-
-  // ------------------------------------------
-  // VALIDATION
-  // ------------------------------------------
-
-
-  if (!player) {
-
-
-    showStatus(
-
-      "Please select your name.",
-
-      "error"
-
-    );
-
-
-    return;
-
-  }
-
-
-  if (!team) {
-
-
-    showStatus(
-
-      "Please select a team.",
-
-      "error"
-
-    );
-
-
-    return;
-
-  }
-
-
-
-  // ------------------------------------------
-  // DISABLE BUTTON
-  // ------------------------------------------
-
-
-  submitButton.disabled =
-    true;
-
-
-  submitButton.textContent =
-    "Saving...";
-
-
-
-  try {
-
-
-    // ------------------------------------------
-    // CREATE REQUEST
-    // ------------------------------------------
-
-
-    const url =
-
-      API_URL +
-
-      "?action=submitPick" +
-
-      "&player=" +
-
-      encodeURIComponent(player) +
-
-      "&week=" +
-
-      encodeURIComponent(CURRENT_WEEK) +
-
-      "&team=" +
-
-      encodeURIComponent(team) +
-
-      "&_=" +
-
-      Date.now();
-
-
-
-    // ------------------------------------------
-    // SEND REQUEST
-    // ------------------------------------------
-
-
-    const response =
-
-      await fetch(
-
-        url,
-
-        {
-
-          method: "GET",
-
-          cache: "no-store"
-
-        }
-
-      );
-
-
-    const data =
-      await response.json();
-
-
-
-    // ------------------------------------------
-    // CHECK RESPONSE
-    // ------------------------------------------
-
-
-    if (!data.success) {
-
-
-      throw new Error(
-
-        data.error ||
-
-        "Unable to save pick."
-
-      );
-
-    }
-
-
-
-    // ------------------------------------------
-    // UPDATE FORM IMMEDIATELY
-    // ------------------------------------------
-
-
-    currentPick.textContent =
-
-      "Current Week " +
-
-      CURRENT_WEEK +
-
-      " Pick: " +
-
-      data.team;
-
-
-    teamSelect.value =
-      data.team;
-
-
-
-    // ------------------------------------------
-    // SUCCESS MESSAGE
-    // ------------------------------------------
-
-
-    if (data.overwritten) {
-
-
-      showStatus(
-
-        "✅ Pick changed from " +
-
-        data.previousTeam +
-
-        " to " +
-
-        data.team +
-
-        ".",
-
-        "success"
-
-      );
-
-
-    }
-
-    else {
-
-
-      showStatus(
-
-        "✅ Your Week " +
-
-        CURRENT_WEEK +
-
-        " pick is " +
-
-        data.team +
-
-        ".",
-
-        "success"
-
-      );
-
-
-    }
-
-
-
-    // ------------------------------------------
-    // REFRESH GOOGLE SHEET
-    // ------------------------------------------
-
-    setTimeout(
-
-      function() {
-
-        refreshSpreadsheet();
-
-      },
-
-      1500
-
-    );
-
-
-
-    // ------------------------------------------
-    // RELOAD PLAYER DATA
-    // ------------------------------------------
-
-    setTimeout(
-
-      async function() {
-
-
-        await loadPlayerData(
-          player
-        );
-
-
-        submitButton.disabled =
-          false;
-
-
-        submitButton.textContent =
-          "Change My Pick";
-
-
-      },
-
-      1000
-
-    );
-
-
-  }
-
-  catch (error) {
-
-
-    showStatus(
-
-      "❌ " +
-
-      error.message,
-
-      "error"
-
-    );
-
-
-    submitButton.disabled =
-      false;
-
-
-    submitButton.textContent =
-      "Change My Pick";
-
-
-  }
-
-}
-
-
-
-// ==================================================
-// REFRESH GOOGLE SHEET
-// ==================================================
-
-
-function refreshSpreadsheet() {
-
-
-  const baseURL =
-
-    "https://docs.google.com/spreadsheets/d/e/" +
-
-    "2PACX-1vS9wInRS8cYLjP5YEjlfKs9H6EI2eE5ZmqqVYCSvZu6RY3xboNaCSqBBD5CMysFeUi2iVGwPQ5K2Bvu/" +
-
-    "pubhtml?widget=true&headers=false";
-
-
-  sheetFrame.src =
-
-    baseURL +
-
-    "&refresh=" +
-
-    Date.now();
-
-}
-
-
-
-// ==================================================
-// PLAYER CHANGE
-// ==================================================
-
-
-playerSelect.addEventListener(
-
-  "change",
-
-  function() {
-
-
-    hideStatus();
-
-
-    loadPlayerData(
-
-      playerSelect.value
-
-    );
-
-
-  }
-
-);
-
-
-
-// ==================================================
-// TEAM CHANGE
-// ==================================================
-
-
-teamSelect.addEventListener(
-
-  "change",
-
-  function() {
-
-
-    submitButton.disabled =
-
-      !teamSelect.value;
-
-
-  }
-
-);
-
-
-
-// ==================================================
-// SUBMIT BUTTON
-// ==================================================
-
-
-submitButton.addEventListener(
-
-  "click",
-
-  submitPick
-
-);
-
-
-
-// ==================================================
-// STATUS FUNCTIONS
-// ==================================================
-
-
-function showStatus(
-
-  message,
-
-  type
-
-) {
-
-
-  status.textContent =
-    message;
-
-
-  status.className =
-
-    "status " +
-
-    type;
-
-}
-
-
-
-function hideStatus() {
-
-
-  status.textContent =
-    "";
-
-
-  status.className =
-    "status";
-
-}
-
-
-
-// ==================================================
-// INITIAL LOAD
-// ==================================================
-
-
-loadPlayers();
-
-
-</script>
-
-</body>
-
-</html>
+    // --------------
