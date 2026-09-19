@@ -8,33 +8,35 @@
   <title>NFL Survivor 2026</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      padding: 20px;
+      padding: 12px;
       font-family: Arial, sans-serif;
       background: #f4f6f8;
       color: #222;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 25px;
+      margin: 10px 0 20px;
+      font-size: 28px;
     }
 
     .card {
       background: white;
-      padding: 20px;
+      padding: 18px;
       border-radius: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
@@ -64,10 +66,6 @@
       border: none;
       cursor: pointer;
       font-weight: bold;
-    }
-
-    button:hover {
-      background: #111827;
     }
 
     button:disabled {
@@ -100,34 +98,12 @@
       color: #075985;
     }
 
-    .picks {
-      margin-top: 20px;
-    }
-
-    .pick-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .pick-row:last-child {
-      border-bottom: none;
-    }
-
-    .week {
-      font-weight: bold;
-    }
-
     .current-pick {
-      margin-top: 12px;
+      margin: 12px 0;
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
       font-weight: bold;
-    }
-
-    iframe {
-      width: 100%;
-      height: 700px;
-      border: none;
     }
 
     .small {
@@ -136,23 +112,64 @@
       margin-top: 8px;
     }
 
+
+    /* ==========================================
+       GOOGLE SHEET
+       ========================================== */
+
+    .sheet-wrapper {
+      width: 100%;
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: white;
+    }
+
+    .sheet-zoom {
+      width: 150%;
+      transform: scale(0.67);
+      transform-origin: top left;
+      margin-bottom: -230px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 1050px;
+      border: none;
+      display: block;
+    }
+
+
+    /* ==========================================
+       PHONE
+       ========================================== */
+
     @media (max-width: 600px) {
+
       body {
-        padding: 10px;
+        padding: 8px;
       }
 
       .card {
-        padding: 15px;
+        padding: 14px;
       }
 
       h1 {
         font-size: 24px;
       }
 
-      iframe {
-        height: 600px;
+      .sheet-zoom {
+        width: 160%;
+        transform: scale(0.625);
+        margin-bottom: -390px;
       }
+
+      iframe {
+        height: 1050px;
+      }
+
     }
+
   </style>
 
 </head>
@@ -163,7 +180,9 @@
 
   <h1>🏈 NFL Survivor 2026</h1>
 
-  <!-- PICK FORM -->
+  <!-- ==========================================
+       PICK FORM
+       ========================================== -->
 
   <div class="card">
 
@@ -173,52 +192,82 @@
 </label>
 
 <select id="player">
-  <option value="">Loading players...</option>
+
+  <option value="">
+    Loading players...
+  </option>
+
 </select>
 
 
 <div id="playerInfo" style="display:none;">
 
-  <div class="current-pick" id="currentPick"></div>
+  <div
+    id="currentPick"
+    class="current-pick">
+  </div>
 
-  <br>
 
   <label for="team">
     Select Your Team
   </label>
 
   <select id="team">
+
     <option value="">
       Select a team
     </option>
+
   </select>
 
+
   <div class="small">
-    You cannot reuse a team you have already picked in another week.
+
+    You cannot reuse a team you have already
+    picked in another week.
+
   </div>
 
-  <button id="submitButton" disabled>
+
+  <button
+    id="submitButton"
+    disabled>
+
     Submit Pick
+
   </button>
 
 </div>
 
 
-<div id="status" class="status"></div>
+<div
+  id="status"
+  class="status">
+</div>
 ```
 
   </div>
 
-  <!-- STANDINGS -->
+  <!-- ==========================================
+       STANDINGS
+       ========================================== -->
 
   <div class="card">
 
 ```
 <h2>📊 Standings & Picks</h2>
 
-<iframe
-  src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS9wInRS8cYLjP5YEjlfKs9H6EI2eE5ZmqqVYCSvZu6RY3xboNaCSqBBD5CMysFeUi2iVGwPQ5K2Bvu/pubhtml?widget=true&amp;headers=false">
-</iframe>
+<div class="sheet-wrapper">
+
+  <div class="sheet-zoom">
+
+    <iframe
+      src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS9wInRS8cYLjP5YEjlfKs9H6EI2eE5ZmqqVYCSvZu6RY3xboNaCSqBBD5CMysFeUi2iVGwPQ5K2Bvu/pubhtml?widget=true&amp;headers=false">
+    </iframe>
+
+  </div>
+
+</div>
 ```
 
   </div>
@@ -227,560 +276,598 @@
 
 <script>
 
-  // ==================================================
-  // SETTINGS
-  // ==================================================
 
-  const API_URL =
-    "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
+// ==================================================
+// SETTINGS
+// ==================================================
 
-
-  // Change this number every NFL week.
-  const CURRENT_WEEK = 2;
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
 
 
-  // ==================================================
-  // NFL TEAMS
-  // ==================================================
-
-  const teams = [
-
-    "49ers",
-    "Bears",
-    "Bengals",
-    "Bills",
-    "Broncos",
-    "Browns",
-    "Buccaneers",
-    "Cardinals",
-    "Chargers",
-    "Chiefs",
-    "Colts",
-    "Commanders",
-    "Cowboys",
-    "Dolphins",
-    "Eagles",
-    "Falcons",
-    "Giants",
-    "Jaguars",
-    "Jets",
-    "Lions",
-    "Packers",
-    "Panthers",
-    "Patriots",
-    "Raiders",
-    "Rams",
-    "Ravens",
-    "Saints",
-    "Seahawks",
-    "Steelers",
-    "Texans",
-    "Titans",
-    "Vikings"
-
-  ];
+const CURRENT_WEEK = 2;
 
 
-  // ==================================================
-  // ELEMENTS
-  // ==================================================
 
-  const playerSelect =
-    document.getElementById("player");
+// ==================================================
+// NFL TEAMS
+// ==================================================
 
-  const teamSelect =
-    document.getElementById("team");
+const teams = [
 
-  const submitButton =
-    document.getElementById("submitButton");
+  "49ers",
+  "Bears",
+  "Bengals",
+  "Bills",
+  "Broncos",
+  "Browns",
+  "Buccaneers",
+  "Cardinals",
+  "Chargers",
+  "Chiefs",
+  "Colts",
+  "Commanders",
+  "Cowboys",
+  "Dolphins",
+  "Eagles",
+  "Falcons",
+  "Giants",
+  "Jaguars",
+  "Jets",
+  "Lions",
+  "Packers",
+  "Panthers",
+  "Patriots",
+  "Raiders",
+  "Rams",
+  "Ravens",
+  "Saints",
+  "Seahawks",
+  "Steelers",
+  "Texans",
+  "Titans",
+  "Vikings"
 
-  const playerInfo =
-    document.getElementById("playerInfo");
-
-  const currentPick =
-    document.getElementById("currentPick");
-
-  const status =
-    document.getElementById("status");
-
-
-  // ==================================================
-  // LOAD PLAYERS
-  // ==================================================
-
-  async function loadPlayers() {
-
-    try {
-
-      const response =
-        await fetch(
-          API_URL +
-          "?action=getPlayers"
-        );
-
-      const data =
-        await response.json();
-
-
-      if (!data.success) {
-
-        throw new Error(
-          data.error ||
-          "Unable to load players."
-        );
-
-      }
+];
 
 
-      playerSelect.innerHTML =
-        '<option value="">Select your name</option>';
+
+// ==================================================
+// ELEMENTS
+// ==================================================
+
+const playerSelect =
+document.getElementById("player");
+
+const teamSelect =
+document.getElementById("team");
+
+const submitButton =
+document.getElementById("submitButton");
+
+const playerInfo =
+document.getElementById("playerInfo");
+
+const currentPick =
+document.getElementById("currentPick");
+
+const status =
+document.getElementById("status");
 
 
-      data.players.forEach(
-        player => {
 
-          const option =
-            document.createElement("option");
+// ==================================================
+// LOAD PLAYERS
+// ==================================================
 
-          option.value = player;
-          option.textContent = player;
+async function loadPlayers() {
 
-          playerSelect.appendChild(option);
+  try {
 
-        }
+    const response =
+      await fetch(
+        API_URL +
+        "?action=getPlayers"
       );
 
 
-    } catch (error) {
+    const data =
+      await response.json();
 
-      showStatus(
-        "Unable to load players: " +
-        error.message,
-        "error"
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        "Unable to load players."
       );
 
     }
 
-  }
+
+    playerSelect.innerHTML =
+      '<option value="">Select your name</option>';
 
 
-  // ==================================================
-  // LOAD PLAYER DATA
-  // ==================================================
-
-  async function loadPlayerData(player) {
-
-    if (!player) {
-
-      playerInfo.style.display = "none";
-
-      return;
-
-    }
-
-
-    try {
-
-      showStatus(
-        "Loading your picks...",
-        "info"
-      );
-
-
-      const response =
-        await fetch(
-          API_URL +
-          "?action=getPlayerData&player=" +
-          encodeURIComponent(player)
-        );
-
-
-      const data =
-        await response.json();
-
-
-      if (!data.success) {
-
-        throw new Error(
-          data.error ||
-          "Unable to load your picks."
-        );
-
-      }
-
-
-      const picks =
-        data.picks || {};
-
-
-      // ------------------------------------------
-      // Find teams already used
-      // ------------------------------------------
-
-      const usedTeams =
-        new Set(
-          Object.values(picks)
-            .map(
-              team =>
-                String(team).trim()
-            )
-            .filter(Boolean)
-        );
-
-
-      // ------------------------------------------
-      // Current week's pick
-      // ------------------------------------------
-
-      const currentWeekName =
-        "Week " + CURRENT_WEEK;
-
-
-      const existingCurrentPick =
-        picks[currentWeekName] || "";
-
-
-      // ------------------------------------------
-      // Show current pick
-      // ------------------------------------------
-
-      if (existingCurrentPick) {
-
-        currentPick.textContent =
-          "Current Week " +
-          CURRENT_WEEK +
-          " Pick: " +
-          existingCurrentPick;
-
-      } else {
-
-        currentPick.textContent =
-          "No pick submitted for Week " +
-          CURRENT_WEEK +
-          " yet.";
-
-      }
-
-
-      // ------------------------------------------
-      // Build team dropdown
-      // ------------------------------------------
-
-      teamSelect.innerHTML =
-        '<option value="">Select a team</option>';
-
-
-      teams.forEach(team => {
+    data.players.forEach(
+      player => {
 
         const option =
           document.createElement("option");
 
+        option.value = player;
 
-        option.value = team;
+        option.textContent = player;
 
-
-        // The current pick is allowed because
-        // the user may keep/change it.
-        if (
-          team === existingCurrentPick
-        ) {
-
-          option.textContent =
-            team +
-            " (Current Pick)";
-
-        }
-
-        // Team used in another week
-        else if (
-          usedTeams.has(team)
-        ) {
-
-          return;
-
-        }
-
-        else {
-
-          option.textContent = team;
-
-        }
-
-
-        teamSelect.appendChild(option);
-
-      });
-
-
-      // Automatically select current pick
-      if (existingCurrentPick) {
-
-        teamSelect.value =
-          existingCurrentPick;
-
-        submitButton.textContent =
-          "Change My Pick";
-
-      } else {
-
-        submitButton.textContent =
-          "Submit Pick";
+        playerSelect.appendChild(option);
 
       }
+    );
 
 
-      submitButton.disabled = false;
+  } catch (error) {
 
-      playerInfo.style.display = "block";
+    showStatus(
+      "Unable to load players: " +
+      error.message,
+      "error"
+    );
+
+  }
+
+}
 
 
-      hideStatus();
 
+// ==================================================
+// LOAD PLAYER DATA
+// ==================================================
 
-    } catch (error) {
+async function loadPlayerData(player) {
 
-      showStatus(
-        "Unable to load your picks: " +
-        error.message,
-        "error"
-      );
+  if (!player) {
 
-    }
+    playerInfo.style.display =
+      "none";
+
+    return;
 
   }
 
 
-  // ==================================================
-  // SUBMIT / CHANGE PICK
-  // ==================================================
+  try {
 
-  async function submitPick() {
-
-    const player =
-      playerSelect.value;
-
-    const team =
-      teamSelect.value;
-
-
-    if (!player) {
-
-      showStatus(
-        "Please select your name.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    if (!team) {
-
-      showStatus(
-        "Please select a team.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    submitButton.disabled = true;
-
-    submitButton.textContent =
-      "Saving...";
-
-
-    try {
-
-      // ------------------------------------------------
-      // IMPORTANT:
-      // Use GET instead of POST.
-      // This avoids the Google Apps Script
-      // redirect problem that prevented the
-      // previous version from writing.
-      // ------------------------------------------------
-
-      const url =
+    const response =
+      await fetch(
         API_URL +
-        "?action=submitPick" +
-        "&player=" +
-        encodeURIComponent(player) +
-        "&week=" +
-        encodeURIComponent(CURRENT_WEEK) +
-        "&team=" +
-        encodeURIComponent(team);
+        "?action=getPlayerData&player=" +
+        encodeURIComponent(player)
+      );
 
 
-      const response =
-        await fetch(url);
+    const data =
+      await response.json();
 
 
-      const data =
-        await response.json();
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        "Unable to load your picks."
+      );
+
+    }
 
 
-      if (!data.success) {
+    const picks =
+      data.picks || {};
 
-        throw new Error(
-          data.error ||
-          "Unable to save pick."
-        );
+
+    // ------------------------------------------
+    // Teams already used
+    // ------------------------------------------
+
+    const usedTeams =
+      new Set(
+        Object.values(picks)
+          .map(
+            team =>
+              String(team).trim()
+          )
+          .filter(Boolean)
+      );
+
+
+    // ------------------------------------------
+    // Current week
+    // ------------------------------------------
+
+    const currentWeekName =
+      "Week " + CURRENT_WEEK;
+
+
+    const existingCurrentPick =
+      picks[currentWeekName] || "";
+
+
+    // ------------------------------------------
+    // Display current pick
+    // ------------------------------------------
+
+    if (existingCurrentPick) {
+
+      currentPick.textContent =
+        "Current Week " +
+        CURRENT_WEEK +
+        " Pick: " +
+        existingCurrentPick;
+
+    } else {
+
+      currentPick.textContent =
+        "No pick submitted for Week " +
+        CURRENT_WEEK +
+        " yet.";
+
+    }
+
+
+    // ------------------------------------------
+    // Build dropdown
+    // ------------------------------------------
+
+    teamSelect.innerHTML =
+      '<option value="">Select a team</option>';
+
+
+    teams.forEach(team => {
+
+      const option =
+        document.createElement("option");
+
+
+      option.value =
+        team;
+
+
+      // Current pick is allowed
+      // so it can be kept or changed.
+
+      if (
+        team === existingCurrentPick
+      ) {
+
+        option.textContent =
+          team +
+          " (Current Pick)";
 
       }
 
 
-      // ------------------------------------------
-      // Success
-      // ------------------------------------------
+      // Team used during another week
 
-      if (data.overwritten) {
+      else if (
+        usedTeams.has(team)
+      ) {
 
-        showStatus(
-          "✅ Your Week " +
-          CURRENT_WEEK +
-          " pick was changed from " +
-          data.previousTeam +
-          " to " +
-          data.team +
-          ".",
-          "success"
-        );
-
-      } else {
-
-        showStatus(
-          "✅ Your Week " +
-          CURRENT_WEEK +
-          " pick is " +
-          data.team +
-          ".",
-          "success"
-        );
+        return;
 
       }
 
 
-      // Reload the player's data so the
-      // dropdown and current pick stay accurate.
+      else {
 
-      await loadPlayerData(player);
+        option.textContent =
+          team;
 
+      }
+
+
+      teamSelect.appendChild(option);
+
+    });
+
+
+    // ------------------------------------------
+    // Select current pick
+    // ------------------------------------------
+
+    if (existingCurrentPick) {
+
+      teamSelect.value =
+        existingCurrentPick;
 
       submitButton.textContent =
         "Change My Pick";
 
+    }
 
-    } catch (error) {
-
-      showStatus(
-        "❌ " +
-        error.message,
-        "error"
-      );
-
-
-      submitButton.disabled = false;
-
+    else {
 
       submitButton.textContent =
         "Submit Pick";
 
     }
 
+
+    submitButton.disabled =
+      false;
+
+
+    playerInfo.style.display =
+      "block";
+
+
+  }
+
+  catch (error) {
+
+    showStatus(
+      "Unable to load your picks: " +
+      error.message,
+      "error"
+    );
+
+  }
+
+}
+
+
+
+// ==================================================
+// SUBMIT PICK
+// ==================================================
+
+async function submitPick() {
+
+  const player =
+    playerSelect.value;
+
+
+  const team =
+    teamSelect.value;
+
+
+  if (!player) {
+
+    showStatus(
+      "Please select your name.",
+      "error"
+    );
+
+    return;
+
   }
 
 
-  // ==================================================
-  // PLAYER CHANGE
-  // ==================================================
+  if (!team) {
 
-  playerSelect.addEventListener(
-    "change",
-    function() {
+    showStatus(
+      "Please select a team.",
+      "error"
+    );
 
-      const player =
-        playerSelect.value;
+    return;
 
-
-      hideStatus();
+  }
 
 
-      loadPlayerData(player);
+  submitButton.disabled =
+    true;
+
+
+  submitButton.textContent =
+    "Saving...";
+
+
+  try {
+
+    const url =
+      API_URL +
+      "?action=submitPick" +
+      "&player=" +
+      encodeURIComponent(player) +
+      "&week=" +
+      encodeURIComponent(CURRENT_WEEK) +
+      "&team=" +
+      encodeURIComponent(team);
+
+
+    const response =
+      await fetch(url);
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        "Unable to save pick."
+      );
 
     }
-  );
 
 
-  // ==================================================
-  // TEAM CHANGE
-  // ==================================================
+    // ==========================================
+    // IMMEDIATELY UPDATE THE FORM
+    // ==========================================
 
-  teamSelect.addEventListener(
-    "change",
-    function() {
+    currentPick.textContent =
+      "Current Week " +
+      CURRENT_WEEK +
+      " Pick: " +
+      data.team;
 
-      if (teamSelect.value) {
 
-        submitButton.disabled = false;
+    // Select the newly saved team
 
-      } else {
+    teamSelect.value =
+      data.team;
 
-        submitButton.disabled = true;
 
-      }
+    // ==========================================
+    // SUCCESS MESSAGE
+    // ==========================================
+
+    if (data.overwritten) {
+
+      showStatus(
+        "✅ Pick changed from " +
+        data.previousTeam +
+        " to " +
+        data.team +
+        ".",
+        "success"
+      );
 
     }
-  );
+
+    else {
+
+      showStatus(
+        "✅ Your Week " +
+        CURRENT_WEEK +
+        " pick is " +
+        data.team +
+        ".",
+        "success"
+      );
+
+    }
 
 
-  // ==================================================
-  // SUBMIT BUTTON
-  // ==================================================
+    // ==========================================
+    // REFRESH DATA
+    // ==========================================
 
-  submitButton.addEventListener(
-    "click",
-    submitPick
-  );
+    // Wait briefly so Google Sheets has time
+    // to update before we reload the data.
 
+    setTimeout(
+      async function() {
 
-  // ==================================================
-  // STATUS HELPERS
-  // ==================================================
+        await loadPlayerData(player);
 
-  function showStatus(
-    message,
-    type
-  ) {
+        submitButton.disabled =
+          false;
 
-    status.textContent =
-      message;
+        submitButton.textContent =
+          "Change My Pick";
 
-    status.className =
-      "status " +
-      type;
+      },
+      700
+    );
+
 
   }
 
+  catch (error) {
 
-  function hideStatus() {
+    showStatus(
+      "❌ " +
+      error.message,
+      "error"
+    );
 
-    status.textContent =
-      "";
 
-    status.className =
-      "status";
+    submitButton.disabled =
+      false;
+
+
+    submitButton.textContent =
+      "Change My Pick";
 
   }
 
+}
 
-  // ==================================================
-  // INITIAL LOAD
-  // ==================================================
 
-  loadPlayers();
+
+// ==================================================
+// PLAYER CHANGE
+// ==================================================
+
+playerSelect.addEventListener(
+  "change",
+  function() {
+
+    hideStatus();
+
+    loadPlayerData(
+      playerSelect.value
+    );
+
+  }
+);
+
+
+
+// ==================================================
+// TEAM CHANGE
+// ==================================================
+
+teamSelect.addEventListener(
+  "change",
+  function() {
+
+    submitButton.disabled =
+      !teamSelect.value;
+
+  }
+);
+
+
+
+// ==================================================
+// SUBMIT
+// ==================================================
+
+submitButton.addEventListener(
+  "click",
+  submitPick
+);
+
+
+
+// ==================================================
+// STATUS
+// ==================================================
+
+function showStatus(
+  message,
+  type
+) {
+
+  status.textContent =
+    message;
+
+  status.className =
+    "status " +
+    type;
+
+}
+
+
+function hideStatus() {
+
+  status.textContent =
+    "";
+
+  status.className =
+    "status";
+
+}
+
+
+
+// ==================================================
+// START
+// ==================================================
+
+loadPlayers();
 
 </script>
 
