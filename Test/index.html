@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>2026 NFL Survivor Pool</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* HEADER */
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      margin-bottom: 5px;
+      font-size: 32px;
+    }
+
+    .header p {
+      margin: 0;
+      color: #6b7280;
+    }
+
+    /* CARDS */
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    /* FORM */
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    select {
+      width: 100%;
+      padding: 13px;
+      font-size: 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: white;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 13px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .submit-button {
+      width: 100%;
+      margin-top: 18px;
+      background: #1d4ed8;
+      color: white;
+    }
+
+    .submit-button:hover {
+      background: #1e40af;
+    }
+
+    /* STATUS */
+
+    .status-message {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .status-active {
+      background: #ecfdf5;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+
+    .status-eliminated {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    /* REENTRY */
+
+    #reentryBox {
+      display: none;
+      text-align: center;
+    }
+
+    .reentry-price {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .reentry-button {
+      background: #15803d;
+      color: white;
+      margin-top: 10px;
+    }
+
+    /* TABLE */
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    th {
+      background: #111827;
+      color: white;
+      padding: 11px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 11px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    td:first-child,
+    th:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+
+    th:first-child {
+      background: #111827;
+    }
+
+    td:first-child {
+      background: white;
+      font-weight: bold;
+    }
+
+    .eliminated-row {
+      opacity: .5;
+      background: #f3f4f6;
+    }
+
+    .eliminated-row td:first-child {
+      background: #f3f4f6;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .active-badge {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .eliminated-badge {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .reentry-badge {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .loss {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    /* POOL SUMMARY */
+
+    .summary {
+      margin-top: 25px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .summary-item {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px 10px;
+      text-align: center;
+    }
+
+    .summary-number {
+      display: block;
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .summary-label {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .pot {
+      font-size: 34px;
+    }
+
+    .summary-note {
+      text-align: center;
+      color: #6b7280;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    /* WINNER */
+
+    #winnerBox {
+      display: none;
+      text-align: center;
+      padding: 25px;
+      margin-bottom: 22px;
+      background: #fffbeb;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+    }
+
+    #winnerBox h2 {
+      font-size: 30px;
+      margin: 5px 0;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 650px) {
+
+      .container {
+        padding: 12px;
+      }
+
+      .header h1 {
+        font-size: 25px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .summary-number {
+        font-size: 22px;
+      }
+
+      .pot {
+        font-size: 28px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+
+  <div class="header">
+    <h1>🏈 2026 NFL Survivor Pool</h1>
+    <p>Survive. Advance. Last player standing wins.</p>
+  </div>
+
+
+  <!-- WINNER MESSAGE -->
+
+  <div id="winnerBox">
+    <div style="font-size:45px;">🏆</div>
+    <h2>Survivor Pool Winner</h2>
+    <div id="winnerName" style="font-size:22px;font-weight:bold;"></div>
+    <div id="winnerPrize" style="margin-top:8px;"></div>
+  </div>
+
+
+  <!-- MAKE PICK -->
+
+  <div class="card">
+
+    <h2>Make Your Pick</h2>
+
+    <div class="form-grid">
+
+      <div>
+        <label for="playerSelect">Player</label>
+
+        <select id="playerSelect">
+          <option value="">Select your name</option>
+
+          <option value="Aimi">Aimi</option>
+          <option value="Mac">Mac</option>
+          <option value="Kenzie">Kenzie</option>
+          <option value="Akemi">Akemi</option>
+          <option value="Cesar">Cesar</option>
+          <option value="Alejandra">Alejandra</option>
+          <option value="Sixto">Sixto</option>
+          <option value="Nicole">Nicole</option>
+
+        </select>
+      </div>
+
+
+      <div>
+        <label for="teamSelect">Week 3 Pick</label>
+
+        <select id="teamSelect">
+          <option value="">Select a team</option>
+
+          <option>Arizona Cardinals</option>
+          <option>Atlanta Falcons</option>
+          <option>Baltimore Ravens</option>
+          <option>Buffalo Bills</option>
+          <option>Carolina Panthers</option>
+          <option>Chicago Bears</option>
+          <option>Cincinnati Bengals</option>
+          <option>Cleveland Browns</option>
+          <option>Dallas Cowboys</option>
+          <option>Denver Broncos</option>
+          <option>Detroit Lions</option>
+          <option>Green Bay Packers</option>
+          <option>Houston Texans</option>
+          <option>Indianapolis Colts</option>
+          <option>Jacksonville Jaguars</option>
+          <option>Kansas City Chiefs</option>
+          <option>Las Vegas Raiders</option>
+          <option>Los Angeles Chargers</option>
+          <option>Los Angeles Rams</option>
+          <option>Miami Dolphins</option>
+          <option>Minnesota Vikings</option>
+          <option>New England Patriots</option>
+          <option>New Orleans Saints</option>
+          <option>New York Giants</option>
+          <option>New York Jets</option>
+          <option>Philadelphia Eagles</option>
+          <option>Pittsburgh Steelers</option>
+          <option>San Francisco 49ers</option>
+          <option>Seattle Seahawks</option>
+          <option>Tampa Bay Buccaneers</option>
+          <option>Tennessee Titans</option>
+          <option>Washington Commanders</option>
+
+        </select>
+      </div>
+
+    </div>
+
+
+    <button id="submitPick" class="submit-button">
+      Submit Pick
+    </button>
+
+
+    <div id="statusMessage" class="status-message"></div>
+
+  </div>
+
+
+  <!-- REENTRY -->
+
+  <div id="reentryBox" class="card">
+
+    <h2>You've Been Eliminated</h2>
+
+    <p>
+      Your previous pick lost, but you can re-enter the survivor pool.
+    </p>
+
+    <div class="reentry-price">$20 Re-entry</div>
+
+    <p>
+      Previously used teams will remain unavailable.
+    </p>
+
+    <button id="reentryButton" class="reentry-button">
+      Re-enter Pool
+    </button>
+
+  </div>
+
+
+  <!-- STANDINGS -->
+
+  <div class="card">
+
+    <h2>Pool Standings</h2>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Status</th>
+            <th>Entries</th>
+            <th>W1</th>
+            <th>W2</th>
+            <th>W3</th>
+            <th>W4</th>
+            <th>W5</th>
+          </tr>
+        </thead>
+
+        <tbody id="standingsBody">
+
+          <tr data-player="Aimi">
+            <td>Aimi</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Ravens</td>
+            <td>Buccaneers</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+          <tr data-player="Mac">
+            <td>Mac</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Rams</td>
+            <td>Eagles</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+          <tr data-player="Kenzie">
+            <td>Kenzie</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Packers</td>
+            <td>Lions</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+          <!-- DEMO ELIMINATED PLAYER -->
+
+          <tr data-player="Akemi" class="eliminated-row">
+            <td>Akemi</td>
+            <td>
+              <span class="badge eliminated-badge">
+                ELIMINATED
+              </span>
+            </td>
+            <td class="entries">1</td>
+            <td>Chiefs</td>
+            <td class="loss">Dolphins ❌</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+
+          <tr data-player="Cesar">
+            <td>Cesar</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Packers</td>
+            <td>Bills</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+
+          <tr data-player="Alejandra">
+            <td>Alejandra</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Browns</td>
+            <td>Raiders</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+
+          <tr data-player="Sixto">
+            <td>Sixto</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Chargers</td>
+            <td>Eagles</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+
+          <tr data-player="Nicole">
+            <td>Nicole</td>
+            <td><span class="badge active-badge">ACTIVE</span></td>
+            <td class="entries">1</td>
+            <td>Lions</td>
+            <td>Ravens</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- POOL SUMMARY -->
+
+  <div class="card summary">
+
+    <h2>Pool Summary</h2>
+
+    <div class="summary-grid">
+
+      <div class="summary-item">
+        <span id="remainingPlayers" class="summary-number">
+          7
+        </span>
+
+        <span class="summary-label">
+          Players Remaining
+        </span>
+      </div>
+
+
+      <div class="summary-item">
+        <span id="totalPlayers" class="summary-number">
+          8
+        </span>
+
+        <span class="summary-label">
+          Total Players
+        </span>
+      </div>
+
+
+      <div class="summary-item">
+        <span id="totalEntries" class="summary-number">
+          8
+        </span>
+
+        <span class="summary-label">
+          Total Entries
+        </span>
+      </div>
+
+
+      <div class="summary-item">
+        <span id="currentPot" class="summary-number pot">
+          $160
+        </span>
+
+        <span class="summary-label">
+          Current Prize Pool
+        </span>
+      </div>
+
+    </div>
+
+    <div class="summary-note">
+      Each entry or re-entry adds $20 to the final prize pool.
+      Last active player wins the pool.
+    </div>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+  const ENTRY_PRICE = 20;
+
+  /*
+     TEST DATA
+
+     Akemi is intentionally eliminated so you can test
+     the re-entry feature.
+
+     Later this information will come directly from
+     Google Sheets.
+  */
+
+  const players = {
+
+    Aimi: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Baltimore Ravens",
+        "Tampa Bay Buccaneers"
+      ]
+    },
+
+    Mac: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Los Angeles Rams",
+        "Philadelphia Eagles"
+      ]
+    },
+
+    Kenzie: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Green Bay Packers",
+        "Detroit Lions"
+      ]
+    },
+
+    Akemi: {
+      status: "eliminated",
+      entries: 1,
+      usedTeams: [
+        "Kansas City Chiefs",
+        "Miami Dolphins"
+      ]
+    },
+
+    Cesar: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Green Bay Packers",
+        "Buffalo Bills"
+      ]
+    },
+
+    Alejandra: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Cleveland Browns",
+        "Las Vegas Raiders"
+      ]
+    },
+
+    Sixto: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Los Angeles Chargers",
+        "Philadelphia Eagles"
+      ]
+    },
+
+    Nicole: {
+      status: "active",
+      entries: 1,
+      usedTeams: [
+        "Detroit Lions",
+        "Baltimore Ravens"
+      ]
+    }
+
+  };
+
+
+  const playerSelect =
+    document.getElementById("playerSelect");
+
+  const teamSelect =
+    document.getElementById("teamSelect");
+
+  const submitButton =
+    document.getElementById("submitPick");
+
+  const statusMessage =
+    document.getElementById("statusMessage");
+
+  const reentryBox =
+    document.getElementById("reentryBox");
+
+  const reentryButton =
+    document.getElementById("reentryButton");
+
+
+  /*
+     Save the original list of teams.
+
+     This allows us to rebuild the dropdown whenever
+     a different player is selected.
+  */
+
+  const allTeams =
+    Array.from(teamSelect.options)
+      .slice(1)
+      .map(option => option.value);
+
+
+  function buildTeamDropdown(playerName) {
+
+    teamSelect.innerHTML =
+      '<option value="">Select a team</option>';
+
+    if (!playerName || !players[playerName]) {
+      return;
+    }
+
+    const usedTeams =
+      players[playerName].usedTeams;
+
+
+    allTeams.forEach(team => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = team;
+      option.textContent = team;
+
+
+      /*
+         OPTION A:
+
+         Teams previously used by the player remain
+         unavailable even after a re-entry.
+      */
+
+      if (usedTeams.includes(team)) {
+
+        option.disabled = true;
+
+        option.textContent =
+          team + " — Already Used";
+
+      }
+
+      teamSelect.appendChild(option);
+
+    });
+
+  }
+
+
+  playerSelect.addEventListener(
+    "change",
+    function () {
+
+      const playerName =
+        playerSelect.value;
+
+      statusMessage.style.display = "none";
+
+      reentryBox.style.display = "none";
+
+      submitButton.disabled = false;
+
+      teamSelect.disabled = false;
+
+
+      if (!playerName) {
+
+        buildTeamDropdown("");
+
+        return;
+
+      }
+
+
+      const player =
+        players[playerName];
+
+
+      buildTeamDropdown(playerName);
+
+
+      /*
+         ELIMINATED PLAYER
+      */
+
+      if (player.status === "eliminated") {
+
+        submitButton.disabled = true;
+
+        teamSelect.disabled = true;
+
+        reentryBox.style.display = "block";
+
+        statusMessage.className =
+          "status-message status-eliminated";
+
+        statusMessage.innerHTML =
+          "<strong>Eliminated.</strong> " +
+          "You must re-enter before making another pick.";
+
+        statusMessage.style.display = "block";
+
+      }
+
+      else {
+
+        statusMessage.className =
+          "status-message status-active";
+
+        statusMessage.innerHTML =
+          "<strong>Active.</strong> " +
+          "Select an available team for Week 3.";
+
+        statusMessage.style.display = "block";
+
+      }
+
+    }
+  );
+
+
+  /*
+     TEST RE-ENTRY BUTTON
+
+     Eventually this will update Google Sheets.
+  */
+
+  reentryButton.addEventListener(
+    "click",
+    function () {
+
+      const playerName =
+        playerSelect.value;
+
+      if (!playerName) {
+        return;
+      }
+
+
+      const player =
+        players[playerName];
+
+
+      if (player.status !== "eliminated") {
+        return;
+      }
+
+
+      player.status = "active";
+
+      player.entries += 1;
+
+
+      /*
+         Update standings row
+      */
+
+      const row =
+        document.querySelector(
+          'tr[data-player="' + playerName + '"]'
+        );
+
+
+      if (row) {
+
+        row.classList.remove(
+          "eliminated-row"
+        );
+
+
+        const badge =
+          row.querySelector(".badge");
+
+
+        badge.className =
+          "badge reentry-badge";
+
+
+        badge.textContent =
+          "ACTIVE • RE-ENTRY";
+
+
+        row.querySelector(
+          ".entries"
+        ).textContent =
+          player.entries;
+
+      }
+
+
+      reentryBox.style.display = "none";
+
+      submitButton.disabled = false;
+
+      teamSelect.disabled = false;
+
+
+      statusMessage.className =
+        "status-message status-active";
+
+
+      statusMessage.innerHTML =
+        "<strong>You're back in!</strong> " +
+        "Your re-entry has been added. " +
+        "Previously used teams are still unavailable.";
+
+
+      statusMessage.style.display =
+        "block";
+
+
+      buildTeamDropdown(playerName);
+
+      updateSummary();
+
+    }
+  );
+
+
+  /*
+     TEST PICK SUBMISSION
+
+     This does NOT send anything to Google Sheets yet.
+  */
+
+  submitButton.addEventListener(
+    "click",
+    function () {
+
+      const playerName =
+        playerSelect.value;
+
+      const team =
+        teamSelect.value;
+
+
+      if (!playerName) {
+
+        alert(
+          "Please select your name."
+        );
+
+        return;
+
+      }
+
+
+      if (!team) {
+
+        alert(
+          "Please select a team."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        players[playerName].status
+        !== "active"
+      ) {
+
+        alert(
+          "This player is currently eliminated."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        players[playerName]
+          .usedTeams
+          .includes(team)
+      ) {
+
+        alert(
+          "You have already used this team."
+        );
+
+        return;
+
+      }
+
+
+      alert(
+        playerName +
+        " selected " +
+        team +
+        " for Week 3."
+      );
+
+  });
+
+
+  /*
+     POOL SUMMARY
+  */
+
+  function updateSummary() {
+
+    const playerList =
+      Object.values(players);
+
+
+    const totalPlayers =
+      playerList.length;
+
+
+    const remaining =
+      playerList.filter(
+        player =>
+          player.status === "active"
+      ).length;
+
+
+    const entries =
+      playerList.reduce(
+        (total, player) =>
+          total + player.entries,
+        0
+      );
+
+
+    const pot =
+      entries * ENTRY_PRICE;
+
+
+    document.getElementById(
+      "remainingPlayers"
+    ).textContent =
+      remaining;
+
+
+    document.getElementById(
+      "totalPlayers"
+    ).textContent =
+      totalPlayers;
+
+
+    document.getElementById(
+      "totalEntries"
+    ).textContent =
+      entries;
+
+
+    document.getElementById(
+      "currentPot"
+    ).textContent =
+      "$" + pot;
+
+
+    /*
+       Automatically detect winner
+    */
+
+    const activePlayers =
+      Object.entries(players)
+        .filter(
+          ([name, player]) =>
+            player.status === "active"
+        );
+
+
+    if (activePlayers.length === 1) {
+
+      const winner =
+        activePlayers[0][0];
+
+
+      document.getElementById(
+        "winnerName"
+      ).textContent =
+        winner;
+
+
+      document.getElementById(
+        "winnerPrize"
+      ).textContent =
+        "Final Prize: $" + pot;
+
+
+      document.getElementById(
+        "winnerBox"
+      ).style.display =
+        "block";
+
+    }
+
+  }
+
+
+  updateSummary();
+
+</script>
+
+</body>
+</html>
