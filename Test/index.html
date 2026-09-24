@@ -18,7 +18,7 @@ body {
 }
 
 .container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: auto;
     padding: 16px;
 }
@@ -29,21 +29,22 @@ body {
 }
 
 .header h1 {
-    margin-bottom: 5px;
+    margin: 0 0 6px;
+    font-size: 32px;
 }
 
 .header p {
+    margin: 0;
     color: #6b7280;
-    margin-top: 0;
 }
 
 .test-banner {
     background: #fff7ed;
     border: 1px solid #fdba74;
     color: #9a3412;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 11px;
+    border-radius: 9px;
+    margin: 18px 0;
     text-align: center;
     font-weight: bold;
 }
@@ -53,26 +54,11 @@ body {
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
 }
 
 .card h2 {
-    margin-top: 0;
-}
-
-.loading {
-    text-align: center;
-    padding: 25px;
-    color: #6b7280;
-}
-
-.error {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-    padding: 15px;
-    border-radius: 8px;
-    display: none;
+    margin: 0 0 16px;
 }
 
 .form-grid {
@@ -90,93 +76,126 @@ label {
 select {
     width: 100%;
     padding: 13px;
-    font-size: 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     background: white;
+    font-size: 16px;
 }
 
 button {
     width: 100%;
-    margin-top: 18px;
-    padding: 13px;
     border: none;
     border-radius: 8px;
+    padding: 13px;
     font-size: 16px;
     font-weight: bold;
+    cursor: pointer;
 }
 
-button:disabled {
+.primary-button {
+    margin-top: 18px;
+    background: #1d4ed8;
+    color: white;
+}
+
+.primary-button:hover {
+    background: #1e40af;
+}
+
+.primary-button:disabled {
     background: #d1d5db;
     color: #6b7280;
     cursor: not-allowed;
 }
 
-.read-only-note {
-    margin-top: 12px;
-    text-align: center;
-    color: #6b7280;
-    font-size: 13px;
-}
-
-.status-message {
+.status {
+    display: none;
     margin-top: 15px;
     padding: 12px;
     border-radius: 8px;
-    display: none;
 }
 
-.active-message {
+.status-good {
+    display: block;
     background: #ecfdf5;
-    color: #166534;
     border: 1px solid #86efac;
+    color: #166534;
 }
 
-.eliminated-message {
+.status-bad {
+    display: block;
     background: #fef2f2;
-    color: #991b1b;
     border: 1px solid #fca5a5;
+    color: #991b1b;
 }
 
-.reentry-box {
+.status-info {
+    display: block;
+    background: #eff6ff;
+    border: 1px solid #93c5fd;
+    color: #1e40af;
+}
+
+.connection {
+    font-size: 13px;
+    text-align: center;
+    margin-top: 10px;
+    color: #6b7280;
+}
+
+.reentry-card {
     display: none;
     text-align: center;
+    border: 2px solid #f59e0b;
 }
 
 .reentry-price {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: bold;
+    margin: 12px 0;
 }
 
-.table-container {
+.reentry-button {
+    background: #15803d;
+    color: white;
+    max-width: 350px;
+    margin-top: 8px;
+}
+
+.table-wrap {
     overflow-x: auto;
+    border-radius: 8px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 950px;
+    min-width: 1000px;
 }
 
 th {
     background: #111827;
     color: white;
-    padding: 10px;
+    padding: 11px 9px;
+    text-align: center;
     white-space: nowrap;
+    font-size: 14px;
 }
 
 td {
-    padding: 10px;
+    padding: 11px 9px;
     border-bottom: 1px solid #e5e7eb;
     text-align: center;
     white-space: nowrap;
+    font-size: 14px;
 }
 
 th:first-child,
 td:first-child {
-    text-align: left;
     position: sticky;
     left: 0;
+    text-align: left;
+    z-index: 2;
 }
 
 th:first-child {
@@ -188,35 +207,36 @@ td:first-child {
     font-weight: bold;
 }
 
-.eliminated-row {
-    opacity: .5;
-}
-
-.eliminated-row td:first-child {
-    background: #f3f4f6;
-}
-
 .badge {
-    padding: 5px 9px;
-    border-radius: 15px;
-    font-size: 12px;
-    font-weight: bold;
     display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
 }
 
-.active {
+.badge-active {
     background: #dcfce7;
     color: #166534;
 }
 
-.eliminated {
+.badge-eliminated {
     background: #fee2e2;
     color: #991b1b;
 }
 
-.reentry {
+.badge-reentry {
     background: #fef3c7;
     color: #92400e;
+}
+
+.eliminated-row {
+    opacity: .5;
+    background: #f3f4f6;
+}
+
+.eliminated-row td:first-child {
+    background: #f3f4f6;
 }
 
 .summary-grid {
@@ -225,33 +245,67 @@ td:first-child {
     gap: 12px;
 }
 
-.summary-item {
+.summary-box {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
-    padding: 18px 10px;
     border-radius: 10px;
+    padding: 18px 8px;
     text-align: center;
 }
 
 .summary-number {
     display: block;
-    font-size: 27px;
+    font-size: 28px;
     font-weight: bold;
 }
 
 .summary-label {
+    display: block;
     color: #6b7280;
     font-size: 13px;
+    margin-top: 4px;
 }
 
 .summary-note {
-    margin-top: 15px;
-    color: #6b7280;
     text-align: center;
+    margin-top: 16px;
+    color: #6b7280;
     font-size: 13px;
 }
 
+.loading {
+    text-align: center;
+    padding: 25px;
+    color: #6b7280;
+}
+
+.error-box {
+    display: none;
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.demo-note {
+    margin-top: 12px;
+    color: #6b7280;
+    font-size: 13px;
+    text-align: center;
+}
+
 @media(max-width:650px) {
+
+    .container {
+        padding: 10px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
     .form-grid {
         grid-template-columns: 1fr;
     }
@@ -260,8 +314,12 @@ td:first-child {
         grid-template-columns: 1fr 1fr;
     }
 
-    .container {
-        padding: 10px;
+    .card {
+        padding: 15px;
+    }
+
+    .summary-number {
+        font-size: 23px;
     }
 }
 </style>
@@ -277,12 +335,13 @@ td:first-child {
     </div>
 
     <div class="test-banner">
-        🧪 TEST SITE — Connected in read-only mode
+        🧪 TEST VERSION
     </div>
 
-    <div id="errorBox" class="error"></div>
+    <div id="errorBox" class="error-box"></div>
 
-    <!-- PICK AREA -->
+
+    <!-- PICK SECTION -->
 
     <div class="card">
 
@@ -292,55 +351,69 @@ td:first-child {
 
             <div>
                 <label for="playerSelect">Player</label>
+
                 <select id="playerSelect">
                     <option value="">Loading players...</option>
                 </select>
             </div>
 
             <div>
-                <label for="teamSelect">Team</label>
+                <label id="teamLabel" for="teamSelect">
+                    Team
+                </label>
+
                 <select id="teamSelect" disabled>
-                    <option>Select your name first</option>
+                    <option value="">
+                        Select your name first
+                    </option>
                 </select>
             </div>
 
         </div>
 
-        <button disabled>
+        <button
+            id="submitButton"
+            class="primary-button"
+            disabled>
             Submit Pick
         </button>
 
-        <div class="read-only-note">
-            Pick submission is disabled while we test the Google Sheet connection.
-        </div>
+        <div id="playerStatus" class="status"></div>
 
-        <div id="statusMessage" class="status-message"></div>
+        <div id="connectionStatus" class="connection">
+            Connecting to Google Sheets...
+        </div>
 
     </div>
 
 
-    <!-- REENTRY -->
+    <!-- REENTRY SECTION -->
 
-    <div id="reentryBox" class="card reentry-box">
+    <div id="reentryCard" class="card reentry-card">
 
         <h2>You've Been Eliminated</h2>
 
-        <p>Your previous pick lost.</p>
+        <p>
+            Your previous pick lost, but you can re-enter the pool.
+        </p>
 
         <div class="reentry-price">
             $20 Re-entry
         </div>
 
         <p>
-            Previously used teams remain unavailable.
+            All teams you previously used will remain unavailable.
         </p>
 
-        <button disabled>
+        <button
+            id="reentryButton"
+            class="reentry-button">
             Re-enter Pool
         </button>
 
-        <div class="read-only-note">
-            Re-entry is disabled on the test site for now.
+        <div class="demo-note">
+            Test mode: this currently changes only this page,
+            not your Google Sheet.
         </div>
 
     </div>
@@ -353,10 +426,10 @@ td:first-child {
         <h2>Pool Standings</h2>
 
         <div id="loading" class="loading">
-            Loading pool from Google Sheets...
+            Loading live standings...
         </div>
 
-        <div class="table-container">
+        <div class="table-wrap">
 
             <table id="standingsTable" style="display:none;">
 
@@ -371,7 +444,7 @@ td:first-child {
     </div>
 
 
-    <!-- SUMMARY -->
+    <!-- POOL SUMMARY -->
 
     <div class="card">
 
@@ -379,31 +452,70 @@ td:first-child {
 
         <div class="summary-grid">
 
-            <div class="summary-item">
-                <span id="activePlayers" class="summary-number">—</span>
-                <span class="summary-label">Players Remaining</span>
+            <div class="summary-box">
+
+                <span
+                    id="remainingCount"
+                    class="summary-number">
+                    —
+                </span>
+
+                <span class="summary-label">
+                    Players Remaining
+                </span>
+
             </div>
 
-            <div class="summary-item">
-                <span id="totalPlayers" class="summary-number">—</span>
-                <span class="summary-label">Total Players</span>
+
+            <div class="summary-box">
+
+                <span
+                    id="playerCount"
+                    class="summary-number">
+                    —
+                </span>
+
+                <span class="summary-label">
+                    Total Players
+                </span>
+
             </div>
 
-            <div class="summary-item">
-                <span id="totalEntries" class="summary-number">—</span>
-                <span class="summary-label">Total Entries</span>
+
+            <div class="summary-box">
+
+                <span
+                    id="entryCount"
+                    class="summary-number">
+                    —
+                </span>
+
+                <span class="summary-label">
+                    Total Entries
+                </span>
+
             </div>
 
-            <div class="summary-item">
-                <span id="prizePool" class="summary-number">—</span>
-                <span class="summary-label">Current Prize Pool</span>
+
+            <div class="summary-box">
+
+                <span
+                    id="potAmount"
+                    class="summary-number">
+                    —
+                </span>
+
+                <span class="summary-label">
+                    Current Prize Pool
+                </span>
+
             </div>
 
         </div>
 
         <div class="summary-note">
-            Each entry or re-entry adds $20 to the final prize pool.
-            Last active player wins.
+            Each initial entry and re-entry adds $20.
+            Last active player wins the final prize pool.
         </div>
 
     </div>
@@ -413,72 +525,296 @@ td:first-child {
 
 <script>
 
-/*
-========================================================
- GOOGLE APPS SCRIPT CONNECTION
-========================================================
+/* =====================================================
 
-We'll put your Google Apps Script Web App URL here
-in the next step.
+   IMPORTANT
 
-Example:
+   Paste the SAME Apps Script Web App URL that your
+   original website currently uses below.
+
+   It must end with:
+
+   /exec
+
+===================================================== */
 
 const API_URL =
-"https://script.google.com/macros/s/ABC123/exec";
+    "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
 
-DO NOT use your normal Google Sheet URL.
-*/
 
-const API_URL = "PASTE_GOOGLE_APPS_SCRIPT_URL_HERE";
+/* =====================================================
+   SETTINGS
+===================================================== */
 
 const ENTRY_PRICE = 20;
 
-let players = [];
-let teams = [];
-let weeks = [];
+/*
+   We're starting at Week 3 for testing.
+
+   Later we can make this automatic or control it
+   from the Google Sheet.
+*/
+
+const CURRENT_WEEK = 3;
 
 
 /*
-========================================================
- LOAD DATA
-========================================================
+   TEMPORARY STATUS INFORMATION
+
+   Your existing Google Sheet/API doesn't contain
+   elimination/re-entry information yet.
+
+   So for the TEST page we can manually put a player
+   here to preview what elimination looks like.
+
+   Example:
+
+   Akemi: { status: "eliminated", entries: 1 }
+
+   Delete Akemi from this object if you want everybody
+   to appear active.
 */
+
+const testStatuses = {
+
+    Akemi: {
+        status: "eliminated",
+        entries: 1
+    }
+
+};
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let headers = [];
+let players = [];
+
+
+/* =====================================================
+   JSONP
+
+   Your existing Apps Script already supports JSONP.
+===================================================== */
+
+function apiRequest(action, parameters = {}) {
+
+    return new Promise((resolve, reject) => {
+
+        if (
+            !API_URL ||
+            API_URL.includes("PASTE_YOUR")
+        ) {
+
+            reject(
+                new Error(
+                    "You haven't pasted your Apps Script URL yet."
+                )
+            );
+
+            return;
+        }
+
+
+        const callbackName =
+            "jsonp_" +
+            Date.now() +
+            "_" +
+            Math.floor(Math.random() * 100000);
+
+
+        const query =
+            new URLSearchParams({
+                action: action,
+                callback: callbackName,
+                ...parameters
+            });
+
+
+        const script =
+            document.createElement("script");
+
+
+        let finished = false;
+
+
+        const cleanup = () => {
+
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+
+            try {
+                delete window[callbackName];
+            }
+            catch(e) {
+                window[callbackName] = undefined;
+            }
+
+        };
+
+
+        const timer =
+            setTimeout(() => {
+
+                if (finished) return;
+
+                finished = true;
+
+                cleanup();
+
+                reject(
+                    new Error(
+                        "Google Sheets connection timed out."
+                    )
+                );
+
+            }, 15000);
+
+
+        window[callbackName] =
+            function(data) {
+
+                if (finished) return;
+
+                finished = true;
+
+                clearTimeout(timer);
+
+                cleanup();
+
+                resolve(data);
+
+            };
+
+
+        script.onerror =
+            function() {
+
+                if (finished) return;
+
+                finished = true;
+
+                clearTimeout(timer);
+
+                cleanup();
+
+                reject(
+                    new Error(
+                        "Could not connect to Google Apps Script."
+                    )
+                );
+
+            };
+
+
+        script.src =
+            API_URL +
+            "?" +
+            query.toString();
+
+
+        document.body.appendChild(script);
+
+    });
+
+}
+
+
+/* =====================================================
+   LOAD LIVE POOL
+===================================================== */
 
 async function loadPool() {
 
-    if (API_URL.includes("PASTE_GOOGLE")) {
-
-        showError(
-            "Google Sheet connection has not been configured yet. " +
-            "We need to create the free Google Apps Script connection next."
-        );
-
-        document.getElementById("loading").textContent =
-            "Waiting for Google Apps Script connection.";
-
-        return;
-    }
-
     try {
 
-        const response = await fetch(API_URL);
+        setConnectionMessage(
+            "Connecting to Google Sheets..."
+        );
 
-        if (!response.ok) {
-            throw new Error("Could not reach Google Apps Script.");
+
+        const data =
+            await apiRequest(
+                "getAllData"
+            );
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Google Sheet returned an error."
+            );
+
         }
 
-        const data = await response.json();
 
-        players = data.players || [];
-        teams = data.teams || [];
-        weeks = data.weeks || [];
+        headers =
+            Array.isArray(data.headers)
+            ? data.headers
+            : [];
+
+
+        players =
+            Array.isArray(data.players)
+            ? data.players
+            : [];
+
+
+        /*
+           Add temporary test status information.
+        */
+
+        players =
+            players.map(player => {
+
+                const test =
+                    testStatuses[player.name];
+
+
+                return {
+
+                    ...player,
+
+                    status:
+                        test?.status ||
+                        "active",
+
+                    entries:
+                        Number(
+                            test?.entries || 1
+                        )
+
+                };
+
+            });
+
 
         buildPlayerDropdown();
+
         buildStandings();
+
         updateSummary();
 
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("standingsTable").style.display = "table";
+
+        document.getElementById(
+            "loading"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "standingsTable"
+        ).style.display =
+            "table";
+
+
+        setConnectionMessage(
+            "✓ Live data loaded from Google Sheets"
+        );
 
     }
 
@@ -487,375 +823,1034 @@ async function loadPool() {
         console.error(error);
 
         showError(
-            "Could not load the Survivor Pool from Google Sheets. " +
             error.message
         );
 
-        document.getElementById("loading").textContent =
-            "Unable to load pool.";
+
+        document.getElementById(
+            "loading"
+        ).textContent =
+            "Unable to load standings.";
+
+
+        setConnectionMessage(
+            "Google Sheets connection failed."
+        );
 
     }
 
 }
 
 
-/*
-========================================================
- PLAYER DROPDOWN
-========================================================
-*/
+/* =====================================================
+   PLAYER DROPDOWN
+===================================================== */
 
 function buildPlayerDropdown() {
 
     const select =
-        document.getElementById("playerSelect");
+        document.getElementById(
+            "playerSelect"
+        );
+
 
     select.innerHTML =
         '<option value="">Select your name</option>';
 
+
     players.forEach(player => {
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
-        option.value = player.name;
-        option.textContent = player.name;
 
-        select.appendChild(option);
+        option.value =
+            player.name;
+
+
+        option.textContent =
+            player.name;
+
+
+        select.appendChild(
+            option
+        );
 
     });
 
 }
 
 
-/*
-========================================================
- PLAYER SELECTION
-========================================================
-*/
+/* =====================================================
+   PLAYER SELECTED
+===================================================== */
 
-document.getElementById("playerSelect")
-.addEventListener("change", function() {
+document.getElementById(
+    "playerSelect"
+)
+.addEventListener(
+    "change",
+    function() {
 
-    const player =
-        players.find(
-            p => p.name === this.value
+        const playerName =
+            this.value;
+
+
+        const player =
+            players.find(
+                p =>
+                    p.name ===
+                    playerName
+            );
+
+
+        const statusBox =
+            document.getElementById(
+                "playerStatus"
+            );
+
+
+        const reentryCard =
+            document.getElementById(
+                "reentryCard"
+            );
+
+
+        statusBox.style.display =
+            "none";
+
+
+        reentryCard.style.display =
+            "none";
+
+
+        if (!player) {
+
+            clearTeamDropdown();
+
+            return;
+
+        }
+
+
+        buildTeamDropdown(
+            player
         );
 
-    const status =
-        document.getElementById("statusMessage");
 
-    const reentry =
-        document.getElementById("reentryBox");
+        /*
+           ELIMINATED
+        */
 
-    status.style.display = "none";
-    reentry.style.display = "none";
+        if (
+            player.status ===
+            "eliminated"
+        ) {
 
-    if (!player) {
+            statusBox.className =
+                "status status-bad";
 
-        buildTeamDropdown(null);
-        return;
+
+            statusBox.innerHTML =
+                "<strong>Eliminated.</strong> " +
+                "You must re-enter before making another pick.";
+
+
+            reentryCard.style.display =
+                "block";
+
+
+            document.getElementById(
+                "teamSelect"
+            ).disabled =
+                true;
+
+
+            document.getElementById(
+                "submitButton"
+            ).disabled =
+                true;
+
+        }
+
+
+        /*
+           ACTIVE
+        */
+
+        else {
+
+            statusBox.className =
+                "status status-good";
+
+
+            statusBox.innerHTML =
+                "<strong>Active.</strong> " +
+                "Select your Week " +
+                CURRENT_WEEK +
+                " team. Previously used teams are unavailable.";
+
+
+            document.getElementById(
+                "teamSelect"
+            ).disabled =
+                false;
+
+
+            document.getElementById(
+                "submitButton"
+            ).disabled =
+                false;
+
+        }
 
     }
-
-    buildTeamDropdown(player);
-
-    if (
-        String(player.status).toLowerCase()
-        === "eliminated"
-    ) {
-
-        status.className =
-            "status-message eliminated-message";
-
-        status.innerHTML =
-            "<strong>Eliminated.</strong> " +
-            "You must re-enter before making another pick.";
-
-        status.style.display = "block";
-
-        reentry.style.display = "block";
-
-    }
-
-    else {
-
-        status.className =
-            "status-message active-message";
-
-        status.innerHTML =
-            "<strong>Active.</strong> " +
-            "Previously used teams are unavailable.";
-
-        status.style.display = "block";
-
-    }
-
-});
+);
 
 
-/*
-========================================================
- TEAM DROPDOWN
-========================================================
-*/
+/* =====================================================
+   TEAM DROPDOWN
+===================================================== */
+
+function clearTeamDropdown() {
+
+    const select =
+        document.getElementById(
+            "teamSelect"
+        );
+
+
+    select.innerHTML =
+        '<option value="">Select your name first</option>';
+
+
+    select.disabled =
+        true;
+
+
+    document.getElementById(
+        "submitButton"
+    ).disabled =
+        true;
+
+}
+
 
 function buildTeamDropdown(player) {
 
     const select =
-        document.getElementById("teamSelect");
+        document.getElementById(
+            "teamSelect"
+        );
+
 
     select.innerHTML =
         '<option value="">Select a team</option>';
 
-    if (!player) {
 
-        select.disabled = true;
-        return;
+    /*
+       Get teams from the player's existing picks.
 
-    }
+       Because the current API doesn't return the full
+       NFL team list, we include the complete list here.
 
-    const used =
-        player.usedTeams || [];
+       Later we can pull this from your Teams sheet.
+    */
 
-    teams.forEach(team => {
+    const nflTeams = [
+
+        "Arizona Cardinals",
+        "Atlanta Falcons",
+        "Baltimore Ravens",
+        "Buffalo Bills",
+        "Carolina Panthers",
+        "Chicago Bears",
+        "Cincinnati Bengals",
+        "Cleveland Browns",
+        "Dallas Cowboys",
+        "Denver Broncos",
+        "Detroit Lions",
+        "Green Bay Packers",
+        "Houston Texans",
+        "Indianapolis Colts",
+        "Jacksonville Jaguars",
+        "Kansas City Chiefs",
+        "Las Vegas Raiders",
+        "Los Angeles Chargers",
+        "Los Angeles Rams",
+        "Miami Dolphins",
+        "Minnesota Vikings",
+        "New England Patriots",
+        "New Orleans Saints",
+        "New York Giants",
+        "New York Jets",
+        "Philadelphia Eagles",
+        "Pittsburgh Steelers",
+        "San Francisco 49ers",
+        "Seattle Seahawks",
+        "Tampa Bay Buccaneers",
+        "Tennessee Titans",
+        "Washington Commanders"
+
+    ];
+
+
+    const usedTeams =
+        Object.values(
+            player.picks || {}
+        )
+        .filter(Boolean)
+        .map(
+            team =>
+                String(team)
+                    .trim()
+                    .toLowerCase()
+        );
+
+
+    nflTeams.forEach(team => {
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
-        option.value = team;
-        option.textContent = team;
 
-        if (used.includes(team)) {
+        option.value =
+            team;
 
-            option.disabled = true;
+
+        option.textContent =
+            team;
+
+
+        if (
+            usedTeams.includes(
+                team.toLowerCase()
+            )
+        ) {
+
+            option.disabled =
+                true;
+
 
             option.textContent =
-                team + " — Already Used";
+                team +
+                " — Already Used";
 
         }
 
-        select.appendChild(option);
+
+        select.appendChild(
+            option
+        );
 
     });
 
-    select.disabled =
-        String(player.status).toLowerCase()
-        === "eliminated";
+
+    document.getElementById(
+        "teamLabel"
+    ).textContent =
+        "Week " +
+        CURRENT_WEEK +
+        " Pick";
 
 }
 
 
-/*
-========================================================
- STANDINGS TABLE
-========================================================
-*/
+/* =====================================================
+   TEST RE-ENTRY
+
+   This only changes the browser page.
+
+   It DOES NOT change Google Sheets yet.
+===================================================== */
+
+document.getElementById(
+    "reentryButton"
+)
+.addEventListener(
+    "click",
+    function() {
+
+        const playerName =
+            document.getElementById(
+                "playerSelect"
+            ).value;
+
+
+        const player =
+            players.find(
+                p =>
+                    p.name ===
+                    playerName
+            );
+
+
+        if (!player) return;
+
+
+        if (
+            player.status !==
+            "eliminated"
+        ) {
+
+            return;
+
+        }
+
+
+        player.status =
+            "active";
+
+
+        player.entries =
+            Number(
+                player.entries || 1
+            ) + 1;
+
+
+        document.getElementById(
+            "reentryCard"
+        ).style.display =
+            "none";
+
+
+        const statusBox =
+            document.getElementById(
+                "playerStatus"
+            );
+
+
+        statusBox.className =
+            "status status-good";
+
+
+        statusBox.innerHTML =
+            "<strong>You're back in!</strong> " +
+            "Your test re-entry was added. " +
+            "Previously used teams remain unavailable.";
+
+
+        document.getElementById(
+            "teamSelect"
+        ).disabled =
+            false;
+
+
+        document.getElementById(
+            "submitButton"
+        ).disabled =
+            false;
+
+
+        buildTeamDropdown(
+            player
+        );
+
+
+        buildStandings();
+
+        updateSummary();
+
+    }
+);
+
+
+/* =====================================================
+   SUBMIT PICK
+
+   IMPORTANT:
+
+   For TESTING this calls your REAL submitPick function.
+
+   If you don't want the test page to modify your
+   real Sheet yet, change:
+
+       ENABLE_REAL_SUBMISSIONS = true
+
+   to:
+
+       ENABLE_REAL_SUBMISSIONS = false
+===================================================== */
+
+const ENABLE_REAL_SUBMISSIONS =
+    false;
+
+
+document.getElementById(
+    "submitButton"
+)
+.addEventListener(
+    "click",
+    async function() {
+
+        const playerName =
+            document.getElementById(
+                "playerSelect"
+            ).value;
+
+
+        const team =
+            document.getElementById(
+                "teamSelect"
+            ).value;
+
+
+        const statusBox =
+            document.getElementById(
+                "playerStatus"
+            );
+
+
+        if (!playerName) {
+
+            alert(
+                "Select your name."
+            );
+
+            return;
+
+        }
+
+
+        if (!team) {
+
+            alert(
+                "Select a team."
+            );
+
+            return;
+
+        }
+
+
+        const player =
+            players.find(
+                p =>
+                    p.name ===
+                    playerName
+            );
+
+
+        if (
+            !player ||
+            player.status ===
+            "eliminated"
+        ) {
+
+            alert(
+                "This player is currently eliminated."
+            );
+
+            return;
+
+        }
+
+
+        /*
+           SAFE TEST MODE
+        */
+
+        if (
+            !ENABLE_REAL_SUBMISSIONS
+        ) {
+
+            statusBox.className =
+                "status status-info";
+
+
+            statusBox.innerHTML =
+                "<strong>Test successful.</strong> " +
+                playerName +
+                " would submit <strong>" +
+                team +
+                "</strong> for Week " +
+                CURRENT_WEEK +
+                ". Nothing was changed in Google Sheets.";
+
+
+            return;
+
+        }
+
+
+        /*
+           REAL SUBMISSION
+        */
+
+        try {
+
+            this.disabled =
+                true;
+
+
+            this.textContent =
+                "Submitting...";
+
+
+            const result =
+                await apiRequest(
+                    "submitPick",
+                    {
+                        player:
+                            playerName,
+
+                        week:
+                            CURRENT_WEEK,
+
+                        team:
+                            team
+                    }
+                );
+
+
+            if (!result.success) {
+
+                throw new Error(
+                    result.error ||
+                    "Pick could not be submitted."
+                );
+
+            }
+
+
+            statusBox.className =
+                "status status-good";
+
+
+            statusBox.innerHTML =
+                "<strong>Pick submitted!</strong> " +
+                team +
+                " has been saved for Week " +
+                CURRENT_WEEK +
+                ".";
+
+
+            /*
+               Reload live data.
+            */
+
+            const refreshed =
+                await apiRequest(
+                    "getAllData"
+                );
+
+
+            if (
+                refreshed.success
+            ) {
+
+                headers =
+                    refreshed.headers || [];
+
+
+                const freshPlayers =
+                    refreshed.players || [];
+
+
+                players =
+                    freshPlayers.map(
+                        fresh => {
+
+                            const existing =
+                                players.find(
+                                    p =>
+                                        p.name ===
+                                        fresh.name
+                                );
+
+
+                            return {
+
+                                ...fresh,
+
+                                status:
+                                    existing?.status ||
+                                    "active",
+
+                                entries:
+                                    existing?.entries ||
+                                    1
+
+                            };
+
+                        }
+                    );
+
+
+                buildStandings();
+
+                updateSummary();
+
+            }
+
+        }
+
+        catch(error) {
+
+            statusBox.className =
+                "status status-bad";
+
+
+            statusBox.textContent =
+                error.message;
+
+        }
+
+        finally {
+
+            this.disabled =
+                false;
+
+
+            this.textContent =
+                "Submit Pick";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   STANDINGS
+===================================================== */
 
 function buildStandings() {
 
     const head =
-        document.getElementById("standingsHead");
+        document.getElementById(
+            "standingsHead"
+        );
+
 
     const body =
-        document.getElementById("standingsBody");
+        document.getElementById(
+            "standingsBody"
+        );
+
 
     head.innerHTML = "";
+
     body.innerHTML = "";
 
-    const headerRow =
-        document.createElement("tr");
 
-    [
+    /*
+       HEADER
+    */
+
+    const headerRow =
+        document.createElement(
+            "tr"
+        );
+
+
+    const fixedHeaders = [
         "Player",
         "Status",
-        "Entries",
-        ...weeks
-    ].forEach(title => {
+        "Entries"
+    ];
+
+
+    [
+        ...fixedHeaders,
+        ...headers
+    ]
+    .forEach(title => {
 
         const th =
-            document.createElement("th");
+            document.createElement(
+                "th"
+            );
 
-        th.textContent = title;
 
-        headerRow.appendChild(th);
+        th.textContent =
+            title;
+
+
+        headerRow.appendChild(
+            th
+        );
 
     });
 
-    head.appendChild(headerRow);
 
+    head.appendChild(
+        headerRow
+    );
+
+
+    /*
+       PLAYERS
+    */
 
     players.forEach(player => {
 
         const row =
-            document.createElement("tr");
+            document.createElement(
+                "tr"
+            );
 
-        const eliminated =
-            String(player.status).toLowerCase()
-            === "eliminated";
 
-        if (eliminated) {
-            row.classList.add("eliminated-row");
+        if (
+            player.status ===
+            "eliminated"
+        ) {
+
+            row.classList.add(
+                "eliminated-row"
+            );
+
         }
 
 
         /*
-        PLAYER
+           NAME
         */
 
-        const name =
-            document.createElement("td");
+        const nameCell =
+            document.createElement(
+                "td"
+            );
 
-        name.textContent = player.name;
 
-        row.appendChild(name);
+        nameCell.textContent =
+            player.name;
+
+
+        row.appendChild(
+            nameCell
+        );
 
 
         /*
-        STATUS
+           STATUS
         */
 
         const statusCell =
-            document.createElement("td");
+            document.createElement(
+                "td"
+            );
+
 
         const badge =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
 
-        badge.classList.add("badge");
 
-        if (eliminated) {
+        badge.classList.add(
+            "badge"
+        );
 
-            badge.classList.add("eliminated");
-            badge.textContent = "ELIMINATED";
+
+        if (
+            player.status ===
+            "eliminated"
+        ) {
+
+            badge.classList.add(
+                "badge-eliminated"
+            );
+
+
+            badge.textContent =
+                "ELIMINATED";
 
         }
 
-        else if ((player.entries || 1) > 1) {
+        else if (
+            Number(
+                player.entries || 1
+            ) > 1
+        ) {
 
-            badge.classList.add("reentry");
-            badge.textContent = "ACTIVE • RE-ENTRY";
+            badge.classList.add(
+                "badge-reentry"
+            );
+
+
+            badge.textContent =
+                "ACTIVE • RE-ENTRY";
 
         }
 
         else {
 
-            badge.classList.add("active");
-            badge.textContent = "ACTIVE";
+            badge.classList.add(
+                "badge-active"
+            );
+
+
+            badge.textContent =
+                "ACTIVE";
 
         }
 
-        statusCell.appendChild(badge);
 
-        row.appendChild(statusCell);
+        statusCell.appendChild(
+            badge
+        );
+
+
+        row.appendChild(
+            statusCell
+        );
 
 
         /*
-        ENTRIES
+           ENTRIES
         */
 
-        const entries =
-            document.createElement("td");
+        const entriesCell =
+            document.createElement(
+                "td"
+            );
 
-        entries.textContent =
+
+        entriesCell.textContent =
             player.entries || 1;
 
-        row.appendChild(entries);
+
+        row.appendChild(
+            entriesCell
+        );
 
 
         /*
-        WEEK PICKS
+           WEEK PICKS
         */
 
-        weeks.forEach((week, index) => {
+        headers.forEach(header => {
 
-            const cell =
-                document.createElement("td");
+            const td =
+                document.createElement(
+                    "td"
+                );
+
 
             const pick =
-                player.picks?.[index];
+                player.picks?.[header];
 
-            cell.textContent =
+
+            td.textContent =
                 pick || "—";
 
-            row.appendChild(cell);
+
+            row.appendChild(
+                td
+            );
 
         });
 
 
-        body.appendChild(row);
+        body.appendChild(
+            row
+        );
 
     });
 
 }
 
 
-/*
-========================================================
- POOL SUMMARY
-========================================================
-*/
+/* =====================================================
+   SUMMARY
+===================================================== */
 
 function updateSummary() {
 
     const totalPlayers =
         players.length;
 
-    const activePlayers =
+
+    const remaining =
         players.filter(
             player =>
-                String(player.status).toLowerCase()
-                !== "eliminated"
+                player.status !==
+                "eliminated"
         ).length;
 
-    const totalEntries =
+
+    const entries =
         players.reduce(
-            (sum, player) =>
-                sum + Number(player.entries || 1),
+            (total, player) =>
+                total +
+                Number(
+                    player.entries || 1
+                ),
             0
         );
 
+
     const prize =
-        totalEntries * ENTRY_PRICE;
+        entries *
+        ENTRY_PRICE;
 
 
-    document.getElementById("activePlayers")
-        .textContent = activePlayers;
+    document.getElementById(
+        "remainingCount"
+    ).textContent =
+        remaining;
 
-    document.getElementById("totalPlayers")
-        .textContent = totalPlayers;
 
-    document.getElementById("totalEntries")
-        .textContent = totalEntries;
+    document.getElementById(
+        "playerCount"
+    ).textContent =
+        totalPlayers;
 
-    document.getElementById("prizePool")
-        .textContent = "$" + prize;
+
+    document.getElementById(
+        "entryCount"
+    ).textContent =
+        entries;
+
+
+    document.getElementById(
+        "potAmount"
+    ).textContent =
+        "$" + prize;
 
 }
 
 
-/*
-========================================================
- ERROR MESSAGE
-========================================================
-*/
+/* =====================================================
+   HELPERS
+===================================================== */
 
 function showError(message) {
 
     const box =
-        document.getElementById("errorBox");
+        document.getElementById(
+            "errorBox"
+        );
 
-    box.textContent = message;
 
-    box.style.display = "block";
+    box.textContent =
+        message;
+
+
+    box.style.display =
+        "block";
 
 }
 
 
-/*
-========================================================
- START
-========================================================
-*/
+function setConnectionMessage(message) {
+
+    document.getElementById(
+        "connectionStatus"
+    ).textContent =
+        message;
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
 
 loadPool();
 
