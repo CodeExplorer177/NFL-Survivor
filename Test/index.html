@@ -13,7 +13,7 @@
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f8;
+    background: #f3f4f6;
     color: #1f2937;
 }
 
@@ -25,11 +25,11 @@ body {
 
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .header h1 {
-    margin: 0 0 6px;
+    margin: 0 0 5px;
     font-size: 32px;
 }
 
@@ -39,13 +39,13 @@ body {
 }
 
 .test-banner {
+    margin: 18px 0;
+    padding: 10px;
+    text-align: center;
     background: #fff7ed;
     border: 1px solid #fdba74;
     color: #9a3412;
-    padding: 11px;
-    border-radius: 9px;
-    margin: 18px 0;
-    text-align: center;
+    border-radius: 8px;
     font-weight: bold;
 }
 
@@ -58,7 +58,7 @@ body {
 }
 
 .card h2 {
-    margin: 0 0 16px;
+    margin-top: 0;
 }
 
 .form-grid {
@@ -76,53 +76,60 @@ label {
 select {
     width: 100%;
     padding: 13px;
+    font-size: 16px;
+    background: white;
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    background: white;
-    font-size: 16px;
 }
 
 button {
     width: 100%;
-    border: none;
-    border-radius: 8px;
     padding: 13px;
+    border: 0;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
 }
 
-.primary-button {
+.submit-button {
     margin-top: 18px;
     background: #1d4ed8;
     color: white;
 }
 
-.primary-button:hover {
+.submit-button:hover {
     background: #1e40af;
 }
 
-.primary-button:disabled {
+button:disabled {
     background: #d1d5db;
     color: #6b7280;
     cursor: not-allowed;
 }
 
-.status {
+.connection {
+    margin-top: 10px;
+    font-size: 13px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.status-box {
     display: none;
     margin-top: 15px;
-    padding: 12px;
+    padding: 13px;
     border-radius: 8px;
 }
 
-.status-good {
+.status-active {
     display: block;
     background: #ecfdf5;
     border: 1px solid #86efac;
     color: #166534;
 }
 
-.status-bad {
+.status-eliminated {
     display: block;
     background: #fef2f2;
     border: 1px solid #fca5a5;
@@ -136,66 +143,70 @@ button {
     color: #1e40af;
 }
 
-.connection {
-    font-size: 13px;
-    text-align: center;
-    margin-top: 10px;
-    color: #6b7280;
-}
-
 .reentry-card {
     display: none;
     text-align: center;
     border: 2px solid #f59e0b;
 }
 
+.reentry-icon {
+    font-size: 40px;
+}
+
 .reentry-price {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
-    margin: 12px 0;
+    margin: 10px 0;
 }
 
 .reentry-button {
+    max-width: 350px;
     background: #15803d;
     color: white;
-    max-width: 350px;
-    margin-top: 8px;
+    margin-top: 10px;
+}
+
+.demo-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
 }
 
 .table-wrap {
     overflow-x: auto;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1000px;
+    min-width: 1500px;
 }
 
 th {
     background: #111827;
     color: white;
-    padding: 11px 9px;
-    text-align: center;
+    padding: 10px;
+    font-size: 13px;
     white-space: nowrap;
-    font-size: 14px;
+    text-align: center;
 }
 
 td {
-    padding: 11px 9px;
+    padding: 10px;
+    font-size: 13px;
     border-bottom: 1px solid #e5e7eb;
-    text-align: center;
     white-space: nowrap;
-    font-size: 14px;
+    text-align: center;
 }
 
 th:first-child,
 td:first-child {
     position: sticky;
     left: 0;
-    text-align: left;
     z-index: 2;
+    text-align: left;
 }
 
 th:first-child {
@@ -205,6 +216,14 @@ th:first-child {
 td:first-child {
     background: white;
     font-weight: bold;
+}
+
+.current-week {
+    background: #eff6ff;
+}
+
+th.current-week {
+    background: #1d4ed8;
 }
 
 .badge {
@@ -231,46 +250,12 @@ td:first-child {
 }
 
 .eliminated-row {
-    opacity: .5;
-    background: #f3f4f6;
+    background: #f9fafb;
+    opacity: .55;
 }
 
 .eliminated-row td:first-child {
     background: #f3f4f6;
-}
-
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 12px;
-}
-
-.summary-box {
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 18px 8px;
-    text-align: center;
-}
-
-.summary-number {
-    display: block;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.summary-label {
-    display: block;
-    color: #6b7280;
-    font-size: 13px;
-    margin-top: 4px;
-}
-
-.summary-note {
-    text-align: center;
-    margin-top: 16px;
-    color: #6b7280;
-    font-size: 13px;
 }
 
 .loading {
@@ -281,19 +266,74 @@ td:first-child {
 
 .error-box {
     display: none;
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 8px;
     background: #fef2f2;
     border: 1px solid #fca5a5;
     color: #991b1b;
-    padding: 14px;
-    border-radius: 8px;
-    margin-bottom: 20px;
 }
 
-.demo-note {
-    margin-top: 12px;
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+}
+
+.summary-item {
+    text-align: center;
+    padding: 18px 8px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.summary-number {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.summary-label {
+    display: block;
+    margin-top: 4px;
     color: #6b7280;
     font-size: 13px;
+}
+
+.pot-number {
+    color: #166534;
+}
+
+.summary-note {
+    margin-top: 16px;
     text-align: center;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.winner-box {
+    display: none;
+    margin-bottom: 20px;
+    padding: 24px;
+    border-radius: 12px;
+    border: 2px solid #f59e0b;
+    background: #fffbeb;
+    text-align: center;
+}
+
+.winner-icon {
+    font-size: 50px;
+}
+
+.winner-name {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.winner-prize {
+    margin-top: 5px;
+    font-size: 20px;
 }
 
 @media(max-width:650px) {
@@ -335,13 +375,28 @@ td:first-child {
     </div>
 
     <div class="test-banner">
-        🧪 TEST VERSION
+        🧪 TEST VERSION — Live Google Sheet Data
     </div>
 
     <div id="errorBox" class="error-box"></div>
 
 
-    <!-- PICK SECTION -->
+    <!-- WINNER -->
+
+    <div id="winnerBox" class="winner-box">
+
+        <div class="winner-icon">🏆</div>
+
+        <h2>Survivor Pool Winner</h2>
+
+        <div id="winnerName" class="winner-name"></div>
+
+        <div id="winnerPrize" class="winner-prize"></div>
+
+    </div>
+
+
+    <!-- MAKE PICK -->
 
     <div class="card">
 
@@ -358,14 +413,10 @@ td:first-child {
             </div>
 
             <div>
-                <label id="teamLabel" for="teamSelect">
-                    Team
-                </label>
+                <label id="teamLabel" for="teamSelect">Team</label>
 
                 <select id="teamSelect" disabled>
-                    <option value="">
-                        Select your name first
-                    </option>
+                    <option value="">Select your name first</option>
                 </select>
             </div>
 
@@ -373,12 +424,12 @@ td:first-child {
 
         <button
             id="submitButton"
-            class="primary-button"
+            class="submit-button"
             disabled>
             Submit Pick
         </button>
 
-        <div id="playerStatus" class="status"></div>
+        <div id="playerStatus" class="status-box"></div>
 
         <div id="connectionStatus" class="connection">
             Connecting to Google Sheets...
@@ -387,14 +438,16 @@ td:first-child {
     </div>
 
 
-    <!-- REENTRY SECTION -->
+    <!-- REENTRY -->
 
     <div id="reentryCard" class="card reentry-card">
+
+        <div class="reentry-icon">♻️</div>
 
         <h2>You've Been Eliminated</h2>
 
         <p>
-            Your previous pick lost, but you can re-enter the pool.
+            Your previous team lost, but you can re-enter the pool.
         </p>
 
         <div class="reentry-price">
@@ -402,7 +455,7 @@ td:first-child {
         </div>
 
         <p>
-            All teams you previously used will remain unavailable.
+            Your previously used teams will remain unavailable.
         </p>
 
         <button
@@ -412,8 +465,8 @@ td:first-child {
         </button>
 
         <div class="demo-note">
-            Test mode: this currently changes only this page,
-            not your Google Sheet.
+            Test mode: re-entry is temporary until Status and Entries
+            are connected to Google Sheets.
         </div>
 
     </div>
@@ -426,12 +479,14 @@ td:first-child {
         <h2>Pool Standings</h2>
 
         <div id="loading" class="loading">
-            Loading live standings...
+            Loading live pool...
         </div>
 
         <div class="table-wrap">
 
-            <table id="standingsTable" style="display:none;">
+            <table
+                id="standingsTable"
+                style="display:none;">
 
                 <thead id="standingsHead"></thead>
 
@@ -444,7 +499,7 @@ td:first-child {
     </div>
 
 
-    <!-- POOL SUMMARY -->
+    <!-- SUMMARY -->
 
     <div class="card">
 
@@ -452,10 +507,10 @@ td:first-child {
 
         <div class="summary-grid">
 
-            <div class="summary-box">
+            <div class="summary-item">
 
                 <span
-                    id="remainingCount"
+                    id="remainingPlayers"
                     class="summary-number">
                     —
                 </span>
@@ -467,10 +522,10 @@ td:first-child {
             </div>
 
 
-            <div class="summary-box">
+            <div class="summary-item">
 
                 <span
-                    id="playerCount"
+                    id="totalPlayers"
                     class="summary-number">
                     —
                 </span>
@@ -482,10 +537,10 @@ td:first-child {
             </div>
 
 
-            <div class="summary-box">
+            <div class="summary-item">
 
                 <span
-                    id="entryCount"
+                    id="totalEntries"
                     class="summary-number">
                     —
                 </span>
@@ -497,11 +552,11 @@ td:first-child {
             </div>
 
 
-            <div class="summary-box">
+            <div class="summary-item">
 
                 <span
-                    id="potAmount"
-                    class="summary-number">
+                    id="prizePool"
+                    class="summary-number pot-number">
                     —
                 </span>
 
@@ -513,9 +568,10 @@ td:first-child {
 
         </div>
 
+
         <div class="summary-note">
-            Each initial entry and re-entry adds $20.
-            Last active player wins the final prize pool.
+            Each initial entry and re-entry adds $20 to the prize pool.
+            Last active player wins.
         </div>
 
     </div>
@@ -525,119 +581,144 @@ td:first-child {
 
 <script>
 
-/* =====================================================
-
-   IMPORTANT
-
-   Paste the SAME Apps Script Web App URL that your
-   original website currently uses below.
-
-   It must end with:
-
-   /exec
-
-===================================================== */
+/* ==========================================================
+   LIVE GOOGLE APPS SCRIPT
+========================================================== */
 
 const API_URL =
-    "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
+"https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
 
 
-/* =====================================================
+/* ==========================================================
    SETTINGS
-===================================================== */
+========================================================== */
 
 const ENTRY_PRICE = 20;
 
-/*
-   We're starting at Week 3 for testing.
 
-   Later we can make this automatic or control it
-   from the Google Sheet.
+/*
+   Change this whenever you want to preview another week.
+
+   For now we're testing Week 3 because Aimi lost Week 2
+   and has purchased her second entry.
 */
 
 const CURRENT_WEEK = 3;
 
 
 /*
-   TEMPORARY STATUS INFORMATION
+   IMPORTANT:
 
-   Your existing Google Sheet/API doesn't contain
-   elimination/re-entry information yet.
+   These are TEST-ONLY statuses.
 
-   So for the TEST page we can manually put a player
-   here to preview what elimination looks like.
+   Aimi:
+   - Lost in Week 2
+   - Purchased another $20 entry
+   - Is ACTIVE again
+   - Has 2 total entries
+   - Her previously used teams remain unavailable
 
-   Example:
+   Everyone else defaults to ACTIVE with 1 entry.
 
-   Akemi: { status: "eliminated", entries: 1 }
+   To preview an eliminated player later, add:
 
-   Delete Akemi from this object if you want everybody
-   to appear active.
+   PlayerName: {
+       status: "eliminated",
+       entries: 1
+   }
 */
 
 const testStatuses = {
 
-    Akemi: {
-        status: "eliminated",
-        entries: 1
+    Aimi: {
+        status: "active",
+        entries: 2,
+        reentered: true,
+        eliminatedWeek: 2
     }
 
 };
 
 
-/* =====================================================
-   DATA
-===================================================== */
+/* ==========================================================
+   NFL TEAMS
+========================================================== */
+
+const NFL_TEAMS = [
+
+    "Arizona Cardinals",
+    "Atlanta Falcons",
+    "Baltimore Ravens",
+    "Buffalo Bills",
+    "Carolina Panthers",
+    "Chicago Bears",
+    "Cincinnati Bengals",
+    "Cleveland Browns",
+    "Dallas Cowboys",
+    "Denver Broncos",
+    "Detroit Lions",
+    "Green Bay Packers",
+    "Houston Texans",
+    "Indianapolis Colts",
+    "Jacksonville Jaguars",
+    "Kansas City Chiefs",
+    "Las Vegas Raiders",
+    "Los Angeles Chargers",
+    "Los Angeles Rams",
+    "Miami Dolphins",
+    "Minnesota Vikings",
+    "New England Patriots",
+    "New Orleans Saints",
+    "New York Giants",
+    "New York Jets",
+    "Philadelphia Eagles",
+    "Pittsburgh Steelers",
+    "San Francisco 49ers",
+    "Seattle Seahawks",
+    "Tampa Bay Buccaneers",
+    "Tennessee Titans",
+    "Washington Commanders"
+
+];
+
+
+/* ==========================================================
+   LIVE DATA
+========================================================== */
 
 let headers = [];
 let players = [];
 
 
-/* =====================================================
-   JSONP
+/* ==========================================================
+   JSONP CONNECTION
 
-   Your existing Apps Script already supports JSONP.
-===================================================== */
+   This matches the way your existing Apps Script works.
+========================================================== */
 
 function apiRequest(action, parameters = {}) {
 
     return new Promise((resolve, reject) => {
 
-        if (
-            !API_URL ||
-            API_URL.includes("PASTE_YOUR")
-        ) {
-
-            reject(
-                new Error(
-                    "You haven't pasted your Apps Script URL yet."
-                )
-            );
-
-            return;
-        }
-
-
         const callbackName =
-            "jsonp_" +
+            "survivorCallback_" +
             Date.now() +
             "_" +
             Math.floor(Math.random() * 100000);
 
 
-        const query =
-            new URLSearchParams({
-                action: action,
-                callback: callbackName,
-                ...parameters
-            });
+        const query = new URLSearchParams({
+            action: action,
+            callback: callbackName,
+            ...parameters
+        });
 
 
         const script =
             document.createElement("script");
 
 
-        let finished = false;
+        let completed = false;
 
 
         const cleanup = () => {
@@ -649,19 +730,19 @@ function apiRequest(action, parameters = {}) {
             try {
                 delete window[callbackName];
             }
-            catch(e) {
+            catch(error) {
                 window[callbackName] = undefined;
             }
 
         };
 
 
-        const timer =
+        const timeout =
             setTimeout(() => {
 
-                if (finished) return;
+                if (completed) return;
 
-                finished = true;
+                completed = true;
 
                 cleanup();
 
@@ -677,11 +758,11 @@ function apiRequest(action, parameters = {}) {
         window[callbackName] =
             function(data) {
 
-                if (finished) return;
+                if (completed) return;
 
-                finished = true;
+                completed = true;
 
-                clearTimeout(timer);
+                clearTimeout(timeout);
 
                 cleanup();
 
@@ -693,11 +774,11 @@ function apiRequest(action, parameters = {}) {
         script.onerror =
             function() {
 
-                if (finished) return;
+                if (completed) return;
 
-                finished = true;
+                completed = true;
 
-                clearTimeout(timer);
+                clearTimeout(timeout);
 
                 cleanup();
 
@@ -723,15 +804,15 @@ function apiRequest(action, parameters = {}) {
 }
 
 
-/* =====================================================
-   LOAD LIVE POOL
-===================================================== */
+/* ==========================================================
+   LOAD LIVE DATA
+========================================================== */
 
 async function loadPool() {
 
     try {
 
-        setConnectionMessage(
+        setConnection(
             "Connecting to Google Sheets..."
         );
 
@@ -746,7 +827,7 @@ async function loadPool() {
 
             throw new Error(
                 data.error ||
-                "Google Sheet returned an error."
+                "Unable to load Google Sheet."
             );
 
         }
@@ -758,18 +839,19 @@ async function loadPool() {
             : [];
 
 
-        players =
+        const livePlayers =
             Array.isArray(data.players)
             ? data.players
             : [];
 
 
         /*
-           Add temporary test status information.
+           Add our temporary Status / Entries information
+           to the REAL player data.
         */
 
         players =
-            players.map(player => {
+            livePlayers.map(player => {
 
                 const test =
                     testStatuses[player.name];
@@ -786,7 +868,16 @@ async function loadPool() {
                     entries:
                         Number(
                             test?.entries || 1
-                        )
+                        ),
+
+                    reentered:
+                        Boolean(
+                            test?.reentered
+                        ),
+
+                    eliminatedWeek:
+                        test?.eliminatedWeek ||
+                        null
 
                 };
 
@@ -812,8 +903,8 @@ async function loadPool() {
             "table";
 
 
-        setConnectionMessage(
-            "✓ Live data loaded from Google Sheets"
+        setConnection(
+            "✓ Live players and picks loaded from Google Sheets"
         );
 
     }
@@ -830,10 +921,10 @@ async function loadPool() {
         document.getElementById(
             "loading"
         ).textContent =
-            "Unable to load standings.";
+            "Unable to load pool.";
 
 
-        setConnectionMessage(
+        setConnection(
             "Google Sheets connection failed."
         );
 
@@ -842,9 +933,9 @@ async function loadPool() {
 }
 
 
-/* =====================================================
+/* ==========================================================
    PLAYER DROPDOWN
-===================================================== */
+========================================================== */
 
 function buildPlayerDropdown() {
 
@@ -883,9 +974,9 @@ function buildPlayerDropdown() {
 }
 
 
-/* =====================================================
+/* ==========================================================
    PLAYER SELECTED
-===================================================== */
+========================================================== */
 
 document.getElementById(
     "playerSelect"
@@ -894,15 +985,11 @@ document.getElementById(
     "change",
     function() {
 
-        const playerName =
-            this.value;
-
-
         const player =
             players.find(
                 p =>
                     p.name ===
-                    playerName
+                    this.value
             );
 
 
@@ -941,7 +1028,7 @@ document.getElementById(
 
 
         /*
-           ELIMINATED
+           ELIMINATED PLAYER
         */
 
         if (
@@ -950,7 +1037,7 @@ document.getElementById(
         ) {
 
             statusBox.className =
-                "status status-bad";
+                "status-box status-eliminated";
 
 
             statusBox.innerHTML =
@@ -977,20 +1064,54 @@ document.getElementById(
 
 
         /*
-           ACTIVE
+           ACTIVE RE-ENTRY PLAYER
+        */
+
+        else if (
+            player.reentered ||
+            player.entries > 1
+        ) {
+
+            statusBox.className =
+                "status-box status-active";
+
+
+            statusBox.innerHTML =
+                "<strong>Active — Re-entry #" +
+                player.entries +
+                ".</strong> " +
+                "Previously used teams are still unavailable.";
+
+
+            document.getElementById(
+                "teamSelect"
+            ).disabled =
+                false;
+
+
+            document.getElementById(
+                "submitButton"
+            ).disabled =
+                false;
+
+        }
+
+
+        /*
+           NORMAL ACTIVE PLAYER
         */
 
         else {
 
             statusBox.className =
-                "status status-good";
+                "status-box status-active";
 
 
             statusBox.innerHTML =
                 "<strong>Active.</strong> " +
                 "Select your Week " +
                 CURRENT_WEEK +
-                " team. Previously used teams are unavailable.";
+                " team.";
 
 
             document.getElementById(
@@ -1010,9 +1131,9 @@ document.getElementById(
 );
 
 
-/* =====================================================
+/* ==========================================================
    TEAM DROPDOWN
-===================================================== */
+========================================================== */
 
 function clearTeamDropdown() {
 
@@ -1051,51 +1172,10 @@ function buildTeamDropdown(player) {
 
 
     /*
-       Get teams from the player's existing picks.
+       Pull every existing pick for this player.
 
-       Because the current API doesn't return the full
-       NFL team list, we include the complete list here.
-
-       Later we can pull this from your Teams sheet.
+       This is why re-entry does NOT reset their teams.
     */
-
-    const nflTeams = [
-
-        "Arizona Cardinals",
-        "Atlanta Falcons",
-        "Baltimore Ravens",
-        "Buffalo Bills",
-        "Carolina Panthers",
-        "Chicago Bears",
-        "Cincinnati Bengals",
-        "Cleveland Browns",
-        "Dallas Cowboys",
-        "Denver Broncos",
-        "Detroit Lions",
-        "Green Bay Packers",
-        "Houston Texans",
-        "Indianapolis Colts",
-        "Jacksonville Jaguars",
-        "Kansas City Chiefs",
-        "Las Vegas Raiders",
-        "Los Angeles Chargers",
-        "Los Angeles Rams",
-        "Miami Dolphins",
-        "Minnesota Vikings",
-        "New England Patriots",
-        "New Orleans Saints",
-        "New York Giants",
-        "New York Jets",
-        "Philadelphia Eagles",
-        "Pittsburgh Steelers",
-        "San Francisco 49ers",
-        "Seattle Seahawks",
-        "Tampa Bay Buccaneers",
-        "Tennessee Titans",
-        "Washington Commanders"
-
-    ];
-
 
     const usedTeams =
         Object.values(
@@ -1110,7 +1190,7 @@ function buildTeamDropdown(player) {
         );
 
 
-    nflTeams.forEach(team => {
+    NFL_TEAMS.forEach(team => {
 
         const option =
             document.createElement(
@@ -1160,13 +1240,14 @@ function buildTeamDropdown(player) {
 }
 
 
-/* =====================================================
-   TEST RE-ENTRY
+/* ==========================================================
+   RE-ENTRY
 
-   This only changes the browser page.
+   TEST ONLY FOR NOW.
 
-   It DOES NOT change Google Sheets yet.
-===================================================== */
+   When we connect Status + Entries to Apps Script,
+   this same button will update Google Sheets.
+========================================================== */
 
 document.getElementById(
     "reentryButton"
@@ -1189,7 +1270,9 @@ document.getElementById(
             );
 
 
-        if (!player) return;
+        if (!player) {
+            return;
+        }
 
 
         if (
@@ -1212,6 +1295,10 @@ document.getElementById(
             ) + 1;
 
 
+        player.reentered =
+            true;
+
+
         document.getElementById(
             "reentryCard"
         ).style.display =
@@ -1225,13 +1312,19 @@ document.getElementById(
 
 
         statusBox.className =
-            "status status-good";
+            "status-box status-active";
 
 
         statusBox.innerHTML =
             "<strong>You're back in!</strong> " +
-            "Your test re-entry was added. " +
-            "Previously used teams remain unavailable.";
+            "This is now Entry #" +
+            player.entries +
+            ". Previously used teams remain unavailable.";
+
+
+        buildTeamDropdown(
+            player
+        );
 
 
         document.getElementById(
@@ -1246,11 +1339,6 @@ document.getElementById(
             false;
 
 
-        buildTeamDropdown(
-            player
-        );
-
-
         buildStandings();
 
         updateSummary();
@@ -1259,33 +1347,20 @@ document.getElementById(
 );
 
 
-/* =====================================================
-   SUBMIT PICK
+/* ==========================================================
+   PICK SUBMISSION
 
-   IMPORTANT:
+   TEST MODE.
 
-   For TESTING this calls your REAL submitPick function.
-
-   If you don't want the test page to modify your
-   real Sheet yet, change:
-
-       ENABLE_REAL_SUBMISSIONS = true
-
-   to:
-
-       ENABLE_REAL_SUBMISSIONS = false
-===================================================== */
-
-const ENABLE_REAL_SUBMISSIONS =
-    false;
-
+   This DOES NOT change your real Sheet yet.
+========================================================== */
 
 document.getElementById(
     "submitButton"
 )
 .addEventListener(
     "click",
-    async function() {
+    function() {
 
         const playerName =
             document.getElementById(
@@ -1308,7 +1383,7 @@ document.getElementById(
         if (!playerName) {
 
             alert(
-                "Select your name."
+                "Please select your name."
             );
 
             return;
@@ -1319,7 +1394,7 @@ document.getElementById(
         if (!team) {
 
             alert(
-                "Select a team."
+                "Please select a team."
             );
 
             return;
@@ -1350,174 +1425,26 @@ document.getElementById(
         }
 
 
-        /*
-           SAFE TEST MODE
-        */
-
-        if (
-            !ENABLE_REAL_SUBMISSIONS
-        ) {
-
-            statusBox.className =
-                "status status-info";
+        statusBox.className =
+            "status-box status-info";
 
 
-            statusBox.innerHTML =
-                "<strong>Test successful.</strong> " +
-                playerName +
-                " would submit <strong>" +
-                team +
-                "</strong> for Week " +
-                CURRENT_WEEK +
-                ". Nothing was changed in Google Sheets.";
-
-
-            return;
-
-        }
-
-
-        /*
-           REAL SUBMISSION
-        */
-
-        try {
-
-            this.disabled =
-                true;
-
-
-            this.textContent =
-                "Submitting...";
-
-
-            const result =
-                await apiRequest(
-                    "submitPick",
-                    {
-                        player:
-                            playerName,
-
-                        week:
-                            CURRENT_WEEK,
-
-                        team:
-                            team
-                    }
-                );
-
-
-            if (!result.success) {
-
-                throw new Error(
-                    result.error ||
-                    "Pick could not be submitted."
-                );
-
-            }
-
-
-            statusBox.className =
-                "status status-good";
-
-
-            statusBox.innerHTML =
-                "<strong>Pick submitted!</strong> " +
-                team +
-                " has been saved for Week " +
-                CURRENT_WEEK +
-                ".";
-
-
-            /*
-               Reload live data.
-            */
-
-            const refreshed =
-                await apiRequest(
-                    "getAllData"
-                );
-
-
-            if (
-                refreshed.success
-            ) {
-
-                headers =
-                    refreshed.headers || [];
-
-
-                const freshPlayers =
-                    refreshed.players || [];
-
-
-                players =
-                    freshPlayers.map(
-                        fresh => {
-
-                            const existing =
-                                players.find(
-                                    p =>
-                                        p.name ===
-                                        fresh.name
-                                );
-
-
-                            return {
-
-                                ...fresh,
-
-                                status:
-                                    existing?.status ||
-                                    "active",
-
-                                entries:
-                                    existing?.entries ||
-                                    1
-
-                            };
-
-                        }
-                    );
-
-
-                buildStandings();
-
-                updateSummary();
-
-            }
-
-        }
-
-        catch(error) {
-
-            statusBox.className =
-                "status status-bad";
-
-
-            statusBox.textContent =
-                error.message;
-
-        }
-
-        finally {
-
-            this.disabled =
-                false;
-
-
-            this.textContent =
-                "Submit Pick";
-
-        }
+        statusBox.innerHTML =
+            "<strong>Test successful.</strong> " +
+            playerName +
+            " would select <strong>" +
+            team +
+            "</strong> for Week " +
+            CURRENT_WEEK +
+            ". No Google Sheet data was changed.";
 
     }
 );
 
 
-/* =====================================================
+/* ==========================================================
    STANDINGS
-===================================================== */
+========================================================== */
 
 function buildStandings() {
 
@@ -1548,15 +1475,10 @@ function buildStandings() {
         );
 
 
-    const fixedHeaders = [
+    [
         "Player",
         "Status",
-        "Entries"
-    ];
-
-
-    [
-        ...fixedHeaders,
+        "Entries",
         ...headers
     ]
     .forEach(title => {
@@ -1569,6 +1491,18 @@ function buildStandings() {
 
         th.textContent =
             title;
+
+
+        if (
+            title ===
+            "Week " + CURRENT_WEEK
+        ) {
+
+            th.classList.add(
+                "current-week"
+            );
+
+        }
 
 
         headerRow.appendChild(
@@ -1584,7 +1518,7 @@ function buildStandings() {
 
 
     /*
-       PLAYERS
+       PLAYER ROWS
     */
 
     players.forEach(player => {
@@ -1608,7 +1542,7 @@ function buildStandings() {
 
 
         /*
-           NAME
+           PLAYER NAME
         */
 
         const nameCell =
@@ -1663,9 +1597,8 @@ function buildStandings() {
         }
 
         else if (
-            Number(
-                player.entries || 1
-            ) > 1
+            player.reentered ||
+            player.entries > 1
         ) {
 
             badge.classList.add(
@@ -1705,23 +1638,23 @@ function buildStandings() {
            ENTRIES
         */
 
-        const entriesCell =
+        const entryCell =
             document.createElement(
                 "td"
             );
 
 
-        entriesCell.textContent =
-            player.entries || 1;
+        entryCell.textContent =
+            player.entries;
 
 
         row.appendChild(
-            entriesCell
+            entryCell
         );
 
 
         /*
-           WEEK PICKS
+           WEEKS
         */
 
         headers.forEach(header => {
@@ -1740,6 +1673,18 @@ function buildStandings() {
                 pick || "—";
 
 
+            if (
+                header ===
+                "Week " + CURRENT_WEEK
+            ) {
+
+                td.classList.add(
+                    "current-week"
+                );
+
+            }
+
+
             row.appendChild(
                 td
             );
@@ -1756,22 +1701,26 @@ function buildStandings() {
 }
 
 
-/* =====================================================
-   SUMMARY
-===================================================== */
+/* ==========================================================
+   POOL SUMMARY
+========================================================== */
 
 function updateSummary() {
 
-    const totalPlayers =
+    const totalPlayerCount =
         players.length;
 
 
-    const remaining =
+    const activePlayers =
         players.filter(
             player =>
-                player.status !==
-                "eliminated"
-        ).length;
+                player.status ===
+                "active"
+        );
+
+
+    const remaining =
+        activePlayers.length;
 
 
     const entries =
@@ -1791,34 +1740,81 @@ function updateSummary() {
 
 
     document.getElementById(
-        "remainingCount"
+        "remainingPlayers"
     ).textContent =
         remaining;
 
 
     document.getElementById(
-        "playerCount"
+        "totalPlayers"
     ).textContent =
-        totalPlayers;
+        totalPlayerCount;
 
 
     document.getElementById(
-        "entryCount"
+        "totalEntries"
     ).textContent =
         entries;
 
 
     document.getElementById(
-        "potAmount"
+        "prizePool"
     ).textContent =
         "$" + prize;
+
+
+    /*
+       WINNER
+
+       Only display if exactly one active player remains.
+    */
+
+    const winnerBox =
+        document.getElementById(
+            "winnerBox"
+        );
+
+
+    if (
+        activePlayers.length === 1 &&
+        totalPlayerCount > 1
+    ) {
+
+        const winner =
+            activePlayers[0];
+
+
+        document.getElementById(
+            "winnerName"
+        ).textContent =
+            winner.name;
+
+
+        document.getElementById(
+            "winnerPrize"
+        ).textContent =
+            "Final Prize Pool: $" +
+            prize;
+
+
+        winnerBox.style.display =
+            "block";
+
+    }
+
+    else {
+
+        winnerBox.style.display =
+            "none";
+
+    }
 
 }
 
 
-/* =====================================================
+/* ==========================================================
    HELPERS
-===================================================== */
+========================================================== */
 
 function showError(message) {
 
@@ -1838,7 +1834,7 @@ function showError(message) {
 }
 
 
-function setConnectionMessage(message) {
+function setConnection(message) {
 
     document.getElementById(
         "connectionStatus"
@@ -1848,9 +1844,9 @@ function setConnectionMessage(message) {
 }
 
 
-/* =====================================================
+/* ==========================================================
    START
-===================================================== */
+========================================================== */
 
 loadPool();
 
