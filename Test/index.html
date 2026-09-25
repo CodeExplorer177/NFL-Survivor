@@ -1,1857 +1,2591 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>2026 NFL Survivor Pool - Test</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>2026 NFL Survivor Pool</title>
 
 <style>
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
 
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f3f4f6;
-    color: #1f2937;
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
 }
 
 .container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 16px;
+  max-width: 1200px;
+  margin: auto;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 18px;
-}
-
-.header h1 {
-    margin: 0 0 5px;
-    font-size: 32px;
-}
-
-.header p {
-    margin: 0;
-    color: #6b7280;
-}
-
-.test-banner {
-    margin: 18px 0;
-    padding: 10px;
-    text-align: center;
-    background: #fff7ed;
-    border: 1px solid #fdba74;
-    color: #9a3412;
-    border-radius: 8px;
-    font-weight: bold;
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
 }
 
-.card h2 {
-    margin-top: 0;
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.week-display {
+  text-align: center;
+  margin-bottom: 18px;
+  padding: 11px;
+
+  background: #003b6f;
+  color: white;
+
+  border-radius: 8px;
+
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.week-dates {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: normal;
+  opacity: 0.92;
 }
 
 label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+select,
+button {
+  width: 100%;
+  padding: 13px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 select {
-    width: 100%;
-    padding: 13px;
-    font-size: 16px;
-    background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+  background: white;
 }
 
 button {
-    width: 100%;
-    padding: 13px;
-    border: 0;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
+  margin-top: 15px;
+  background: #003b6f;
+  color: white;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
 }
 
-.submit-button {
-    margin-top: 18px;
-    background: #1d4ed8;
-    color: white;
-}
-
-.submit-button:hover {
-    background: #1e40af;
+button:hover {
+  background: #002b52;
 }
 
 button:disabled {
-    background: #d1d5db;
-    color: #6b7280;
-    cursor: not-allowed;
+  background: #888;
+  cursor: not-allowed;
 }
 
-.connection {
-    margin-top: 10px;
-    font-size: 13px;
-    text-align: center;
-    color: #6b7280;
+.status {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  display: none;
 }
 
-.status-box {
-    display: none;
-    margin-top: 15px;
-    padding: 13px;
-    border-radius: 8px;
+.success {
+  background: #dff5df;
+  color: #176b17;
 }
 
-.status-active {
-    display: block;
-    background: #ecfdf5;
-    border: 1px solid #86efac;
-    color: #166534;
+.error {
+  background: #f8dddd;
+  color: #8a1c1c;
 }
 
-.status-eliminated {
-    display: block;
-    background: #fef2f2;
-    border: 1px solid #fca5a5;
-    color: #991b1b;
+.current-pick {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.status-info {
-    display: block;
-    background: #eff6ff;
-    border: 1px solid #93c5fd;
-    color: #1e40af;
+
+/* =========================================
+   SURVIVOR BOARD HEADER
+   ========================================= */
+
+.board-header {
+  display: flex;
+  width: 100%;
+  border: 1px solid #aaa;
+  border-bottom: none;
+  background: white;
 }
 
-.reentry-card {
-    display: none;
-    text-align: center;
-    border: 2px solid #f59e0b;
+.nfl-logo-box {
+  width: 110px;
+  min-width: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
+
+  background: white;
+
+  border-right: 1px solid #aaa;
 }
 
-.reentry-icon {
-    font-size: 40px;
+.nfl-logo {
+  display: block;
+  width: 100px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
-.reentry-price {
-    font-size: 32px;
-    font-weight: bold;
-    margin: 10px 0;
+.board-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.reentry-button {
-    max-width: 350px;
-    background: #15803d;
-    color: white;
-    margin-top: 10px;
+.pool-title {
+  background: #003b6f;
+  color: white;
+
+  font-family: Georgia, serif;
+  font-size: 28px;
+  font-weight: 900;
+
+  padding: 5px 12px;
+
+  text-shadow: 1px 1px 1px #000;
 }
 
-.demo-note {
-    margin-top: 12px;
-    font-size: 13px;
-    color: #6b7280;
+.pool-rules {
+  padding: 4px 10px 6px;
+
+  font-size: 12px;
+  font-weight: bold;
+
+  color: red;
+
+  line-height: 1.65;
+
+  background: white;
 }
 
-.table-wrap {
-    overflow-x: auto;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+
+/* =========================================
+   BOARD CONTROLS
+   ========================================= */
+
+.board-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin: 12px 0 8px;
 }
 
-table {
+.refresh-button {
+  width: auto;
+  margin: 0;
+
+  padding: 9px 16px;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   TABLE WRAPPER
+   ========================================= */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+
+  border: 1px solid #777;
+
+  background: white;
+}
+
+
+/* =========================================
+   TABLE
+   ========================================= */
+
+.survivor-table {
+  border-collapse: collapse;
+
+  table-layout: fixed;
+
+  width: 1450px;
+  min-width: 1450px;
+}
+
+.survivor-table th,
+.survivor-table td {
+  border: 1px solid #222;
+
+  padding: 0;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   WEEK HEADER
+   ========================================= */
+
+.survivor-table th {
+  height: 30px;
+
+  background: #003b6f;
+
+  color: white;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+.player-header {
+  width: 105px;
+  min-width: 105px;
+
+  position: sticky;
+
+  left: 0;
+
+  z-index: 10;
+
+  background: #003b6f !important;
+}
+
+
+/* Current week is highlighted */
+
+.current-week-header {
+  background: #d71920 !important;
+}
+
+
+/* =========================================
+   PLAYER NAME
+   ========================================= */
+
+.player-cell {
+  width: 105px;
+  min-width: 105px;
+
+  background: white;
+
+  color: #d10b00;
+
+  font-family: Georgia, serif;
+
+  font-size: 18px;
+
+  font-weight: 900;
+
+  position: sticky;
+
+  left: 0;
+
+  z-index: 5;
+
+  vertical-align: middle;
+}
+
+
+/* =========================================
+   PICKS
+   ========================================= */
+
+.pick-cell {
+  width: 74px;
+  min-width: 74px;
+
+  height: 68px;
+
+  background: white;
+
+  vertical-align: top;
+}
+
+.logo-area {
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: white;
+
+  overflow: hidden;
+}
+
+.team-logo {
+  display: block;
+
+  max-width: 65px;
+
+  max-height: 45px;
+
+  width: auto;
+
+  height: auto;
+
+  object-fit: contain;
+}
+
+.team-bar {
+  height: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 1px 3px;
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  color: white;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.empty-pick {
+  width: 74px;
+  min-width: 74px;
+
+  height: 68px;
+
+  background: white;
+}
+
+
+/* =========================================
+   LOADING
+   ========================================= */
+
+.table-loading {
+  height: 100px;
+
+  font-size: 15px;
+
+  color: #666;
+
+  background: white;
+}
+
+.last-updated {
+  text-align: right;
+
+  margin-top: 8px;
+
+  font-size: 12px;
+
+  color: #777;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  body {
+    padding: 7px;
+  }
+
+  .container {
     width: 100%;
-    border-collapse: collapse;
-    min-width: 1500px;
-}
+  }
 
-th {
-    background: #111827;
-    color: white;
+  .card {
     padding: 10px;
-    font-size: 13px;
-    white-space: nowrap;
-    text-align: center;
-}
-
-td {
-    padding: 10px;
-    font-size: 13px;
-    border-bottom: 1px solid #e5e7eb;
-    white-space: nowrap;
-    text-align: center;
-}
-
-th:first-child,
-td:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 2;
-    text-align: left;
-}
-
-th:first-child {
-    background: #111827;
-}
-
-td:first-child {
-    background: white;
-    font-weight: bold;
-}
-
-.current-week {
-    background: #eff6ff;
-}
-
-th.current-week {
-    background: #1d4ed8;
-}
-
-.badge {
-    display: inline-block;
-    padding: 5px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.badge-active {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-eliminated {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.badge-reentry {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.eliminated-row {
-    background: #f9fafb;
-    opacity: .55;
-}
-
-.eliminated-row td:first-child {
-    background: #f3f4f6;
-}
-
-.loading {
-    text-align: center;
-    padding: 25px;
-    color: #6b7280;
-}
-
-.error-box {
-    display: none;
-    padding: 14px;
-    margin-bottom: 20px;
     border-radius: 8px;
-    background: #fef2f2;
-    border: 1px solid #fca5a5;
-    color: #991b1b;
-}
+  }
 
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 12px;
-}
+  h1 {
+    font-size: 22px;
+  }
 
-.summary-item {
-    text-align: center;
-    padding: 18px 8px;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-}
+  .week-display {
+    font-size: 15px;
+    padding: 9px;
+  }
 
-.summary-number {
-    display: block;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.summary-label {
-    display: block;
+  .week-dates {
+    font-size: 12px;
     margin-top: 4px;
-    color: #6b7280;
-    font-size: 13px;
+  }
+
+
+  /* NFL HEADER */
+
+  .nfl-logo-box {
+    width: 70px;
+    min-width: 70px;
+
+    padding: 5px;
+  }
+
+  .nfl-logo {
+    width: 64px;
+    max-width: 100&;
+  }
+
+  .pool-title {
+    font-size: 17px;
+
+    padding: 4px 7px;
+  }
+
+  .pool-rules {
+    font-size: 8px;
+
+    line-height: 1.45;
+
+    padding: 3px 6px 4px;
+  }
+
+
+  /* TABLE */
+
+  .survivor-table {
+    width: 1000px;
+
+    min-width: 1000px;
+  }
+
+  .survivor-table th {
+    height: 23px;
+
+    font-size: 9px;
+  }
+
+  .player-header {
+    width: 70px;
+
+    min-width: 70px;
+  }
+
+  .player-cell {
+    width: 70px;
+
+    min-width: 70px;
+
+    font-size: 12px;
+  }
+
+  .pick-cell,
+  .empty-pick {
+    width: 51px;
+
+    min-width: 51px;
+
+    height: 50px;
+  }
+
+  .logo-area {
+    height: 36px;
+  }
+
+  .team-logo {
+    max-width: 45px;
+
+    max-height: 33px;
+  }
+
+  .team-bar {
+    height: 14px;
+
+    font-size: 7px;
+
+    padding: 0 1px;
+  }
+
+  .refresh-button {
+    font-size: 12px;
+
+    padding: 7px 11px;
+  }
+
 }
 
-.pot-number {
-    color: #166534;
-}
 
-.summary-note {
-    margin-top: 16px;
-    text-align: center;
-    color: #6b7280;
-    font-size: 13px;
-}
-
-.winner-box {
-    display: none;
-    margin-bottom: 20px;
-    padding: 24px;
-    border-radius: 12px;
-    border: 2px solid #f59e0b;
-    background: #fffbeb;
-    text-align: center;
-}
-
-.winner-icon {
-    font-size: 50px;
-}
-
-.winner-name {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.winner-prize {
-    margin-top: 5px;
-    font-size: 20px;
-}
-
-@media(max-width:650px) {
-
-    .container {
-        padding: 10px;
-    }
-
-    .header h1 {
-        font-size: 25px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .summary-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .summary-number {
-        font-size: 23px;
-    }
-}
+/* TEST status / entries additions */
+.player-state{margin-top:12px;padding:10px;border-radius:8px;font-size:14px;font-weight:bold;display:none}
+.player-state.active{display:block;background:#dff5df;color:#176b17}
+.player-state.eliminated{display:block;background:#f8dddd;color:#8a1c1c}
+.reentry-box{display:none;margin-top:12px;padding:12px;border:2px solid #d71920;border-radius:8px;background:#fff7f7;text-align:center}
+.reentry-box button{max-width:320px;background:#d71920}
+.status-header{width:85px;min-width:85px}.entries-header{width:55px;min-width:55px}
+.status-cell{width:85px;min-width:85px;font-size:10px;font-weight:900}.entries-cell{width:55px;min-width:55px;font-size:16px;font-weight:900}
+.active-text{color:#176b17}.eliminated-text{color:#d10b00}.eliminated-row{opacity:.48;background:#eee}.eliminated-row .player-cell{background:#eee}
+.summary-title{background:#003b6f;color:#fff;padding:9px 12px;border-radius:8px 8px 0 0;font-size:18px;font-weight:bold}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #aaa;border-top:0}.summary-item{text-align:center;padding:18px 8px;background:#fff;border-right:1px solid #ddd}.summary-item:last-child{border-right:0}.summary-value{font-size:28px;font-weight:900;color:#003b6f}.summary-label{font-size:12px;font-weight:bold;color:#666;margin-top:4px}.prize{color:#176b17}.summary-note{text-align:center;font-size:12px;color:#666;margin-top:10px}
+@media(max-width:600px){.status-header,.status-cell{width:65px;min-width:65px;font-size:8px}.entries-header,.entries-cell{width:42px;min-width:42px}.summary-grid{grid-template-columns:1fr 1fr}.summary-item{border-bottom:1px solid #ddd}.summary-value{font-size:22px}}
 </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <div class="header">
-        <h1>🏈 2026 NFL Survivor Pool</h1>
-        <p>Survive. Advance. Last player standing wins.</p>
+
+<h1>
+  🏈 2026 NFL Survivor
+</h1>
+
+
+<!-- =========================================
+     PICK FORM
+     ========================================= -->
+
+<div class="card">
+
+
+  <div
+    id="weekDisplay"
+    class="week-display"
+  >
+
+    <div id="weekTitle">
+      Loading current week...
     </div>
 
-    <div class="test-banner">
-        🧪 TEST VERSION — Live Google Sheet Data
+    <div
+      id="weekDates"
+      class="week-dates"
+    >
     </div>
 
-    <div id="errorBox" class="error-box"></div>
+  </div>
 
 
-    <!-- WINNER -->
+  <label for="player">
+    Select Your Name
+  </label>
 
-    <div id="winnerBox" class="winner-box">
 
-        <div class="winner-icon">🏆</div>
+  <select id="player">
 
-        <h2>Survivor Pool Winner</h2>
+    <option value="">
+      Loading players...
+    </option>
 
-        <div id="winnerName" class="winner-name"></div>
+  </select>
 
-        <div id="winnerPrize" class="winner-prize"></div>
 
-    </div>
+  <br><br>
 
 
-    <!-- MAKE PICK -->
+  <label
+    for="team"
+    id="teamLabel"
+  >
+    Select Your Team
+  </label>
 
-    <div class="card">
 
-        <h2>Make Your Pick</h2>
+  <select
+    id="team"
+    disabled
+  >
 
-        <div class="form-grid">
+    <option value="">
+      Select a player first
+    </option>
 
-            <div>
-                <label for="playerSelect">Player</label>
+  </select>
 
-                <select id="playerSelect">
-                    <option value="">Loading players...</option>
-                </select>
-            </div>
 
-            <div>
-                <label id="teamLabel" for="teamSelect">Team</label>
+  <div
+    id="currentPick"
+    class="current-pick">
+  </div>
 
-                <select id="teamSelect" disabled>
-                    <option value="">Select your name first</option>
-                </select>
-            </div>
+  <div id="playerState" class="player-state"></div>
+  <div id="reentryBox" class="reentry-box">
+    <strong>You are currently eliminated.</strong><br>
+    You can buy another entry for $20 and continue playing.
+    <button id="reentryButton" type="button">Re-enter for $20</button>
+  </div>
 
-        </div>
 
-        <button
-            id="submitButton"
-            class="submit-button"
-            disabled>
-            Submit Pick
-        </button>
+  <button
+    id="submitButton"
+    disabled
+  >
+    Submit Pick
+  </button>
 
-        <div id="playerStatus" class="status-box"></div>
 
-        <div id="connectionStatus" class="connection">
-            Connecting to Google Sheets...
-        </div>
+  <div
+    id="status"
+    class="status">
+  </div>
 
-    </div>
-
-
-    <!-- REENTRY -->
-
-    <div id="reentryCard" class="card reentry-card">
-
-        <div class="reentry-icon">♻️</div>
-
-        <h2>You've Been Eliminated</h2>
-
-        <p>
-            Your previous team lost, but you can re-enter the pool.
-        </p>
-
-        <div class="reentry-price">
-            $20 Re-entry
-        </div>
-
-        <p>
-            Your previously used teams will remain unavailable.
-        </p>
-
-        <button
-            id="reentryButton"
-            class="reentry-button">
-            Re-enter Pool
-        </button>
-
-        <div class="demo-note">
-            Test mode: re-entry is temporary until Status and Entries
-            are connected to Google Sheets.
-        </div>
-
-    </div>
-
-
-    <!-- STANDINGS -->
-
-    <div class="card">
-
-        <h2>Pool Standings</h2>
-
-        <div id="loading" class="loading">
-            Loading live pool...
-        </div>
-
-        <div class="table-wrap">
-
-            <table
-                id="standingsTable"
-                style="display:none;">
-
-                <thead id="standingsHead"></thead>
-
-                <tbody id="standingsBody"></tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div class="card">
-
-        <h2>Pool Summary</h2>
-
-        <div class="summary-grid">
-
-            <div class="summary-item">
-
-                <span
-                    id="remainingPlayers"
-                    class="summary-number">
-                    —
-                </span>
-
-                <span class="summary-label">
-                    Players Remaining
-                </span>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <span
-                    id="totalPlayers"
-                    class="summary-number">
-                    —
-                </span>
-
-                <span class="summary-label">
-                    Total Players
-                </span>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <span
-                    id="totalEntries"
-                    class="summary-number">
-                    —
-                </span>
-
-                <span class="summary-label">
-                    Total Entries
-                </span>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <span
-                    id="prizePool"
-                    class="summary-number pot-number">
-                    —
-                </span>
-
-                <span class="summary-label">
-                    Current Prize Pool
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="summary-note">
-            Each initial entry and re-entry adds $20 to the prize pool.
-            Last active player wins.
-        </div>
-
-    </div>
 
 </div>
 
 
+
+<!-- =========================================
+     SURVIVOR BOARD
+     ========================================= -->
+
+<div class="card">
+
+
+  <div class="board-header">
+
+
+    <div class="nfl-logo-box">
+
+      <img
+        class="nfl-logo"
+        src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png"
+        alt="NFL"
+      >
+
+    </div>
+
+
+    <div class="board-info">
+
+
+      <div class="pool-title">
+        2026 NFL Survivor Pool
+      </div>
+
+
+      <div class="pool-rules">
+
+        <div>
+          1. Enter your name, then choose one team for each week from the dropdown.
+        </div>
+
+        <div>
+          2. Each NFL team may be selected only once during the entire season.
+        </div>
+
+        <div>
+          3. Your pick must win. A loss or tie eliminates you from the pool.
+        </div>
+
+        <div>
+          4. Eliminated players may buy another $20 entry. Previously used teams remain unavailable.
+        </div>
+
+        <div>
+          5. The last remaining player wins; if multiple players survive Week 18, they share the prize.
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="board-controls">
+
+    <button
+      id="refreshButton"
+      class="refresh-button"
+    >
+      🔄 Refresh Picks
+    </button>
+
+  </div>
+
+
+
+  <div class="table-wrapper">
+
+
+    <table
+      id="survivorTable"
+      class="survivor-table"
+    >
+
+
+      <thead>
+
+        <tr id="tableHeader">
+
+          <th class="player-header">
+            Player Name
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="tableBody">
+
+        <tr>
+
+          <td
+            colspan="21"
+            class="table-loading"
+          >
+            Loading survivor picks...
+          </td>
+
+        </tr>
+
+      </tbody>
+
+
+    </table>
+
+
+  </div>
+
+
+  <div
+    id="lastUpdated"
+    class="last-updated">
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="summary-title">Pool Summary</div>
+  <div class="summary-grid">
+    <div class="summary-item"><div id="remainingPlayers" class="summary-value">—</div><div class="summary-label">Players Remaining</div></div>
+    <div class="summary-item"><div id="totalPlayers" class="summary-value">—</div><div class="summary-label">Total Players</div></div>
+    <div class="summary-item"><div id="totalEntries" class="summary-value">—</div><div class="summary-label">Total Entries</div></div>
+    <div class="summary-item"><div id="prizePool" class="summary-value prize">—</div><div class="summary-label">Current Prize Pool</div></div>
+  </div>
+  <div class="summary-note">Each original entry and each re-entry adds $20 to the prize pool.</div>
+</div>
+
+</div>
+
+
+
+<!-- =========================================
+     HIDDEN SUBMISSION IFRAME
+     ========================================= -->
+
+<iframe
+  id="submitFrame"
+  style="display:none;">
+</iframe>
+
+
+
 <script>
 
-/* ==========================================================
-   LIVE GOOGLE APPS SCRIPT
-========================================================== */
+
+/* =========================================
+   GOOGLE APPS SCRIPT API
+   ========================================= */
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
-
-
-/* ==========================================================
-   SETTINGS
-========================================================== */
+  "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
 
 const ENTRY_PRICE = 20;
-
-
-/*
-   Change this whenever you want to preview another week.
-
-   For now we're testing Week 3 because Aimi lost Week 2
-   and has purchased her second entry.
-*/
-
-const CURRENT_WEEK = 3;
-
-
-/*
-   IMPORTANT:
-
-   These are TEST-ONLY statuses.
-
-   Aimi:
-   - Lost in Week 2
-   - Purchased another $20 entry
-   - Is ACTIVE again
-   - Has 2 total entries
-   - Her previously used teams remain unavailable
-
-   Everyone else defaults to ACTIVE with 1 entry.
-
-   To preview an eliminated player later, add:
-
-   PlayerName: {
-       status: "eliminated",
-       entries: 1
-   }
-*/
-
-const testStatuses = {
-
-    Aimi: {
-        status: "active",
-        entries: 2,
-        reentered: true,
-        eliminatedWeek: 2
-    }
-
+const TEST_PLAYER_STATE = {
+  "Aimi": { status: "active", entries: 2 },
+  "Akemi": { status: "eliminated", entries: 1 }
 };
+let livePoolPlayers = [];
+function getPlayerState(name) {
+  const state = TEST_PLAYER_STATE[name];
+  return state ? { status: state.status, entries: Number(state.entries || 1) } : { status: "active", entries: 1 };
+}
 
 
-/* ==========================================================
-   NFL TEAMS
-========================================================== */
 
-const NFL_TEAMS = [
 
-    "Arizona Cardinals",
-    "Atlanta Falcons",
-    "Baltimore Ravens",
-    "Buffalo Bills",
-    "Carolina Panthers",
-    "Chicago Bears",
-    "Cincinnati Bengals",
-    "Cleveland Browns",
-    "Dallas Cowboys",
-    "Denver Broncos",
-    "Detroit Lions",
-    "Green Bay Packers",
-    "Houston Texans",
-    "Indianapolis Colts",
-    "Jacksonville Jaguars",
-    "Kansas City Chiefs",
-    "Las Vegas Raiders",
-    "Los Angeles Chargers",
-    "Los Angeles Rams",
-    "Miami Dolphins",
-    "Minnesota Vikings",
-    "New England Patriots",
-    "New Orleans Saints",
-    "New York Giants",
-    "New York Jets",
-    "Philadelphia Eagles",
-    "Pittsburgh Steelers",
-    "San Francisco 49ers",
-    "Seattle Seahawks",
-    "Tampa Bay Buccaneers",
-    "Tennessee Titans",
-    "Washington Commanders"
+/* =========================================
+   AUTOMATIC SURVIVOR WEEK SCHEDULE
+   =========================================
+
+   The website switches to the next week
+   every Tuesday based on CENTRAL TIME.
+
+   Nothing is locked.
+
+   Players can change the current week's
+   pick for the entire date range.
+
+   ========================================= */
+
+
+const WEEK_START_DATES = [
+
+  { week: 1,  date: "2026-09-09" },
+
+  { week: 2,  date: "2026-09-15" },
+
+  { week: 3,  date: "2026-09-22" },
+
+  { week: 4,  date: "2026-09-29" },
+
+  { week: 5,  date: "2026-10-06" },
+
+  { week: 6,  date: "2026-10-13" },
+
+  { week: 7,  date: "2026-10-20" },
+
+  { week: 8,  date: "2026-10-27" },
+
+  { week: 9,  date: "2026-11-03" },
+
+  { week: 10, date: "2026-11-10" },
+
+  { week: 11, date: "2026-11-17" },
+
+  { week: 12, date: "2026-11-24" },
+
+  { week: 13, date: "2026-12-01" },
+
+  { week: 14, date: "2026-12-08" },
+
+  { week: 15, date: "2026-12-15" },
+
+  { week: 16, date: "2026-12-22" },
+
+  { week: 17, date: "2026-12-29" },
+
+  { week: 18, date: "2027-01-05" }
 
 ];
 
 
-/* ==========================================================
-   LIVE DATA
-========================================================== */
 
-let headers = [];
-let players = [];
+/* =========================================
+   GET CENTRAL-TIME DATE
+   ========================================= */
 
+function getCentralDateString() {
 
-/* ==========================================================
-   JSONP CONNECTION
-
-   This matches the way your existing Apps Script works.
-========================================================== */
-
-function apiRequest(action, parameters = {}) {
-
-    return new Promise((resolve, reject) => {
-
-        const callbackName =
-            "survivorCallback_" +
-            Date.now() +
-            "_" +
-            Math.floor(Math.random() * 100000);
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone: "America/Chicago",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }
+    );
 
 
-        const query = new URLSearchParams({
-            action: action,
-            callback: callbackName,
-            ...parameters
-        });
+  const parts =
+    formatter.formatToParts(
+      new Date()
+    );
 
 
-        const script =
-            document.createElement("script");
+  const year =
+    parts.find(
+      p => p.type === "year"
+    ).value;
 
 
-        let completed = false;
+  const month =
+    parts.find(
+      p => p.type === "month"
+    ).value;
 
 
-        const cleanup = () => {
+  const day =
+    parts.find(
+      p => p.type === "day"
+    ).value;
 
-            if (script.parentNode) {
-                script.parentNode.removeChild(script);
-            }
 
-            try {
-                delete window[callbackName];
-            }
-            catch(error) {
-                window[callbackName] = undefined;
-            }
+  return (
+    year +
+    "-" +
+    month +
+    "-" +
+    day
+  );
+
+}
+
+
+
+/* =========================================
+   DETERMINE CURRENT WEEK
+   ========================================= */
+
+function getCurrentWeek() {
+
+  const today =
+    getCentralDateString();
+
+
+  /*
+     Before Week 1 starts,
+     display Week 1.
+  */
+
+  let activeWeek = 1;
+
+
+  for (
+    const item of
+    WEEK_START_DATES
+  ) {
+
+    if (
+      today >= item.date
+    ) {
+
+      activeWeek =
+        item.week;
+
+    }
+
+  }
+
+
+  return Math.min(
+    activeWeek,
+    18
+  );
+
+}
+
+
+const CURRENT_WEEK =
+  getCurrentWeek();
+
+
+
+/* =========================================
+   DATE RANGE FUNCTIONS
+   ========================================= */
+
+
+/*
+   Parse YYYY-MM-DD without allowing
+   browser timezone conversion.
+*/
+
+function parseScheduleDate(
+  dateString
+) {
+
+  const parts =
+    dateString.split("-");
+
+
+  return new Date(
+    Number(parts[0]),
+    Number(parts[1]) - 1,
+    Number(parts[2])
+  );
+
+}
+
+
+
+/*
+   Get the visible date range for
+   the current Survivor week.
+*/
+
+function getCurrentWeekRange() {
+
+  const currentWeekInfo =
+    WEEK_START_DATES.find(
+      item =>
+        item.week ===
+        CURRENT_WEEK
+    );
+
+
+  if (!currentWeekInfo) {
+
+    return "";
+
+  }
+
+
+  const startDate =
+    parseScheduleDate(
+      currentWeekInfo.date
+    );
+
+
+  const nextWeekInfo =
+    WEEK_START_DATES.find(
+      item =>
+        item.week ===
+        CURRENT_WEEK + 1
+    );
+
+
+  let endDate;
+
+
+  if (nextWeekInfo) {
+
+    endDate =
+      parseScheduleDate(
+        nextWeekInfo.date
+      );
+
+
+    /*
+       Current week ends one day
+       before next week's start.
+    */
+
+    endDate.setDate(
+      endDate.getDate() - 1
+    );
+
+  }
+
+  else {
+
+    /*
+       Final Survivor week.
+    */
+
+    endDate =
+      new Date(
+        2027,
+        0,
+        10
+      );
+
+  }
+
+
+  const startMonth =
+    startDate.toLocaleDateString(
+      "en-US",
+      {
+        month: "long"
+      }
+    );
+
+
+  const endMonth =
+    endDate.toLocaleDateString(
+      "en-US",
+      {
+        month: "long"
+      }
+    );
+
+
+  /*
+     Example:
+     September 15 – September 21
+  */
+
+  return (
+    startMonth +
+    " " +
+    startDate.getDate() +
+    " – " +
+    endMonth +
+    " " +
+    endDate.getDate()
+  );
+
+}
+
+
+
+/* =========================================
+   SHOW CURRENT WEEK
+   ========================================= */
+
+const weekTitle =
+  document.getElementById(
+    "weekTitle"
+  );
+
+
+const weekDates =
+  document.getElementById(
+    "weekDates"
+  );
+
+
+const teamLabel =
+  document.getElementById(
+    "teamLabel"
+  );
+
+
+weekTitle.textContent =
+  "🏈 Current Survivor Week " +
+  CURRENT_WEEK;
+
+
+weekDates.textContent =
+  getCurrentWeekRange();
+
+
+teamLabel.textContent =
+  "Select Your Week " +
+  CURRENT_WEEK +
+  " Team";
+
+
+
+/* =========================================
+   NFL TEAM INFORMATION
+   ========================================= */
+
+const TEAM_INFO = {
+
+  "49ers": {
+    color: "#AA0000",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"
+  },
+
+  "Bears": {
+    color: "#C83803",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png"
+  },
+
+  "Bengals": {
+    color: "#FB4F14",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png"
+  },
+
+  "Bills": {
+    color: "#00338D",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
+  },
+
+  "Broncos": {
+    color: "#FB4F14",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/den.png"
+  },
+
+  "Browns": {
+    color: "#311D00",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png"
+  },
+
+  "Buccaneers": {
+    color: "#D50A0A",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png"
+  },
+
+  "Cardinals": {
+    color: "#97233F",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png"
+  },
+
+  "Chargers": {
+    color: "#0080C6",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png"
+  },
+
+  "Chiefs": {
+    color: "#E31837",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
+  },
+
+  "Colts": {
+    color: "#002C5F",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png"
+  },
+
+  "Commanders": {
+    color: "#5A1414",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
+  },
+
+  "Cowboys": {
+    color: "#003594",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png"
+  },
+
+  "Dolphins": {
+    color: "#008E97",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png"
+  },
+
+  "Eagles": {
+    color: "#004C54",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"
+  },
+
+  "Falcons": {
+    color: "#A71930",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png"
+  },
+
+  "Giants": {
+    color: "#0B2265",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png"
+  },
+
+  "Jaguars": {
+    color: "#006778",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"
+  },
+
+  "Jets": {
+    color: "#125740",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png"
+  },
+
+  "Lions": {
+    color: "#0076B6",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/det.png"
+  },
+
+  "Packers": {
+    color: "#203731",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png"
+  },
+
+  "Panthers": {
+    color: "#0085CA",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/car.png"
+  },
+
+  "Patriots": {
+    color: "#002244",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"
+  },
+
+  "Raiders": {
+    color: "#000000",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png"
+  },
+
+  "Rams": {
+    color: "#003594",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png"
+  },
+
+  "Ravens": {
+    color: "#241773",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"
+  },
+
+  "Saints": {
+    color: "#9F8958",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/no.png"
+  },
+
+  "Seahawks": {
+    color: "#002244",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png"
+  },
+
+  "Steelers": {
+    color: "#101820",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png"
+  },
+
+  "Texans": {
+    color: "#03202F",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png"
+  },
+
+  "Titans": {
+    color: "#0C2340",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png"
+  },
+
+  "Vikings": {
+    color: "#4F2683",
+    logo: "https://a.espncdn.com/i/teamlogos/nfl/500/min.png"
+  }
+
+};
+
+
+const TEAMS =
+  Object.keys(
+    TEAM_INFO
+  );
+
+
+
+/* =========================================
+   ELEMENTS
+   ========================================= */
+
+const playerSelect =
+  document.getElementById(
+    "player"
+  );
+
+
+const teamSelect =
+  document.getElementById(
+    "team"
+  );
+
+
+const submitButton =
+  document.getElementById(
+    "submitButton"
+  );
+
+
+const refreshButton =
+  document.getElementById(
+    "refreshButton"
+  );
+
+
+const statusBox =
+  document.getElementById(
+    "status"
+  );
+
+
+const currentPickBox =
+  document.getElementById(
+    "currentPick"
+  );
+
+
+const submitFrame =
+  document.getElementById(
+    "submitFrame"
+  );
+
+
+const tableHeader =
+  document.getElementById(
+    "tableHeader"
+  );
+
+
+const tableBody =
+  document.getElementById(
+    "tableBody"
+  );
+
+
+const lastUpdated =
+  document.getElementById(
+    "lastUpdated"
+  );
+
+const playerState = document.getElementById("playerState");
+const reentryBox = document.getElementById("reentryBox");
+const reentryButton = document.getElementById("reentryButton");
+
+
+
+
+/* =========================================
+   JSONP
+   ========================================= */
+
+function jsonp(
+  action,
+  params = {},
+  timeout = 10000
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const callbackName =
+        "jsonpCallback_" +
+        Date.now() +
+        "_" +
+        Math.floor(
+          Math.random() * 100000
+        );
+
+
+      const script =
+        document.createElement(
+          "script"
+        );
+
+
+      let finished = false;
+
+      let timer;
+
+
+      function cleanup() {
+
+        if (finished) {
+          return;
+        }
+
+
+        finished = true;
+
+
+        clearTimeout(
+          timer
+        );
+
+
+        delete window[
+          callbackName
+        ];
+
+
+        if (
+          script.parentNode
+        ) {
+
+          script.parentNode.removeChild(
+            script
+          );
+
+        }
+
+      }
+
+
+      window[
+        callbackName
+      ] =
+        function(data) {
+
+          cleanup();
+
+          resolve(data);
 
         };
 
 
-        const timeout =
-            setTimeout(() => {
+      script.onerror =
+        function() {
 
-                if (completed) return;
+          cleanup();
 
-                completed = true;
 
-                cleanup();
-
-                reject(
-                    new Error(
-                        "Google Sheets connection timed out."
-                    )
-                );
-
-            }, 15000);
-
-
-        window[callbackName] =
-            function(data) {
-
-                if (completed) return;
-
-                completed = true;
-
-                clearTimeout(timeout);
-
-                cleanup();
-
-                resolve(data);
-
-            };
-
-
-        script.onerror =
-            function() {
-
-                if (completed) return;
-
-                completed = true;
-
-                clearTimeout(timeout);
-
-                cleanup();
-
-                reject(
-                    new Error(
-                        "Could not connect to Google Apps Script."
-                    )
-                );
-
-            };
-
-
-        script.src =
-            API_URL +
-            "?" +
-            query.toString();
-
-
-        document.body.appendChild(script);
-
-    });
-
-}
-
-
-/* ==========================================================
-   LOAD LIVE DATA
-========================================================== */
-
-async function loadPool() {
-
-    try {
-
-        setConnection(
-            "Connecting to Google Sheets..."
-        );
-
-
-        const data =
-            await apiRequest(
-                "getAllData"
-            );
-
-
-        if (!data.success) {
-
-            throw new Error(
-                data.error ||
-                "Unable to load Google Sheet."
-            );
-
-        }
-
-
-        headers =
-            Array.isArray(data.headers)
-            ? data.headers
-            : [];
-
-
-        const livePlayers =
-            Array.isArray(data.players)
-            ? data.players
-            : [];
-
-
-        /*
-           Add our temporary Status / Entries information
-           to the REAL player data.
-        */
-
-        players =
-            livePlayers.map(player => {
-
-                const test =
-                    testStatuses[player.name];
-
-
-                return {
-
-                    ...player,
-
-                    status:
-                        test?.status ||
-                        "active",
-
-                    entries:
-                        Number(
-                            test?.entries || 1
-                        ),
-
-                    reentered:
-                        Boolean(
-                            test?.reentered
-                        ),
-
-                    eliminatedWeek:
-                        test?.eliminatedWeek ||
-                        null
-
-                };
-
-            });
-
-
-        buildPlayerDropdown();
-
-        buildStandings();
-
-        updateSummary();
-
-
-        document.getElementById(
-            "loading"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "standingsTable"
-        ).style.display =
-            "table";
-
-
-        setConnection(
-            "✓ Live players and picks loaded from Google Sheets"
-        );
-
-    }
-
-    catch(error) {
-
-        console.error(error);
-
-        showError(
-            error.message
-        );
-
-
-        document.getElementById(
-            "loading"
-        ).textContent =
-            "Unable to load pool.";
-
-
-        setConnection(
-            "Google Sheets connection failed."
-        );
-
-    }
-
-}
-
-
-/* ==========================================================
-   PLAYER DROPDOWN
-========================================================== */
-
-function buildPlayerDropdown() {
-
-    const select =
-        document.getElementById(
-            "playerSelect"
-        );
-
-
-    select.innerHTML =
-        '<option value="">Select your name</option>';
-
-
-    players.forEach(player => {
-
-        const option =
-            document.createElement(
-                "option"
-            );
-
-
-        option.value =
-            player.name;
-
-
-        option.textContent =
-            player.name;
-
-
-        select.appendChild(
-            option
-        );
-
-    });
-
-}
-
-
-/* ==========================================================
-   PLAYER SELECTED
-========================================================== */
-
-document.getElementById(
-    "playerSelect"
-)
-.addEventListener(
-    "change",
-    function() {
-
-        const player =
-            players.find(
-                p =>
-                    p.name ===
-                    this.value
-            );
-
-
-        const statusBox =
-            document.getElementById(
-                "playerStatus"
-            );
-
-
-        const reentryCard =
-            document.getElementById(
-                "reentryCard"
-            );
-
-
-        statusBox.style.display =
-            "none";
-
-
-        reentryCard.style.display =
-            "none";
-
-
-        if (!player) {
-
-            clearTeamDropdown();
-
-            return;
-
-        }
-
-
-        buildTeamDropdown(
-            player
-        );
-
-
-        /*
-           ELIMINATED PLAYER
-        */
-
-        if (
-            player.status ===
-            "eliminated"
-        ) {
-
-            statusBox.className =
-                "status-box status-eliminated";
-
-
-            statusBox.innerHTML =
-                "<strong>Eliminated.</strong> " +
-                "You must re-enter before making another pick.";
-
-
-            reentryCard.style.display =
-                "block";
-
-
-            document.getElementById(
-                "teamSelect"
-            ).disabled =
-                true;
-
-
-            document.getElementById(
-                "submitButton"
-            ).disabled =
-                true;
-
-        }
-
-
-        /*
-           ACTIVE RE-ENTRY PLAYER
-        */
-
-        else if (
-            player.reentered ||
-            player.entries > 1
-        ) {
-
-            statusBox.className =
-                "status-box status-active";
-
-
-            statusBox.innerHTML =
-                "<strong>Active — Re-entry #" +
-                player.entries +
-                ".</strong> " +
-                "Previously used teams are still unavailable.";
-
-
-            document.getElementById(
-                "teamSelect"
-            ).disabled =
-                false;
-
-
-            document.getElementById(
-                "submitButton"
-            ).disabled =
-                false;
-
-        }
-
-
-        /*
-           NORMAL ACTIVE PLAYER
-        */
-
-        else {
-
-            statusBox.className =
-                "status-box status-active";
-
-
-            statusBox.innerHTML =
-                "<strong>Active.</strong> " +
-                "Select your Week " +
-                CURRENT_WEEK +
-                " team.";
-
-
-            document.getElementById(
-                "teamSelect"
-            ).disabled =
-                false;
-
-
-            document.getElementById(
-                "submitButton"
-            ).disabled =
-                false;
-
-        }
-
-    }
-);
-
-
-/* ==========================================================
-   TEAM DROPDOWN
-========================================================== */
-
-function clearTeamDropdown() {
-
-    const select =
-        document.getElementById(
-            "teamSelect"
-        );
-
-
-    select.innerHTML =
-        '<option value="">Select your name first</option>';
-
-
-    select.disabled =
-        true;
-
-
-    document.getElementById(
-        "submitButton"
-    ).disabled =
-        true;
-
-}
-
-
-function buildTeamDropdown(player) {
-
-    const select =
-        document.getElementById(
-            "teamSelect"
-        );
-
-
-    select.innerHTML =
-        '<option value="">Select a team</option>';
-
-
-    /*
-       Pull every existing pick for this player.
-
-       This is why re-entry does NOT reset their teams.
-    */
-
-    const usedTeams =
-        Object.values(
-            player.picks || {}
-        )
-        .filter(Boolean)
-        .map(
-            team =>
-                String(team)
-                    .trim()
-                    .toLowerCase()
-        );
-
-
-    NFL_TEAMS.forEach(team => {
-
-        const option =
-            document.createElement(
-                "option"
-            );
-
-
-        option.value =
-            team;
-
-
-        option.textContent =
-            team;
-
-
-        if (
-            usedTeams.includes(
-                team.toLowerCase()
+          reject(
+            new Error(
+              "Could not connect to the NFL Survivor server."
             )
-        ) {
+          );
 
-            option.disabled =
-                true;
-
-
-            option.textContent =
-                team +
-                " — Already Used";
-
-        }
+        };
 
 
-        select.appendChild(
-            option
+      let url =
+        API_URL +
+        "?action=" +
+        encodeURIComponent(
+          action
+        ) +
+        "&callback=" +
+        encodeURIComponent(
+          callbackName
+        ) +
+        "&_=" +
+        Date.now();
+
+
+      for (
+        const key in params
+      ) {
+
+        url +=
+          "&" +
+          encodeURIComponent(
+            key
+          ) +
+          "=" +
+          encodeURIComponent(
+            params[key]
+          );
+
+      }
+
+
+      script.src =
+        url;
+
+
+      document.body.appendChild(
+        script
+      );
+
+
+      timer =
+        setTimeout(
+          () => {
+
+            cleanup();
+
+
+            reject(
+              new Error(
+                "The server took too long to respond."
+              )
+            );
+
+          },
+          timeout
         );
 
-    });
-
-
-    document.getElementById(
-        "teamLabel"
-    ).textContent =
-        "Week " +
-        CURRENT_WEEK +
-        " Pick";
+    }
+  );
 
 }
 
 
-/* ==========================================================
-   RE-ENTRY
 
-   TEST ONLY FOR NOW.
+/* =========================================
+   LOAD PLAYERS
+   ========================================= */
 
-   When we connect Status + Entries to Apps Script,
-   this same button will update Google Sheets.
-========================================================== */
+async function loadPlayers() {
 
-document.getElementById(
-    "reentryButton"
-)
-.addEventListener(
-    "click",
-    function() {
+  try {
 
-        const playerName =
-            document.getElementById(
-                "playerSelect"
-            ).value;
-
-
-        const player =
-            players.find(
-                p =>
-                    p.name ===
-                    playerName
-            );
-
-
-        if (!player) {
-            return;
-        }
-
-
-        if (
-            player.status !==
-            "eliminated"
-        ) {
-
-            return;
-
-        }
-
-
-        player.status =
-            "active";
-
-
-        player.entries =
-            Number(
-                player.entries || 1
-            ) + 1;
-
-
-        player.reentered =
-            true;
-
-
-        document.getElementById(
-            "reentryCard"
-        ).style.display =
-            "none";
-
-
-        const statusBox =
-            document.getElementById(
-                "playerStatus"
-            );
-
-
-        statusBox.className =
-            "status-box status-active";
-
-
-        statusBox.innerHTML =
-            "<strong>You're back in!</strong> " +
-            "This is now Entry #" +
-            player.entries +
-            ". Previously used teams remain unavailable.";
-
-
-        buildTeamDropdown(
-            player
-        );
-
-
-        document.getElementById(
-            "teamSelect"
-        ).disabled =
-            false;
-
-
-        document.getElementById(
-            "submitButton"
-        ).disabled =
-            false;
-
-
-        buildStandings();
-
-        updateSummary();
-
-    }
-);
-
-
-/* ==========================================================
-   PICK SUBMISSION
-
-   TEST MODE.
-
-   This DOES NOT change your real Sheet yet.
-========================================================== */
-
-document.getElementById(
-    "submitButton"
-)
-.addEventListener(
-    "click",
-    function() {
-
-        const playerName =
-            document.getElementById(
-                "playerSelect"
-            ).value;
-
-
-        const team =
-            document.getElementById(
-                "teamSelect"
-            ).value;
-
-
-        const statusBox =
-            document.getElementById(
-                "playerStatus"
-            );
-
-
-        if (!playerName) {
-
-            alert(
-                "Please select your name."
-            );
-
-            return;
-
-        }
-
-
-        if (!team) {
-
-            alert(
-                "Please select a team."
-            );
-
-            return;
-
-        }
-
-
-        const player =
-            players.find(
-                p =>
-                    p.name ===
-                    playerName
-            );
-
-
-        if (
-            !player ||
-            player.status ===
-            "eliminated"
-        ) {
-
-            alert(
-                "This player is currently eliminated."
-            );
-
-            return;
-
-        }
-
-
-        statusBox.className =
-            "status-box status-info";
-
-
-        statusBox.innerHTML =
-            "<strong>Test successful.</strong> " +
-            playerName +
-            " would select <strong>" +
-            team +
-            "</strong> for Week " +
-            CURRENT_WEEK +
-            ". No Google Sheet data was changed.";
-
-    }
-);
-
-
-/* ==========================================================
-   STANDINGS
-========================================================== */
-
-function buildStandings() {
-
-    const head =
-        document.getElementById(
-            "standingsHead"
-        );
-
-
-    const body =
-        document.getElementById(
-            "standingsBody"
-        );
-
-
-    head.innerHTML = "";
-
-    body.innerHTML = "";
-
-
-    /*
-       HEADER
-    */
-
-    const headerRow =
-        document.createElement(
-            "tr"
-        );
-
-
-    [
-        "Player",
-        "Status",
-        "Entries",
-        ...headers
-    ]
-    .forEach(title => {
-
-        const th =
-            document.createElement(
-                "th"
-            );
-
-
-        th.textContent =
-            title;
-
-
-        if (
-            title ===
-            "Week " + CURRENT_WEEK
-        ) {
-
-            th.classList.add(
-                "current-week"
-            );
-
-        }
-
-
-        headerRow.appendChild(
-            th
-        );
-
-    });
-
-
-    head.appendChild(
-        headerRow
-    );
-
-
-    /*
-       PLAYER ROWS
-    */
-
-    players.forEach(player => {
-
-        const row =
-            document.createElement(
-                "tr"
-            );
-
-
-        if (
-            player.status ===
-            "eliminated"
-        ) {
-
-            row.classList.add(
-                "eliminated-row"
-            );
-
-        }
-
-
-        /*
-           PLAYER NAME
-        */
-
-        const nameCell =
-            document.createElement(
-                "td"
-            );
-
-
-        nameCell.textContent =
-            player.name;
-
-
-        row.appendChild(
-            nameCell
-        );
-
-
-        /*
-           STATUS
-        */
-
-        const statusCell =
-            document.createElement(
-                "td"
-            );
-
-
-        const badge =
-            document.createElement(
-                "span"
-            );
-
-
-        badge.classList.add(
-            "badge"
-        );
-
-
-        if (
-            player.status ===
-            "eliminated"
-        ) {
-
-            badge.classList.add(
-                "badge-eliminated"
-            );
-
-
-            badge.textContent =
-                "ELIMINATED";
-
-        }
-
-        else if (
-            player.reentered ||
-            player.entries > 1
-        ) {
-
-            badge.classList.add(
-                "badge-reentry"
-            );
-
-
-            badge.textContent =
-                "ACTIVE • RE-ENTRY";
-
-        }
-
-        else {
-
-            badge.classList.add(
-                "badge-active"
-            );
-
-
-            badge.textContent =
-                "ACTIVE";
-
-        }
-
-
-        statusCell.appendChild(
-            badge
-        );
-
-
-        row.appendChild(
-            statusCell
-        );
-
-
-        /*
-           ENTRIES
-        */
-
-        const entryCell =
-            document.createElement(
-                "td"
-            );
-
-
-        entryCell.textContent =
-            player.entries;
-
-
-        row.appendChild(
-            entryCell
-        );
-
-
-        /*
-           WEEKS
-        */
-
-        headers.forEach(header => {
-
-            const td =
-                document.createElement(
-                    "td"
-                );
-
-
-            const pick =
-                player.picks?.[header];
-
-
-            td.textContent =
-                pick || "—";
-
-
-            if (
-                header ===
-                "Week " + CURRENT_WEEK
-            ) {
-
-                td.classList.add(
-                    "current-week"
-                );
-
-            }
-
-
-            row.appendChild(
-                td
-            );
-
-        });
-
-
-        body.appendChild(
-            row
-        );
-
-    });
-
-}
-
-
-/* ==========================================================
-   POOL SUMMARY
-========================================================== */
-
-function updateSummary() {
-
-    const totalPlayerCount =
-        players.length;
-
-
-    const activePlayers =
-        players.filter(
-            player =>
-                player.status ===
-                "active"
-        );
-
-
-    const remaining =
-        activePlayers.length;
-
-
-    const entries =
-        players.reduce(
-            (total, player) =>
-                total +
-                Number(
-                    player.entries || 1
-                ),
-            0
-        );
-
-
-    const prize =
-        entries *
-        ENTRY_PRICE;
-
-
-    document.getElementById(
-        "remainingPlayers"
-    ).textContent =
-        remaining;
-
-
-    document.getElementById(
-        "totalPlayers"
-    ).textContent =
-        totalPlayerCount;
-
-
-    document.getElementById(
-        "totalEntries"
-    ).textContent =
-        entries;
-
-
-    document.getElementById(
-        "prizePool"
-    ).textContent =
-        "$" + prize;
-
-
-    /*
-       WINNER
-
-       Only display if exactly one active player remains.
-    */
-
-    const winnerBox =
-        document.getElementById(
-            "winnerBox"
-        );
+    const data =
+      await jsonp(
+        "getPlayers"
+      );
 
 
     if (
-        activePlayers.length === 1 &&
-        totalPlayerCount > 1
+      !data ||
+      !data.success
     ) {
 
-        const winner =
-            activePlayers[0];
+      throw new Error(
+        data?.error ||
+        "Unable to load players."
+      );
+
+    }
 
 
-        document.getElementById(
-            "winnerName"
-        ).textContent =
-            winner.name;
+    playerSelect.innerHTML =
+      '<option value="">Select your name</option>';
 
 
-        document.getElementById(
-            "winnerPrize"
-        ).textContent =
-            "Final Prize Pool: $" +
-            prize;
+    data.players.forEach(
+      player => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
 
 
-        winnerBox.style.display =
-            "block";
+        option.value =
+          player;
+
+
+        option.textContent =
+          player;
+
+
+        playerSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    playerSelect.innerHTML =
+      '<option value="">Error loading players</option>';
+
+
+    showStatus(
+      "Could not load the player list.",
+      "error"
+    );
+
+  }
+
+}
+
+
+
+/* =========================================
+   LOAD PLAYER PICKS
+   ========================================= */
+
+async function loadPlayerData(
+  player
+) {
+
+  if (!player) {
+
+    teamSelect.disabled =
+      true;
+
+
+    teamSelect.innerHTML =
+      '<option value="">Select a player first</option>';
+
+
+    submitButton.disabled =
+      true;
+
+
+    currentPickBox.textContent =
+      "";
+
+
+    return;
+
+  }
+
+  const state = getPlayerState(player);
+  playerState.className = "player-state " + state.status;
+  playerState.textContent = state.status.toUpperCase() + " • " + state.entries + (state.entries === 1 ? " Entry" : " Entries");
+  reentryBox.style.display = state.status === "eliminated" ? "block" : "none";
+  if (state.status === "eliminated") {
+    teamSelect.disabled = true;
+    teamSelect.innerHTML = '<option value="">Re-enter to make another pick</option>';
+    submitButton.disabled = true;
+    currentPickBox.textContent = "";
+    return;
+  }
+
+  try {
+
+    teamSelect.disabled =
+      true;
+
+
+    teamSelect.innerHTML =
+      '<option value="">Loading teams...</option>';
+
+
+    const data =
+      await jsonp(
+        "getPlayerData",
+        {
+          player: player
+        }
+      );
+
+
+    if (
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error
+      );
+
+    }
+
+
+    const picks =
+      data.picks || {};
+
+
+    const weekName =
+      "Week " +
+      CURRENT_WEEK;
+
+
+    const currentPick =
+      picks[
+        weekName
+      ] || "";
+
+
+    /*
+       Teams used in previous/other
+       weeks cannot be selected again.
+
+       The current week's team remains
+       selectable so it can be changed.
+    */
+
+    const usedTeams =
+      new Set(
+
+        Object.entries(
+          picks
+        )
+
+        .filter(
+          ([week, team]) =>
+            week !== weekName &&
+            team
+        )
+
+        .map(
+          ([week, team]) =>
+            team
+        )
+
+      );
+
+
+    if (
+      currentPick
+    ) {
+
+      currentPickBox.textContent =
+        "Current Week " +
+        CURRENT_WEEK +
+        " Pick: " +
+        currentPick;
 
     }
 
     else {
 
-        winnerBox.style.display =
-            "none";
+      currentPickBox.textContent =
+        "No Week " +
+        CURRENT_WEEK +
+        " pick submitted yet.";
 
     }
 
+
+    teamSelect.innerHTML =
+      '<option value="">Select a team</option>';
+
+
+    TEAMS.forEach(
+      team => {
+
+        if (
+          usedTeams.has(
+            team
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          team;
+
+
+        option.textContent =
+          team;
+
+
+        if (
+          team ===
+          currentPick
+        ) {
+
+          option.selected =
+            true;
+
+
+          option.textContent =
+            team +
+            " (Current Pick)";
+
+        }
+
+
+        teamSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+    teamSelect.disabled =
+      false;
+
+
+    submitButton.disabled =
+      false;
+
+
+    submitButton.textContent =
+      currentPick
+        ? "Change My Pick"
+        : "Submit Pick";
+
+  }
+
+  catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    showStatus(
+      "Could not load player data.",
+      "error"
+    );
+
+  }
+
 }
 
 
-/* ==========================================================
-   HELPERS
-========================================================== */
 
-function showError(message) {
+/* =========================================
+   LOAD SURVIVOR BOARD
+   ========================================= */
 
-    const box =
-        document.getElementById(
-            "errorBox"
+async function loadTable() {
+
+  try {
+
+    const data =
+      await jsonp(
+        "getAllData"
+      );
+
+
+    if (
+      !data ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data?.error ||
+        "Unable to load survivor data."
+      );
+
+    }
+
+
+    livePoolPlayers = data.players || [];
+
+    /* -----------------------------
+       TABLE HEADERS
+       ----------------------------- */
+
+    tableHeader.innerHTML =
+      '<th class="player-header">Player Name</th>' + '<th class="status-header">Status</th>' + '<th class="entries-header">Entries</th>';
+
+
+    data.headers.forEach(
+      header => {
+
+        const th =
+          document.createElement(
+            "th"
+          );
+
+
+        th.textContent =
+          header;
+
+
+        /*
+           Highlight current week.
+        */
+
+        if (
+          header ===
+          "Week " +
+          CURRENT_WEEK
+        ) {
+
+          th.classList.add(
+            "current-week-header"
+          );
+
+        }
+
+
+        tableHeader.appendChild(
+          th
+        );
+
+      }
+    );
+
+
+    /* -----------------------------
+       PLAYER ROWS
+       ----------------------------- */
+
+    tableBody.innerHTML =
+      "";
+
+
+    data.players.forEach(
+      player => {
+
+        const row =
+          document.createElement(
+            "tr"
+          );
+
+
+        /*
+           Player name
+        */
+
+        const playerCell =
+          document.createElement(
+            "td"
+          );
+
+
+        playerCell.className =
+          "player-cell";
+
+
+        playerCell.textContent =
+          player.name;
+
+
+        row.appendChild(
+          playerCell
+        );
+
+        const state = getPlayerState(player.name);
+        if (state.status === "eliminated") row.classList.add("eliminated-row");
+        const statusCell = document.createElement("td");
+        statusCell.className = "status-cell " + (state.status === "active" ? "active-text" : "eliminated-text");
+        statusCell.textContent = state.status.toUpperCase();
+        row.appendChild(statusCell);
+        const entriesCell = document.createElement("td");
+        entriesCell.className = "entries-cell";
+        entriesCell.textContent = state.entries;
+        row.appendChild(entriesCell);
+
+        /*
+           Week picks
+        */
+
+        data.headers.forEach(
+          week => {
+
+            const team =
+              player.picks[
+                week
+              ] || "";
+
+
+            if (!team) {
+
+              const empty =
+                document.createElement(
+                  "td"
+                );
+
+
+              empty.className =
+                "empty-pick";
+
+
+              row.appendChild(
+                empty
+              );
+
+
+              return;
+
+            }
+
+
+            const info =
+              TEAM_INFO[
+                team
+              ];
+
+
+            const cell =
+              document.createElement(
+                "td"
+              );
+
+
+            cell.className =
+              "pick-cell";
+
+
+            /* TEAM LOGO */
+
+            const logoArea =
+              document.createElement(
+                "div"
+              );
+
+
+            logoArea.className =
+              "logo-area";
+
+
+            if (info) {
+
+              const image =
+                document.createElement(
+                  "img"
+                );
+
+
+              image.className =
+                "team-logo";
+
+
+              image.src =
+                info.logo;
+
+
+              image.alt =
+                team +
+                " logo";
+
+
+              logoArea.appendChild(
+                image
+              );
+
+            }
+
+
+            /* TEAM NAME BAR */
+
+            const teamBar =
+              document.createElement(
+                "div"
+              );
+
+
+            teamBar.className =
+              "team-bar";
+
+
+            teamBar.textContent =
+              team;
+
+
+            teamBar.style.backgroundColor =
+              info
+                ? info.color
+                : "#333";
+
+
+            cell.appendChild(
+              logoArea
+            );
+
+
+            cell.appendChild(
+              teamBar
+            );
+
+
+            row.appendChild(
+              cell
+            );
+
+          }
         );
 
 
-    box.textContent =
-        message;
+        tableBody.appendChild(
+          row
+        );
+
+      }
+    );
 
 
-    box.style.display =
-        "block";
+    updateSummary();
+
+    lastUpdated.textContent =
+      "Last updated: " +
+      new Date()
+        .toLocaleTimeString();
+
+  }
+
+  catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    tableBody.innerHTML =
+      '<tr>' +
+      '<td colspan="21" class="table-loading">' +
+      'Could not load survivor picks.' +
+      '</td>' +
+      '</tr>';
+
+  }
 
 }
 
 
-function setConnection(message) {
 
-    document.getElementById(
-        "connectionStatus"
-    ).textContent =
-        message;
+/* =========================================
+   SUBMIT / CHANGE PICK
+   ========================================= */
+
+async function submitPick() {
+
+  const player =
+    playerSelect.value;
+
+
+  const team =
+    teamSelect.value;
+
+  if (player && getPlayerState(player).status === "eliminated") {
+    showStatus("You are eliminated. Re-enter before making another pick.", "error");
+    return;
+  }
+
+
+  if (!player) {
+
+    showStatus(
+      "Please select your name.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (!team) {
+
+    showStatus(
+      "Please select a team.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  submitButton.disabled =
+    true;
+
+
+  submitButton.textContent =
+    "Saving...";
+
+
+  hideStatus();
+
+
+  try {
+
+    /*
+       Check existing pick first.
+    */
+
+    const beforeData =
+      await jsonp(
+        "getPlayerData",
+        {
+          player: player
+        }
+      );
+
+
+    if (
+      !beforeData.success
+    ) {
+
+      throw new Error(
+        beforeData.error
+      );
+
+    }
+
+
+    const previousTeam =
+      (
+        beforeData.picks ||
+        {}
+      )[
+        "Week " +
+        CURRENT_WEEK
+      ] || "";
+
+
+    /*
+       Submit pick through Apps Script.
+    */
+
+    const submitURL =
+      API_URL +
+      "?action=submitPick" +
+      "&player=" +
+      encodeURIComponent(
+        player
+      ) +
+      "&week=" +
+      CURRENT_WEEK +
+      "&team=" +
+      encodeURIComponent(
+        team
+      ) +
+      "&_=" +
+      Date.now();
+
+
+    submitFrame.src =
+      submitURL;
+
+
+    await wait(
+      1500
+    );
+
+
+    /*
+       Verify that Google Sheets
+       received the pick.
+    */
+
+    let confirmed =
+      false;
+
+
+    for (
+      let attempt = 0;
+      attempt < 6;
+      attempt++
+    ) {
+
+      const check =
+        await jsonp(
+          "getPlayerData",
+          {
+            player: player
+          }
+        );
+
+
+      if (
+        check.success &&
+        check.picks &&
+        check.picks[
+          "Week " +
+          CURRENT_WEEK
+        ] === team
+      ) {
+
+        confirmed =
+          true;
+
+        break;
+
+      }
+
+
+      await wait(
+        750
+      );
+
+    }
+
+
+    if (
+      !confirmed
+    ) {
+
+      throw new Error(
+        "The pick could not be confirmed."
+      );
+
+    }
+
+
+    currentPickBox.textContent =
+      "Current Week " +
+      CURRENT_WEEK +
+      " Pick: " +
+      team;
+
+
+    /*
+       Confirmation message.
+    */
+
+    if (
+      previousTeam &&
+      previousTeam !== team
+    ) {
+
+      showStatus(
+        "Week " +
+        CURRENT_WEEK +
+        " pick changed from " +
+        previousTeam +
+        " to " +
+        team +
+        ".",
+        "success"
+      );
+
+    }
+
+    else if (
+      previousTeam === team
+    ) {
+
+      showStatus(
+        team +
+        " is already your Week " +
+        CURRENT_WEEK +
+        " pick.",
+        "success"
+      );
+
+    }
+
+    else {
+
+      showStatus(
+        "Your Week " +
+        CURRENT_WEEK +
+        " pick is " +
+        team +
+        ".",
+        "success"
+      );
+
+    }
+
+
+    /*
+       Refresh board immediately.
+    */
+
+    await loadTable();
+
+
+    /*
+       Reload player's available teams.
+    */
+
+    await loadPlayerData(
+      player
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    showStatus(
+      error.message ||
+      "Something went wrong.",
+      "error"
+    );
+
+  }
+
+  finally {
+
+    submitButton.disabled =
+      false;
+
+  }
 
 }
 
 
-/* ==========================================================
-   START
-========================================================== */
 
-loadPool();
+/* =========================================
+   HELPERS
+   ========================================= */
+
+function wait(ms) {
+
+  return new Promise(
+    resolve =>
+      setTimeout(
+        resolve,
+        ms
+      )
+  );
+
+}
+
+
+
+function showStatus(
+  message,
+  type
+) {
+
+  statusBox.textContent =
+    message;
+
+
+  statusBox.className =
+    "status " +
+    type;
+
+
+  statusBox.style.display =
+    "block";
+
+}
+
+
+
+function hideStatus() {
+
+  statusBox.style.display =
+    "none";
+
+}
+
+
+
+/* =========================================
+   EVENTS
+   ========================================= */
+
+playerSelect.addEventListener(
+  "change",
+  () => {
+
+    hideStatus();
+
+
+    loadPlayerData(
+      playerSelect.value
+    );
+
+  }
+);
+
+
+
+teamSelect.addEventListener(
+  "change",
+  hideStatus
+);
+
+
+
+submitButton.addEventListener(
+  "click",
+  submitPick
+);
+
+
+
+refreshButton.addEventListener(
+  "click",
+  async () => {
+
+    refreshButton.disabled =
+      true;
+
+
+    refreshButton.textContent =
+      "Refreshing...";
+
+
+    await loadTable();
+
+
+    refreshButton.disabled =
+      false;
+
+
+    refreshButton.textContent =
+      "🔄 Refresh Picks";
+
+  }
+);
+
+
+
+/* =========================================
+   START WEBSITE
+   ========================================= */
+
+loadPlayers();
+
+loadTable();
+
 
 </script>
 
 </body>
+
 </html>
-```
