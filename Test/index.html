@@ -600,6 +600,17 @@ button:disabled {
 
 }
 
+/* Muted Out rows retain readable logos and names. */
+.survivor-table .player-out td { background-color: #e2e5e9; }
+.survivor-table .player-out .logo-area { background-color: #e2e5e9; }
+.survivor-table .player-out .team-bar { filter: brightness(0.85); }
+.pool-summary { margin: 12px 0; padding: 12px; background: #eef3f8; border-radius: 6px; font-size: 14px; }
+.pool-summary strong { color: #003b6f; }
+.reentry-agreement { margin: 12px 0; padding: 12px; background: #fff4df; border-radius: 6px; }
+.reentry-agreement label { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+.reentry-agreement input { width: 20px; height: 20px; flex-shrink: 0; }
+.reentry-agreement p { font-size: 12px; margin: 8px 0 0; }
+[hidden] { display: none !important; }
 </style>
 </head>
 
@@ -681,6 +692,13 @@ button:disabled {
     class="current-pick">
   </div>
 
+
+  <div id="reentryAgreement" class="reentry-agreement" hidden>
+    <label for="agreeReentry"><input type="checkbox" id="agreeReentry">
+      <span>I agree to pay $20 for another entry and return to Active.</span>
+    </label>
+    <p>This records money owed. Payment is handled separately. Previously used teams remain unavailable.</p>
+  </div>
 
   <button
     id="submitButton"
@@ -770,6 +788,8 @@ button:disabled {
 
 
 
+  <div id="poolSummary" class="pool-summary" aria-live="polite">Loading total pot...</div>
+
   <div class="table-wrapper">
 
 
@@ -846,7 +866,7 @@ button:disabled {
    ========================================= */
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbx6d2hOVDAn95adfsORhSHBc89CwICUaxjPNvUmD6QcqNc2RwDg9xlFynFnMfBlMzGH/exec";
+  "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
 
 
 
@@ -1671,6 +1691,9 @@ async function loadPlayerData(
   player
 ) {
 
+  document.getElementById("reentryAgreement").hidden = true;
+  document.getElementById("agreeReentry").checked = false;
+
   if (!player) {
 
     teamSelect.disabled =
@@ -1723,6 +1746,9 @@ async function loadPlayerData(
 
     }
 
+
+    if (playerSelect.value !== player) return;
+    document.getElementById("reentryAgreement").hidden = !isPlayerOut(data.status);
 
     const picks =
       data.picks || {};
@@ -1854,10 +1880,9 @@ async function loadPlayerData(
       false;
 
 
-    submitButton.textContent =
-      currentPick
-        ? "Change My Pick"
-        : "Submit Pick";
+    submitButton.textContent = isPlayerOut(data.status)
+      ? "Re-enter for $20 & Submit Pick"
+      : currentPick ? "Change My Pick" : "Submit Pick";
 
   }
 
@@ -1883,10 +1908,10 @@ async function loadPlayerData(
    LOAD SURVIVOR BOARD
    ========================================= */
 
-// Display-only overrides requested by the pool organizer.
-// Remove a name here when that contestant re-enters.
-// Google Sheet column B remains the source for all other contestants.
-const OUT_CONTESTANTS = new Set(["akemi", "mac", "kenzie", "nicole"]);
+function isPlayerOut(status) {
+  return ["OUT", "ELIMINATED", "INACTIVE", "NONACTIVE", "NON-ACTIVE", "NON ACTIVE"]
+    .includes(String(status || "").trim().toUpperCase());
+}
 
 async function loadTable() {
 
@@ -1910,6 +1935,12 @@ async function loadTable() {
 
     }
 
+
+    const totalEntries = data.players.reduce((sum, player) => sum + Number(player.entries || 0), 0);
+    document.getElementById("poolSummary").innerHTML =
+      '<strong>Total Pot: $' + (totalEntries * 20).toLocaleString("en-US") +
+      '</strong> · ' + totalEntries + ' entries × $20' +
+      '<div style="font-size:12px;margin-top:4px">Based on committed entries; payments tracked separately.</div>';
 
     /* -----------------------------
        TABLE HEADERS
@@ -2005,8 +2036,8 @@ async function loadTable() {
 
         const statusCell = document.createElement("td");
         const status = String(player.status || "ACTIVE").trim().toUpperCase();
-        const isOut = OUT_CONTESTANTS.has(String(player.name || "").trim().toLowerCase()) ||
-          ["OUT", "ELIMINATED", "INACTIVE", "NONACTIVE", "NON-ACTIVE", "NON ACTIVE"].includes(status);
+        const isOut = isPlayerOut(status);
+        if (isOut) row.classList.add("player-out");
 
         statusCell.className = "status-cell";
         statusCell.classList.add(isOut ? "status-inactive" : "status-active");
@@ -2276,176 +2307,31 @@ async function submitPick() {
     }
 
 
-    const previousTeam =
-      (
-        beforeData.picks ||
-        {}
-      )[
-        "Week " +
-        CURRENT_WEEK
-      ] || "";
-
-
-    /*
-       Submit pick through Apps Script.
-    */
-
-    const submitURL =
-      API_URL +
-      "?action=submitPick" +
-      "&player=" +
-      encodeURIComponent(
-        player
-      ) +
-      "&week=" +
-      CURRENT_WEEK +
-      "&team=" +
-      encodeURIComponent(
-        team
-      ) +
-      "&_=" +
-      Date.now();
-
-
-    submitFrame.src =
-      submitURL;
-
-
-    await wait(
-      1500
-    );
-
-
-    /*
-       Verify that Google Sheets
-       received the pick.
-    */
-
-    let confirmed =
-      false;
-
-
-    for (
-      let attempt = 0;
-      attempt < 6;
-      attempt++
-    ) {
-
-      const check =
-        await jsonp(
-          "getPlayerData",
-          {
-            player: player
-          }
-        );
-
-
-      if (
-        check.success &&
-        check.picks &&
-        check.picks[
-          "Week " +
-          CURRENT_WEEK
-        ] === team
-      ) {
-
-        confirmed =
-          true;
-
-        break;
-
-      }
-
-
-      await wait(
-        750
-      );
-
+    const needsReentry = isPlayerOut(beforeData.status);
+    const agreed = document.getElementById("agreeReentry").checked;
+    if (needsReentry && !agreed) {
+      document.getElementById("reentryAgreement").hidden = false;
+      throw new Error("You are Out. Agree to the $20 entry before submitting your pick.");
     }
 
+    const result = await jsonp("submitPick", {
+      player: player,
+      week: CURRENT_WEEK,
+      team: team,
+      agreeReentry: needsReentry && agreed ? "true" : "false"
+    }, 30000);
 
-    if (
-      !confirmed
-    ) {
-
-      throw new Error(
-        "The pick could not be confirmed."
-      );
-
+    if (!result.success) {
+      if (result.requiresReentry) document.getElementById("reentryAgreement").hidden = false;
+      throw new Error(result.error || "Unable to save your pick.");
     }
 
-
-    currentPickBox.textContent =
-      "Current Week " +
-      CURRENT_WEEK +
-      " Pick: " +
-      team;
-
-
-    /*
-       Confirmation message.
-    */
-
-    if (
-      previousTeam &&
-      previousTeam !== team
-    ) {
-
-      showStatus(
-        "Week " +
-        CURRENT_WEEK +
-        " pick changed from " +
-        previousTeam +
-        " to " +
-        team +
-        ".",
-        "success"
-      );
-
-    }
-
-    else if (
-      previousTeam === team
-    ) {
-
-      showStatus(
-        team +
-        " is already your Week " +
-        CURRENT_WEEK +
-        " pick.",
-        "success"
-      );
-
-    }
-
-    else {
-
-      showStatus(
-        "Your Week " +
-        CURRENT_WEEK +
-        " pick is " +
-        team +
-        ".",
-        "success"
-      );
-
-    }
-
-
-    /*
-       Refresh board immediately.
-    */
+    showStatus(result.reentered
+      ? "You are Active again. Another $20 entry was added. Week " + CURRENT_WEEK + " pick: " + team + "."
+      : "Week " + CURRENT_WEEK + " pick saved: " + team + ".", "success");
 
     await loadTable();
-
-
-    /*
-       Reload player's available teams.
-    */
-
-    await loadPlayerData(
-      player
-    );
+    await loadPlayerData(player);
 
   }
 
