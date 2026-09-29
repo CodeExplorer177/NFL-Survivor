@@ -246,8 +246,8 @@ button:disabled {
 
   table-layout: fixed;
 
-  width: 1450px;
-  min-width: 1450px;
+  width: 1640px;
+  min-width: 1640px;
 }
 
 .survivor-table th,
@@ -275,6 +275,32 @@ button:disabled {
   font-weight: 900;
 
   white-space: nowrap;
+}
+
+/* Status and entries use the existing board style. */
+.status-header {
+  width: 115px;
+  min-width: 115px;
+}
+
+.entries-header {
+  width: 75px;
+  min-width: 75px;
+}
+
+.status-cell,
+.entries-cell {
+  background: white;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.status-active {
+  color: #15803d;
+}
+
+.status-inactive {
+  color: #d10b00;
 }
 
 .player-header {
@@ -554,19 +580,6 @@ button:disabled {
 
 }
 
-
-/* TEST status / entries additions */
-.player-state{margin-top:12px;padding:10px;border-radius:8px;font-size:14px;font-weight:bold;display:none}
-.player-state.active{display:block;background:#dff5df;color:#176b17}
-.player-state.eliminated{display:block;background:#f8dddd;color:#8a1c1c}
-.reentry-box{display:none;margin-top:12px;padding:12px;border:2px solid #d71920;border-radius:8px;background:#fff7f7;text-align:center}
-.reentry-box button{max-width:320px;background:#d71920}
-.status-header{width:85px;min-width:85px}.entries-header{width:55px;min-width:55px}
-.status-cell{width:85px;min-width:85px;font-size:10px;font-weight:900}.entries-cell{width:55px;min-width:55px;font-size:16px;font-weight:900}
-.active-text{color:#176b17}.eliminated-text{color:#d10b00}.eliminated-row{opacity:.48;background:#eee}.eliminated-row .player-cell{background:#eee}
-.summary-title{background:#003b6f;color:#fff;padding:9px 12px;border-radius:8px 8px 0 0;font-size:18px;font-weight:bold}
-.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #aaa;border-top:0}.summary-item{text-align:center;padding:18px 8px;background:#fff;border-right:1px solid #ddd}.summary-item:last-child{border-right:0}.summary-value{font-size:28px;font-weight:900;color:#003b6f}.summary-label{font-size:12px;font-weight:bold;color:#666;margin-top:4px}.prize{color:#176b17}.summary-note{text-align:center;font-size:12px;color:#666;margin-top:10px}
-@media(max-width:600px){.status-header,.status-cell{width:65px;min-width:65px;font-size:8px}.entries-header,.entries-cell{width:42px;min-width:42px}.summary-grid{grid-template-columns:1fr 1fr}.summary-item{border-bottom:1px solid #ddd}.summary-value{font-size:22px}}
 </style>
 </head>
 
@@ -648,13 +661,6 @@ button:disabled {
     class="current-pick">
   </div>
 
-  <div id="playerState" class="player-state"></div>
-  <div id="reentryBox" class="reentry-box">
-    <strong>You are currently eliminated.</strong><br>
-    You can buy another entry for $20 and continue playing.
-    <button id="reentryButton" type="button">Re-enter for $20</button>
-  </div>
-
 
   <button
     id="submitButton"
@@ -718,11 +724,7 @@ button:disabled {
         </div>
 
         <div>
-          4. Eliminated players may buy another $20 entry. Previously used teams remain unavailable.
-        </div>
-
-        <div>
-          5. The last remaining player wins; if multiple players survive Week 18, they share the prize.
+          4. The last remaining player wins; if multiple players survive Week 18, they share the prize.
         </div>
 
       </div>
@@ -797,18 +799,9 @@ button:disabled {
     class="last-updated">
   </div>
 
+
 </div>
 
-<div class="card">
-  <div class="summary-title">Pool Summary</div>
-  <div class="summary-grid">
-    <div class="summary-item"><div id="remainingPlayers" class="summary-value">—</div><div class="summary-label">Players Remaining</div></div>
-    <div class="summary-item"><div id="totalPlayers" class="summary-value">—</div><div class="summary-label">Total Players</div></div>
-    <div class="summary-item"><div id="totalEntries" class="summary-value">—</div><div class="summary-label">Total Entries</div></div>
-    <div class="summary-item"><div id="prizePool" class="summary-value prize">—</div><div class="summary-label">Current Prize Pool</div></div>
-  </div>
-  <div class="summary-note">Each original entry and each re-entry adds $20 to the prize pool.</div>
-</div>
 
 </div>
 
@@ -833,19 +826,7 @@ button:disabled {
    ========================================= */
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbyRawQPUdHospSvL4881AcQh41bHAJZcGAqFqrumjmMB112Cl-6yVPmlE1kaNIj6PI2Tg/exec";
-
-const ENTRY_PRICE = 20;
-const TEST_PLAYER_STATE = {
-  "Aimi": { status: "active", entries: 2 },
-  "Akemi": { status: "eliminated", entries: 1 }
-};
-let livePoolPlayers = [];
-function getPlayerState(name) {
-  const state = TEST_PLAYER_STATE[name];
-  return state ? { status: state.status, entries: Number(state.entries || 1) } : { status: "active", entries: 1 };
-}
-
+  "https://script.google.com/macros/s/AKfycbx6d2hOVDAn95adfsORhSHBc89CwICUaxjPNvUmD6QcqNc2RwDg9xlFynFnMfBlMzGH/exec";
 
 
 
@@ -1424,11 +1405,6 @@ const lastUpdated =
     "lastUpdated"
   );
 
-const playerState = document.getElementById("playerState");
-const reentryBox = document.getElementById("reentryBox");
-const reentryButton = document.getElementById("reentryButton");
-
-
 
 
 /* =========================================
@@ -1697,17 +1673,6 @@ async function loadPlayerData(
 
   }
 
-  const state = getPlayerState(player);
-  playerState.className = "player-state " + state.status;
-  playerState.textContent = state.status.toUpperCase() + " • " + state.entries + (state.entries === 1 ? " Entry" : " Entries");
-  reentryBox.style.display = state.status === "eliminated" ? "block" : "none";
-  if (state.status === "eliminated") {
-    teamSelect.disabled = true;
-    teamSelect.innerHTML = '<option value="">Re-enter to make another pick</option>';
-    submitButton.disabled = true;
-    currentPickBox.textContent = "";
-    return;
-  }
 
   try {
 
@@ -1921,14 +1886,14 @@ async function loadTable() {
     }
 
 
-    livePoolPlayers = data.players || [];
-
     /* -----------------------------
        TABLE HEADERS
        ----------------------------- */
 
     tableHeader.innerHTML =
-      '<th class="player-header">Player Name</th>' + '<th class="status-header">Status</th>' + '<th class="entries-header">Entries</th>';
+      '<th class="player-header">Player Name</th>' +
+      '<th class="status-header">Status</th>' +
+      '<th class="entries-header" title="$20 per entry">Entries</th>';
 
 
     data.headers.forEach(
@@ -2008,15 +1973,32 @@ async function loadTable() {
           playerCell
         );
 
-        const state = getPlayerState(player.name);
-        if (state.status === "eliminated") row.classList.add("eliminated-row");
+
+        /*
+           Status and entries from columns B and C.
+        */
+
         const statusCell = document.createElement("td");
-        statusCell.className = "status-cell " + (state.status === "active" ? "active-text" : "eliminated-text");
-        statusCell.textContent = state.status.toUpperCase();
+        const status = String(player.status || "ACTIVE").trim().toUpperCase();
+
+        statusCell.className = "status-cell";
+        statusCell.textContent = status;
+
+        if (status === "ACTIVE") {
+          statusCell.classList.add("status-active");
+        } else if (["ELIMINATED", "INACTIVE", "NONACTIVE", "NON-ACTIVE", "NON ACTIVE"].includes(status)) {
+          statusCell.classList.add("status-inactive");
+        }
+
         row.appendChild(statusCell);
+
         const entriesCell = document.createElement("td");
+        const entries = Number(player.entries);
+
         entriesCell.className = "entries-cell";
-        entriesCell.textContent = state.entries;
+        entriesCell.textContent = Number.isInteger(entries) && entries >= 0 ? entries : 1;
+        entriesCell.title = "$" + (Number(entriesCell.textContent) * 20) + " at $20 per entry";
+
         row.appendChild(entriesCell);
 
         /*
@@ -2158,8 +2140,6 @@ async function loadTable() {
     );
 
 
-    updateSummary();
-
     lastUpdated.textContent =
       "Last updated: " +
       new Date()
@@ -2199,11 +2179,6 @@ async function submitPick() {
 
   const team =
     teamSelect.value;
-
-  if (player && getPlayerState(player).status === "eliminated") {
-    showStatus("You are eliminated. Re-enter before making another pick.", "error");
-    return;
-  }
 
 
   if (!player) {
