@@ -866,7 +866,7 @@ button:disabled {
    ========================================= */
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbzOzSoPwd4er62aYPDx4ap8-zflG4pTwcexmeSx9cOM_7IFPjxcNlykTIF4dCFgdJdJHQ/exec";
+  "https://script.google.com/macros/s/AKfycbznVY8bK3-BJQme4p2BcEIuFZIgvKu-zjzrPG2cTFlXpjVHZFyzJGd9nCCS0qVrpUijcQ/exec";
 
 
 
@@ -1939,8 +1939,7 @@ async function loadTable() {
     const totalEntries = data.players.reduce((sum, player) => sum + Number(player.entries || 0), 0);
     document.getElementById("poolSummary").innerHTML =
       '<strong>Total Pot: $' + (totalEntries * 20).toLocaleString("en-US") +
-      '</strong> · ' + totalEntries + ' entries × $20' +
-      '<div style="font-size:12px;margin-top:4px">Based on committed entries; payments tracked separately.</div>';
+      '</strong> · ' + totalEntries + ' entries × $20';
 
     /* -----------------------------
        TABLE HEADERS
@@ -2324,6 +2323,12 @@ async function submitPick() {
     if (!result.success) {
       if (result.requiresReentry) document.getElementById("reentryAgreement").hidden = false;
       throw new Error(result.error || "Unable to save your pick.");
+    }
+
+    const saved = await jsonp("getPlayerData", {player: player});
+    if (!saved.success || (needsReentry &&
+        (isPlayerOut(saved.status) || Number(saved.entries) !== Number(beforeData.entries) + 1))) {
+      throw new Error("Re-entry was not confirmed in the sheet. Verify that API_URL points to the updated Web App deployment.");
     }
 
     showStatus(result.reentered
