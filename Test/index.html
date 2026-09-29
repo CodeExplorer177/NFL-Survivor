@@ -246,8 +246,8 @@ button:disabled {
 
   table-layout: fixed;
 
-  width: 1640px;
-  min-width: 1640px;
+  width: 1590px;
+  min-width: 1590px;
 }
 
 .survivor-table th,
@@ -279,8 +279,8 @@ button:disabled {
 
 /* Status and entries use the existing board style. */
 .status-header {
-  width: 115px;
-  min-width: 115px;
+  width: 65px;
+  min-width: 65px;
 }
 
 .entries-header {
@@ -288,7 +288,27 @@ button:disabled {
   min-width: 75px;
 }
 
-.status-cell,
+.status-cell {
+  background: white;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
 .entries-cell {
   background: white;
   font-size: 13px;
@@ -1863,6 +1883,11 @@ async function loadPlayerData(
    LOAD SURVIVOR BOARD
    ========================================= */
 
+// Display-only overrides requested by the pool organizer.
+// Remove a name here when that contestant re-enters.
+// Google Sheet column B remains the source for all other contestants.
+const OUT_CONTESTANTS = new Set(["akemi", "mac", "kenzie", "nicole"]);
+
 async function loadTable() {
 
   try {
@@ -1893,7 +1918,7 @@ async function loadTable() {
     tableHeader.innerHTML =
       '<th class="player-header">Player Name</th>' +
       '<th class="status-header">Status</th>' +
-      '<th class="entries-header" title="$20 per entry">Entries</th>';
+      '<th class="entries-header">Entries</th>';
 
 
     data.headers.forEach(
@@ -1980,15 +2005,25 @@ async function loadTable() {
 
         const statusCell = document.createElement("td");
         const status = String(player.status || "ACTIVE").trim().toUpperCase();
+        const isOut = OUT_CONTESTANTS.has(String(player.name || "").trim().toLowerCase()) ||
+          ["OUT", "ELIMINATED", "INACTIVE", "NONACTIVE", "NON-ACTIVE", "NON ACTIVE"].includes(status);
 
         statusCell.className = "status-cell";
-        statusCell.textContent = status;
+        statusCell.classList.add(isOut ? "status-inactive" : "status-active");
 
-        if (status === "ACTIVE") {
-          statusCell.classList.add("status-active");
-        } else if (["ELIMINATED", "INACTIVE", "NONACTIVE", "NON-ACTIVE", "NON ACTIVE"].includes(status)) {
-          statusCell.classList.add("status-inactive");
-        }
+        const statusLabel = document.createElement("span");
+        statusLabel.className = "status-label";
+
+        const statusDot = document.createElement("span");
+        statusDot.className = "status-dot";
+        statusDot.setAttribute("aria-hidden", "true");
+
+        const statusText = document.createElement("span");
+        statusText.textContent = isOut ? "Out" : "Active";
+
+        statusLabel.appendChild(statusDot);
+        statusLabel.appendChild(statusText);
+        statusCell.appendChild(statusLabel);
 
         row.appendChild(statusCell);
 
@@ -1997,7 +2032,6 @@ async function loadTable() {
 
         entriesCell.className = "entries-cell";
         entriesCell.textContent = Number.isInteger(entries) && entries >= 0 ? entries : 1;
-        entriesCell.title = "$" + (Number(entriesCell.textContent) * 20) + " at $20 per entry";
 
         row.appendChild(entriesCell);
 
