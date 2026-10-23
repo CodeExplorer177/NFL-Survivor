@@ -693,13 +693,6 @@ button:disabled {
   </div>
 
 
-  <div id="reentryAgreement" class="reentry-agreement" hidden>
-    <label for="agreeReentry"><input type="checkbox" id="agreeReentry">
-      <span>I agree to pay $20 for another entry and return to Active.</span>
-    </label>
-    <p>This records money owed. Payment is handled separately. Previously used teams remain unavailable.</p>
-  </div>
-
   <button
     id="submitButton"
     disabled
@@ -788,7 +781,6 @@ button:disabled {
 
 
 
-  <div id="poolSummary" class="pool-summary" aria-live="polite">Loading total pot...</div>
 
   <div class="table-wrapper">
 
@@ -866,7 +858,7 @@ button:disabled {
    ========================================= */
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwnDK15iy1tImn-DeMnRvTX6XPiLzMxW-m6_zCmQvA0fmTZieOgqr00P6rof-iTaF8Q2A/exec";
+  "https://script.google.com/macros/s/AKfycbygbnFHepFKLTevY5qgMsCO0ZikJtdib4DNsuLm31QJGIju4P2WKogc326Njlc5U5GQhQ/exec";
 
 
 
@@ -1693,8 +1685,6 @@ async function loadPlayerData(
   player
 ) {
 
-  document.getElementById("reentryAgreement").hidden = true;
-  document.getElementById("agreeReentry").checked = false;
 
   if (!player) {
 
@@ -1750,7 +1740,16 @@ async function loadPlayerData(
 
 
     if (playerSelect.value !== player) return;
-    document.getElementById("reentryAgreement").hidden = !isPlayerOut(data.status);
+    if (isPlayerOut(data.status)) {
+      teamSelect.innerHTML = '<option value="">Eliminated — contact pool administrator</option>';
+      teamSelect.disabled = true;
+      submitButton.disabled = true;
+      submitButton.textContent = "Eliminated";
+      currentPickBox.textContent = Number(data.entries) >= 2
+        ? "Both entries have been used. You are permanently eliminated."
+        : "You are Out. The pool administrator must update your status in Google Sheets.";
+      return;
+    }
 
     const picks =
       data.picks || {};
@@ -1882,9 +1881,7 @@ async function loadPlayerData(
       false;
 
 
-    submitButton.textContent = isPlayerOut(data.status)
-      ? "Re-enter for $20 & Submit Pick"
-      : currentPick ? "Change My Pick" : "Submit Pick";
+    submitButton.textContent = currentPick ? "Change My Pick" : "Submit Pick";
 
   }
 
@@ -1938,10 +1935,6 @@ async function loadTable() {
     }
 
 
-    const totalEntries = data.players.reduce((sum, player) => sum + Number(player.entries || 0), 0);
-    document.getElementById("poolSummary").innerHTML =
-      '<strong>Total Pot: $' + (totalEntries * 20).toLocaleString("en-US") +
-      '</strong> · ' + totalEntries + ' entries × $20';
 
     /* -----------------------------
        TABLE HEADERS
@@ -2313,34 +2306,21 @@ async function submitPick() {
     }
 
 
-    const needsReentry = isPlayerOut(beforeData.status);
-    const agreed = document.getElementById("agreeReentry").checked;
-    if (needsReentry && !agreed) {
-      document.getElementById("reentryAgreement").hidden = false;
-      throw new Error("You are Out. Agree to the $20 entry before submitting your pick.");
+    if (isPlayerOut(beforeData.status)) {
+      throw new Error("You are eliminated. Contact the pool administrator about your status.");
     }
 
     const result = await jsonp("submitPick", {
       player: player,
       week: CURRENT_WEEK,
-      team: team,
-      agreeReentry: needsReentry && agreed ? "true" : "false"
+      team: team
     }, 30000);
 
     if (!result.success) {
-      if (result.requiresReentry) document.getElementById("reentryAgreement").hidden = false;
       throw new Error(result.error || "Unable to save your pick.");
     }
 
-    const saved = await jsonp("getPlayerData", {player: player});
-    if (!saved.success || (needsReentry &&
-        (isPlayerOut(saved.status) || Number(saved.entries) !== Number(beforeData.entries) + 1))) {
-      throw new Error("Re-entry was not confirmed in the sheet. Verify that API_URL points to the updated Web App deployment.");
-    }
-
-    showStatus(result.reentered
-      ? "You are Active again. Another $20 entry was added. Week " + CURRENT_WEEK + " pick: " + team + "."
-      : "Week " + CURRENT_WEEK + " pick saved: " + team + ".", "success");
+    showStatus("Week " + CURRENT_WEEK + " pick saved: " + team + ".", "success");
 
     await loadTable();
     await loadPlayerData(player);
@@ -2363,10 +2343,7 @@ async function submitPick() {
   }
 
   finally {
-
-    submitButton.disabled =
-      false;
-
+    if (playerSelect.value === player) await loadPlayerData(player);
   }
 
 }
