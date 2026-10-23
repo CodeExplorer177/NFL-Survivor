@@ -246,8 +246,8 @@ button:disabled {
 
   table-layout: fixed;
 
-  width: 1590px;
-  min-width: 1590px;
+  width: 1200px;
+  min-width: 1200px;
 }
 
 .survivor-table th,
@@ -540,9 +540,9 @@ button:disabled {
   /* TABLE */
 
   .survivor-table {
-    width: 1000px;
+    width: 800px;
 
-    min-width: 1000px;
+    min-width: 800px;
   }
 
   .survivor-table th {
@@ -817,7 +817,7 @@ button:disabled {
         <tr>
 
           <td
-            colspan="21"
+            colspan="15"
             class="table-loading"
           >
             Loading survivor picks...
@@ -866,7 +866,7 @@ button:disabled {
    ========================================= */
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbznVY8bK3-BJQme4p2BcEIuFZIgvKu-zjzrPG2cTFlXpjVHZFyzJGd9nCCS0qVrpUijcQ/exec";
+  "https://script.google.com/macros/s/AKfycbwnDK15iy1tImn-DeMnRvTX6XPiLzMxW-m6_zCmQvA0fmTZieOgqr00P6rof-iTaF8Q2A/exec";
 
 
 
@@ -884,6 +884,8 @@ const API_URL =
 
    ========================================= */
 
+
+const FIRST_VISIBLE_WEEK = 7;
 
 const WEEK_START_DATES = [
 
@@ -1951,7 +1953,12 @@ async function loadTable() {
       '<th class="entries-header">Entries</th>';
 
 
-    data.headers.forEach(
+    const visibleHeaders = data.headers.filter(header => {
+      const match = /^Week (\d+)$/.exec(header);
+      return match && Number(match[1]) >= FIRST_VISIBLE_WEEK;
+    });
+
+    visibleHeaders.forEach(
       header => {
 
         const th =
@@ -2069,7 +2076,7 @@ async function loadTable() {
            Week picks
         */
 
-        data.headers.forEach(
+        visibleHeaders.forEach(
           week => {
 
             const team =
@@ -2220,7 +2227,7 @@ async function loadTable() {
 
     tableBody.innerHTML =
       '<tr>' +
-      '<td colspan="21" class="table-loading">' +
+      '<td colspan="15" class="table-loading">' +
       'Could not load survivor picks.' +
       '</td>' +
       '</tr>';
